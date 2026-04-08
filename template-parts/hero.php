@@ -149,29 +149,37 @@ $wa_link        = ta_whatsapp_link( 'Olá! Gostaria de reservar uma aventura.' )
     margin-bottom: var(--espaco-2xl);
 }
 
-/* Fundo de vídeo */
+/* Fundo de vídeo/imagem */
 .hero__fundo-container {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     z-index: 0;
 }
 
 .hero__fundo {
     position: absolute;
-    inset: 0;
+    top: 50%;
+    left: 50%;
     width: 100%;
     height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
     object-fit: cover;
     z-index: 0;
 }
 
+/* O iframe do youtube não aceita object-fit nativamente tão bem,
+   precisa forçar a proporção 16:9 (100vw x 56.25vw ou 177.77vh x 100vh) */
 .hero__fundo--youtube {
-    width: 300%;
-    height: 300%;
-    margin-left: -100%;
-    margin-top: -100%;
-    object-fit: cover;
+    width: 100vw;
+    height: 56.25vw; /* Proporção 16:9 */
+    min-height: 100vh;
+    min-width: 177.77vh; /* Proporção 16:9 invertida */
+    margin: 0;
     pointer-events: none;
 }
 
