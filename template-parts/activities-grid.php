@@ -34,7 +34,7 @@ $fallback = [
             </p>
         </div>
 
-        <div class="grid grid--auto-fit-sm" role="list">
+        <div class="grid grid--4" role="list">
 
         <?php if ( $atividades->have_posts() ) :
             $delay = 1;
