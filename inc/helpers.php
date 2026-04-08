@@ -148,7 +148,7 @@ function ta_reading_time( $post_id = null ): int {
 function ta_checkout_url( int $atividade_id ): string {
     $page = get_page_by_path( 'reservar' ) ?? get_page_by_path( 'checkout' );
     $base = $page ? get_permalink( $page ) : home_url( '/reservar/' );
-    $args = [ 'atividade' => $atividade_id ];
+    $args = [ 'id' => $atividade_id ];
     return add_query_arg( $args, $base );
 }
 

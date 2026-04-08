@@ -7,8 +7,8 @@
  */
 defined('ABSPATH') || exit;
 
-// Obter atividade e sessão da query string
-$atividade_id = intval($_GET['atividade'] ?? 0);
+// Obter atividade da query string
+$atividade_id = intval($_GET['id'] ?? 0);
 $sessao_id    = sanitize_text_field($_GET['sessao'] ?? '');
 $atividade    = $atividade_id ? get_post($atividade_id) : null;
 

@@ -5,3 +5,4 @@
 5. Cada interação (edição e outras) deve levar em consideração o impacto nas anteriores
 6. NUNCA pense ou leve em consideração outras pastas foda d pasta raiz e suas subpastas no contexto.
 7. Me responda sempre que possível com o mínimo de palavras, para economizar tokens, bem como tente reduzir os comentários nos códigos para o mínimo possível para que eu entenda, mas sem verborragia.
+8. Não tente ser engraçado demais.
