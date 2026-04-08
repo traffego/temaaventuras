@@ -2,6 +2,14 @@
    CHECKOUT – Estilos do fluxo de pagamento
    ========================================= */
 
+/* GRID LAYOUT */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--espaco-3xl);
+  align-items: start;
+}
+
 /* STEPPER */
 .checkout-stepper {
   display: flex;
@@ -354,8 +362,37 @@ input.erro, select.erro, textarea.erro {
 
 /* RESPONSIVO */
 @media (max-width: 768px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--espaco-2xl);
+  }
+
   .checkout-stepper { gap: 4px; }
   .step-connector { max-width: 40px; }
   .step-indicator__label { display: none; }
   .pix-copia-cola-wrap { flex-direction: column; }
+  
+  .btn--grande {
+    min-height: 52px;
+    font-size: 1.1rem;
+    padding: var(--espaco-md) var(--espaco-lg);
+  }
+  
+  .valor-total-box {
+    position: relative;
+    top: 0;
+    margin-bottom: var(--espaco-lg);
+    border-radius: var(--raio-lg);
+    padding: var(--espaco-lg);
+  }
+  
+  .valor-total-box__valor {
+    font-size: 2.2rem;
+  }
+  
+  input, select, .mp-field-wrapper {
+    font-size: 16px; /* Evita auto-zoom no iOS */
+  }
 }

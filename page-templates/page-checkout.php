@@ -79,7 +79,7 @@ get_header();
     <div class="checkout-erro" id="checkout-erro" role="alert"></div>
 
     <!-- LAYOUT: form + sidebar -->
-    <div style="display:grid;grid-template-columns:1fr 320px;gap:var(--espaco-3xl);align-items:start;" class="checkout-grid">
+    <div class="checkout-grid">
 
         <div>
         <form id="form-checkout" method="post" novalidate>
