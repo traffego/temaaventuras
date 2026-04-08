@@ -12,7 +12,7 @@ get_header();
 <main id="conteudo-principal" role="main">
 
     <!-- Banner -->
-    <div class="page-banner" style="min-height:340px;">
+    <div class="page-banner">
         <div class="page-banner__overlay" aria-hidden="true"></div>
         <?php if (has_post_thumbnail()) the_post_thumbnail('aventura-banner',['class'=>'page-banner__img','loading'=>'eager','alt'=>'']); ?>
         <div class="container page-banner__conteudo">
@@ -30,7 +30,7 @@ get_header();
     $niveis     = get_terms(['taxonomy' => 'nivel_dificuldade',   'hide_empty' => true]);
     if (!is_wp_error($categorias) && !empty($categorias)) :
     ?>
-    <section style="background:var(--fundo-card);padding:var(--espaco-xl) 0;border-bottom:1px solid var(--borda-glass);">
+    <section class="section section--pequena" style="background:var(--fundo-card); border-bottom:1px solid var(--borda-glass);">
         <div class="container">
             <div class="flex flex-wrap gap-md" role="group" aria-label="Filtrar atividades">
                 <a href="<?php echo get_permalink(); ?>"
@@ -71,7 +71,7 @@ get_header();
 
             if ($atividades->have_posts()) :
             ?>
-            <div class="grid grid--auto-fit-sm">
+            <div class="grid grid--4">
                 <?php while($atividades->have_posts()) : $atividades->the_post();
                     $nivel   = get_post_meta(get_the_ID(),'_atividade_nivel',true) ?: 'facil';
                     $duracao = get_post_meta(get_the_ID(),'_atividade_duracao',true);
