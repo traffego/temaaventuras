@@ -50,9 +50,15 @@ $fallback = [
 
                 <?php
                 $img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
-                $img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'aventura-card' ) : '';
+                $img_url = '';
+                if ( $img_id > 0 ) {
+                    $img_url = wp_get_attachment_image_url( $img_id, 'aventura-card' )
+                             ?: wp_get_attachment_image_url( $img_id, 'large' )
+                             ?: wp_get_attachment_image_url( $img_id, 'full' );
+                }
                 if ( ! $img_url && has_post_thumbnail() ) {
-                    $img_url = get_the_post_thumbnail_url( get_the_ID(), 'aventura-card' );
+                    $img_url = get_the_post_thumbnail_url( get_the_ID(), 'aventura-card' )
+                             ?: get_the_post_thumbnail_url( get_the_ID(), 'full' );
                 }
                 ?>
                 <?php if ( $img_url ) : ?>
