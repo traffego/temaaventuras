@@ -157,11 +157,21 @@ $wa_link        = ta_whatsapp_link( 'Olá! Gostaria de reservar uma aventura.' )
     z-index: 0;
 }
 
+.hero__fundo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
 .hero__fundo--youtube {
     width: 300%;
     height: 300%;
     margin-left: -100%;
     margin-top: -100%;
+    object-fit: cover;
     pointer-events: none;
 }
 

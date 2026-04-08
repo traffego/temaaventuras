@@ -151,6 +151,7 @@ img.custom-logo,
   flex-shrink: 0 !important;
 }
 
+/* Texto da logo (sempre visível se não houver imagem, oculto se houver imagem e transparente) */
 .navbar__logo-texto {
   font-family: var(--fonte-titulo);
   font-size: clamp(1.2rem, 4vw, 1.6rem);
@@ -158,9 +159,19 @@ img.custom-logo,
   color: var(--texto-primario);
   line-height: 1;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
+}
+
+/* Se existir a imagem (.navbar__logo-wrapper), oculta o texto por padrão no topo */
+.navbar__logo-wrapper + .navbar__logo-texto {
+  display: none;
+}
+
+/* No estado Sticky (scrolled) */
+.navbar--scrolled .navbar__logo-wrapper {
+  display: none; /* Oculta a imagem */
+}
+.navbar--scrolled .navbar__logo-wrapper + .navbar__logo-texto {
+  display: block; /* Mostra o texto */
 }
 
 .navbar__logo-texto span {

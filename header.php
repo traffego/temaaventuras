@@ -36,19 +36,21 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
         <!-- LOGO -->
         <div class="navbar__logo">
             <?php if ( has_custom_logo() ) : ?>
-                <?php the_custom_logo(); ?>
-            <?php else : ?>
-                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="navbar__logo-texto" aria-label="<?php bloginfo( 'name' ); ?> – Página Inicial" style="text-decoration:none;">
-                    <?php
-                    $nome = ta_get( 'empresa_nome', get_bloginfo( 'name' ) );
-                    $partes = explode( ' ', $nome, 2 );
-                    echo esc_html( $partes[0] );
-                    if ( isset( $partes[1] ) ) {
-                        echo ' <span>' . esc_html( $partes[1] ) . '</span>';
-                    }
-                    ?>
-                </a>
+                <div class="navbar__logo-wrapper">
+                    <?php the_custom_logo(); ?>
+                </div>
             <?php endif; ?>
+            
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="navbar__logo-texto" aria-label="<?php bloginfo( 'name' ); ?> – Página Inicial" style="text-decoration:none;">
+                <?php
+                $nome = ta_get( 'empresa_nome', get_bloginfo( 'name' ) );
+                $partes = explode( ' ', $nome, 2 );
+                echo esc_html( $partes[0] );
+                if ( isset( $partes[1] ) ) {
+                    echo ' <span>' . esc_html( $partes[1] ) . '</span>';
+                }
+                ?>
+            </a>
         </div>
 
         <!-- MENU DESKTOP -->
