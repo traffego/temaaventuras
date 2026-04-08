@@ -92,15 +92,18 @@
    NAVBAR
 =========================== */
 .navbar {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: var(--z-nav);
-  height: var(--altura-nav);
+  height: auto;
+  min-height: var(--altura-nav);
   display: flex;
   align-items: center;
   transition: all var(--transicao-normal);
+  background: var(--fundo-base);
+  border-bottom: 1px solid var(--borda-glass);
 }
 
 .navbar__inner {
@@ -113,7 +116,6 @@
 .navbar--scrolled {
   background: rgba(10, 17, 13, 0.95);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--borda-glass);
   box-shadow: 0 4px 30px rgba(0,0,0,0.3);
 }
 
