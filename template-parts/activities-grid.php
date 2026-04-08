@@ -49,27 +49,19 @@ $fallback = [
                      aria-label="<?php the_title_attribute(); ?>">
 
                 <?php
-                $img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
-                $img_url = '';
-                if ( $img_id > 0 ) {
-                    $img_url = wp_get_attachment_image_url( $img_id, 'aventura-card' )
-                             ?: wp_get_attachment_image_url( $img_id, 'large' )
-                             ?: wp_get_attachment_image_url( $img_id, 'full' );
-                }
-                if ( ! $img_url && has_post_thumbnail() ) {
-                    $img_url = get_the_post_thumbnail_url( get_the_ID(), 'aventura-card' )
-                             ?: get_the_post_thumbnail_url( get_the_ID(), 'full' );
-                }
+                $img_id = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
                 ?>
-                <?php if ( $img_url ) : ?>
-                    <div class="card-atividade__img-wrapper">
-                        <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php the_title_attribute(); ?>" class="card-atividade__img" loading="lazy">
-                    </div>
+                <div class="card-atividade__img-wrapper" style="height: 100%;">
+                <?php if ( has_post_thumbnail() ) : ?>
+                    <?php the_post_thumbnail( 'aventura-card', [ 'class' => 'card-atividade__img', 'loading' => 'lazy', 'alt' => get_the_title() ] ); ?>
+                <?php elseif ( $img_id ) : ?>
+                    <?php echo wp_get_attachment_image( $img_id, 'aventura-card', false, [ 'class' => 'card-atividade__img', 'loading' => 'lazy', 'alt' => get_the_title() ] ); ?>
                 <?php else : ?>
-                    <div class="card-atividade__img" style="background: var(--gradiente-hero); display:flex; align-items:center; justify-content:center; font-size:4rem;">
+                    <div class="card-atividade__img" style="background: var(--gradiente-hero); display:flex; align-items:center; justify-content:center; font-size:4rem; height: 100%;">
                         🌊
                     </div>
                 <?php endif; ?>
+                </div>
 
                 <div class="card-atividade__overlay">
                     <div class="card-atividade__badge">

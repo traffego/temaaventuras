@@ -133,8 +133,12 @@ $at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
                                 $p = get_post_meta(get_the_ID(),'_atividade_preco',true);
                             ?>
                             <article class="card-atividade" style="aspect-ratio:3/4;" aria-label="<?php the_title_attribute(); ?>">
-                                <?php if (has_post_thumbnail()): ?>
+                                <?php 
+                                $rel_img_id = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
+                                if (has_post_thumbnail()): ?>
                                     <?php the_post_thumbnail('aventura-card',['class'=>'card-atividade__img','loading'=>'lazy','alt'=>get_the_title()]); ?>
+                                <?php elseif ($rel_img_id): ?>
+                                    <?php echo wp_get_attachment_image( $rel_img_id, 'aventura-card', false, ['class'=>'card-atividade__img','loading'=>'lazy','alt'=>get_the_title()] ); ?>
                                 <?php else: ?>
                                     <div class="card-atividade__img" style="background:var(--gradiente-hero);display:flex;align-items:center;justify-content:center;font-size:4rem;height:100%;">🌊</div>
                                 <?php endif; ?>

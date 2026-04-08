@@ -84,16 +84,15 @@
 .grid--4 { grid-template-columns: repeat(4, 1fr); }
 
 .grid--auto-fit-sm {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 320px));
-  justify-content: start;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
 .grid--auto-fit-md {
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
 }
 
 .grid--auto-fit-lg {
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
 }
 
 /* === FLEX UTILITIES === */
