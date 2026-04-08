@@ -164,12 +164,119 @@ add_action( 'add_meta_boxes', 'tema_aventuras_add_meta_boxes' );
 // Meta Box: Atividade
 function tema_aventuras_atividade_meta_box( $post ) {
     wp_nonce_field( 'salvar_atividade_meta', 'atividade_meta_nonce' );
-    $duracao = get_post_meta( $post->ID, '_atividade_duracao', true );
-    $nivel   = get_post_meta( $post->ID, '_atividade_nivel', true );
-    $preco   = get_post_meta( $post->ID, '_atividade_preco', true );
-    $pessoas = get_post_meta( $post->ID, '_atividade_pessoas', true );
+
+    // Campos existentes
+    $duracao  = get_post_meta( $post->ID, '_atividade_duracao',  true );
+    $nivel    = get_post_meta( $post->ID, '_atividade_nivel',    true );
+    $preco    = get_post_meta( $post->ID, '_atividade_preco',    true );
+    $pessoas  = get_post_meta( $post->ID, '_atividade_pessoas',  true );
+
+    // Novos campos
+    $data     = get_post_meta( $post->ID, '_atividade_data',     true );
+    $horario  = get_post_meta( $post->ID, '_atividade_horario',  true );
+    $vagas    = get_post_meta( $post->ID, '_atividade_vagas',    true );
+    $obs      = get_post_meta( $post->ID, '_atividade_obs',      true );
+    $img_id   = (int) get_post_meta( $post->ID, '_atividade_imagem', true );
+    $img_url  = $img_id ? wp_get_attachment_image_url( $img_id, 'medium' ) : '';
+
+    // Enfileira media uploader
+    wp_enqueue_media();
     ?>
+    <style>
+        #atividade-imagem-preview { max-width:200px; max-height:140px; display:block; border-radius:6px; margin-bottom:8px; }
+        .ta-img-wrap { display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+        .ta-img-btns { display:flex; flex-direction:column; gap:4px; }
+    </style>
+
     <table class="form-table">
+
+        <!-- ── IMAGEM ──────────────────────────────── -->
+        <tr>
+            <th><?php _e( '🖼️ Imagem da Atividade', 'temaaventuras' ); ?></th>
+            <td>
+                <div class="ta-img-wrap">
+                    <?php if ( $img_url ) : ?>
+                        <img id="atividade-imagem-preview" src="<?php echo esc_url( $img_url ); ?>" alt="" />
+                    <?php else : ?>
+                        <img id="atividade-imagem-preview" src="" alt="" style="display:none;" />
+                    <?php endif; ?>
+                    <div class="ta-img-btns">
+                        <button type="button" id="atividade-imagem-btn" class="button">
+                            📷 <?php _e( 'Selecionar Imagem', 'temaaventuras' ); ?>
+                        </button>
+                        <button type="button" id="atividade-imagem-remover" class="button" style="color:red;<?php echo $img_id ? '' : 'display:none;'; ?>">
+                            ✕ <?php _e( 'Remover', 'temaaventuras' ); ?>
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" id="atividade-imagem-id" name="atividade_imagem" value="<?php echo esc_attr( $img_id ); ?>" />
+                <script>
+                (function(){
+                    var frame;
+                    document.getElementById('atividade-imagem-btn').addEventListener('click', function(e){
+                        e.preventDefault();
+                        if (frame) { frame.open(); return; }
+                        frame = wp.media({ title: 'Selecionar imagem da atividade', button: { text: 'Usar esta imagem' }, multiple: false });
+                        frame.on('select', function(){
+                            var att = frame.state().get('selection').first().toJSON();
+                            document.getElementById('atividade-imagem-id').value = att.id;
+                            var prev = document.getElementById('atividade-imagem-preview');
+                            prev.src = att.sizes && att.sizes.medium ? att.sizes.medium.url : att.url;
+                            prev.style.display = 'block';
+                            document.getElementById('atividade-imagem-remover').style.display = 'inline-block';
+                        });
+                        frame.open();
+                    });
+                    document.getElementById('atividade-imagem-remover').addEventListener('click', function(e){
+                        e.preventDefault();
+                        document.getElementById('atividade-imagem-id').value = '';
+                        var prev = document.getElementById('atividade-imagem-preview');
+                        prev.src = ''; prev.style.display = 'none';
+                        this.style.display = 'none';
+                    });
+                })();
+                </script>
+            </td>
+        </tr>
+
+        <!-- ── DATA E HORÁRIO ───────────────────────── -->
+        <tr>
+            <th><?php _e( '📅 Data', 'temaaventuras' ); ?></th>
+            <td>
+                <input type="date" name="atividade_data" value="<?php echo esc_attr( $data ); ?>" />
+                <p class="description"><?php _e( 'Data principal da atividade', 'temaaventuras' ); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><?php _e( '⏰ Horário', 'temaaventuras' ); ?></th>
+            <td>
+                <input type="time" name="atividade_horario" value="<?php echo esc_attr( $horario ); ?>" />
+            </td>
+        </tr>
+
+        <!-- ── VAGAS E PREÇO ────────────────────────── -->
+        <tr>
+            <th><?php _e( '👥 Vagas', 'temaaventuras' ); ?></th>
+            <td>
+                <input type="number" name="atividade_vagas" value="<?php echo esc_attr( $vagas ); ?>" min="1" placeholder="Ex: 10" />
+            </td>
+        </tr>
+        <tr>
+            <th><?php _e( '💰 Preço / pessoa (R$)', 'temaaventuras' ); ?></th>
+            <td>
+                <input type="number" name="atividade_preco" value="<?php echo esc_attr( $preco ); ?>" step="0.01" min="0" placeholder="150.00" />
+            </td>
+        </tr>
+
+        <!-- ── OBSERVAÇÕES ──────────────────────────── -->
+        <tr>
+            <th><?php _e( '📝 Observações', 'temaaventuras' ); ?></th>
+            <td>
+                <textarea name="atividade_obs" rows="3" style="width:100%" placeholder="Ex: Levar protetor solar e repelente"><?php echo esc_textarea( $obs ); ?></textarea>
+            </td>
+        </tr>
+
+        <!-- ── CAMPOS GERAIS ────────────────────────── -->
         <tr>
             <th><?php _e( 'Duração', 'temaaventuras' ); ?></th>
             <td><input type="text" name="atividade_duracao" value="<?php echo esc_attr( $duracao ); ?>" placeholder="Ex: 3 horas" /></td>
@@ -186,13 +293,10 @@ function tema_aventuras_atividade_meta_box( $post ) {
             </td>
         </tr>
         <tr>
-            <th><?php _e( 'Preço por Pessoa (R$)', 'temaaventuras' ); ?></th>
-            <td><input type="number" name="atividade_preco" value="<?php echo esc_attr( $preco ); ?>" step="0.01" /></td>
-        </tr>
-        <tr>
             <th><?php _e( 'Mínimo de Pessoas', 'temaaventuras' ); ?></th>
             <td><input type="number" name="atividade_pessoas" value="<?php echo esc_attr( $pessoas ); ?>" min="1" /></td>
         </tr>
+
     </table>
     <?php
 }
@@ -256,10 +360,16 @@ function tema_aventuras_depoimento_meta_box( $post ) {
 function tema_aventuras_salvar_metas( $post_id ) {
     // Atividade
     if ( isset( $_POST['atividade_meta_nonce'] ) && wp_verify_nonce( $_POST['atividade_meta_nonce'], 'salvar_atividade_meta' ) ) {
-        update_post_meta( $post_id, '_atividade_duracao', sanitize_text_field( $_POST['atividade_duracao'] ?? '' ) );
-        update_post_meta( $post_id, '_atividade_nivel',   sanitize_text_field( $_POST['atividade_nivel'] ?? '' ) );
-        update_post_meta( $post_id, '_atividade_preco',   floatval( $_POST['atividade_preco'] ?? 0 ) );
-        update_post_meta( $post_id, '_atividade_pessoas', intval( $_POST['atividade_pessoas'] ?? 1 ) );
+        update_post_meta( $post_id, '_atividade_duracao',  sanitize_text_field( $_POST['atividade_duracao']  ?? '' ) );
+        update_post_meta( $post_id, '_atividade_nivel',    sanitize_text_field( $_POST['atividade_nivel']    ?? '' ) );
+        update_post_meta( $post_id, '_atividade_preco',    floatval( $_POST['atividade_preco']   ?? 0 ) );
+        update_post_meta( $post_id, '_atividade_pessoas',  intval(   $_POST['atividade_pessoas']  ?? 1 ) );
+        // Novos campos
+        update_post_meta( $post_id, '_atividade_data',     sanitize_text_field( $_POST['atividade_data']     ?? '' ) );
+        update_post_meta( $post_id, '_atividade_horario',  sanitize_text_field( $_POST['atividade_horario']  ?? '' ) );
+        update_post_meta( $post_id, '_atividade_vagas',    absint( $_POST['atividade_vagas']     ?? 0 ) );
+        update_post_meta( $post_id, '_atividade_obs',      sanitize_textarea_field( $_POST['atividade_obs']  ?? '' ) );
+        update_post_meta( $post_id, '_atividade_imagem',   absint( $_POST['atividade_imagem']    ?? 0 ) );
     }
 
     // Pacote
