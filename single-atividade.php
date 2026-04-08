@@ -133,6 +133,7 @@ $at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
                                 $p = get_post_meta(get_the_ID(),'_atividade_preco',true);
                             ?>
                             <article class="card-atividade" style="aspect-ratio:3/4;" aria-label="<?php the_title_attribute(); ?>">
+                                <!-- Imagem na listagem de relacionadas -->
                                 <?php 
                                 $rel_img_id = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
                                 if (has_post_thumbnail()): ?>

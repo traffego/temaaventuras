@@ -48,6 +48,7 @@ $fallback = [
                      role="listitem"
                      aria-label="<?php the_title_attribute(); ?>">
 
+                <!-- Imagem adaptada para usar metadata e evitar quebra de layout -->
                 <?php
                 $img_id = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
                 ?>

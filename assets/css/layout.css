@@ -83,6 +83,7 @@
 .grid--3 { grid-template-columns: repeat(3, 1fr); }
 .grid--4 { grid-template-columns: repeat(4, 1fr); }
 
+/* Ajuste para evitar stretch exagerado em itens únicos no grid */
 .grid--auto-fit-sm {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
