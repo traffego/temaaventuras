@@ -97,10 +97,10 @@
   left: 0;
   right: 0;
   z-index: var(--z-nav);
-  height: auto;
-  min-height: var(--altura-nav);
+  height: var(--altura-nav);
   display: flex;
   align-items: center;
+  overflow: visible;
   transition: all var(--transicao-normal);
   background: transparent;
   border-bottom: 1px solid transparent;
@@ -141,7 +141,7 @@
 img.custom-logo,
 .custom-logo-link img {
   display: block !important;
-  height: auto !important;
+  height: calc(var(--altura-nav) - 20px) !important;
   max-height: calc(var(--altura-nav) - 20px) !important;
   width: auto !important;
   max-width: 250px !important;
