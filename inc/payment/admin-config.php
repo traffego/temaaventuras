@@ -21,16 +21,19 @@ add_action( 'admin_menu', 'ta_payment_admin_menu' );
    HELPER: ler config de pagamento
    ========================================= */
 function tema_aventuras_payment_config(): array {
+    $sandbox = (bool) get_option( 'ta_mp_sandbox', 1 );
     return [
-        'token_producao'  => get_option( 'ta_mp_token_producao', '' ),
-        'token_sandbox'   => get_option( 'ta_mp_token_sandbox', '' ),
+        'sandbox'         => $sandbox,
+        'token_sandbox'   => get_option( 'ta_mp_token_sandbox',   '' ),
+        'token_producao'  => get_option( 'ta_mp_token_producao',  '' ),
+        'pubkey_sandbox'  => get_option( 'ta_mp_pubkey_sandbox',  '' ),
         'pubkey_producao' => get_option( 'ta_mp_pubkey_producao', '' ),
-        'pubkey_sandbox'  => get_option( 'ta_mp_pubkey_sandbox', '' ),
-        'sandbox'         => (bool) get_option( 'ta_mp_sandbox', true ),
-        'notificacao_url' => get_option( 'ta_mp_notificacao_url', home_url( '/?ta_pagamento_notificacao=1' ) ),
-        'email_admin'     => get_option( 'ta_mp_email_admin', get_option( 'admin_email' ) ),
-        'parcelas_max'    => (int) get_option( 'ta_mp_parcelas_max', 12 ),
-        'juros_por_conta' => get_option( 'ta_mp_juros', 'cliente' ),
+        'email_admin'     => get_option( 'ta_mp_email_admin',     get_option( 'admin_email' ) ),
+        'parcelas_max'    => (int) get_option( 'ta_mp_parcelas_max', 6 ),
+        // URL canônica do webhook (usada na API do MP e exibida na tela de config)
+        'webhook_url'     => add_query_arg( 'ta_pagamento_notificacao', '1', home_url( '/' ) ),
+        // Alias legado — mantido para compatibilidade com class-mercadopago.php
+        'notificacao_url' => add_query_arg( 'ta_pagamento_notificacao', '1', home_url( '/' ) ),
     ];
 }
 

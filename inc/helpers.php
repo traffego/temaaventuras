@@ -132,3 +132,45 @@ function ta_get_depoimentos( $limit = 6 ) {
         'orderby'        => 'rand',
     ] );
 }
+
+/**
+ * Tempo de leitura estimado (minutos)
+ */
+function ta_reading_time( $post_id = null ): int {
+    $content = get_post_field( 'post_content', $post_id ?: get_the_ID() );
+    $words   = str_word_count( wp_strip_all_tags( $content ) );
+    return max( 1, (int) ceil( $words / 200 ) );
+}
+
+/**
+ * URL da página de checkout para uma atividade (+ sessão opcional)
+ */
+function ta_checkout_url( int $atividade_id, string $sessao_id = '' ): string {
+    $page = get_page_by_path( 'reservar' ) ?? get_page_by_path( 'checkout' );
+    $base = $page ? get_permalink( $page ) : home_url( '/reservar/' );
+    $args = [ 'atividade' => $atividade_id ];
+    if ( $sessao_id ) $args['sessao'] = $sessao_id;
+    return add_query_arg( $args, $base );
+}
+
+/**
+ * URL da página "Minha Reserva"
+ */
+function ta_minha_reserva_url(): string {
+    $page = get_page_by_path( 'minha-reserva' );
+    return $page ? get_permalink( $page ) : home_url( '/minha-reserva/' );
+}
+
+/**
+ * Próxima sessão disponível de uma atividade (com vagas livres)
+ * Retorna null se não houver sessões abertas.
+ */
+function ta_proxima_sessao( int $atividade_id ): ?array {
+    if ( ! function_exists( 'ta_get_sessoes_atividade' ) ) return null;
+    $sessoes = ta_get_sessoes_atividade( $atividade_id, true );
+    foreach ( $sessoes as $s ) {
+        $info = ta_vagas_disponiveis( $atividade_id, $s['id'] );
+        if ( $info['livres'] > 0 ) return array_merge( $s, $info );
+    }
+    return null;
+}
