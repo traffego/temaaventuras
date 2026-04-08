@@ -62,9 +62,9 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
                 'walker'         => new Walker_Nav_Menu(),
                 'fallback_cb'    => function() {
                     echo '<li class="navbar__item"><a href="' . esc_url( home_url( '/' ) ) . '">Início</a></li>';
-                    echo '<li class="navbar__item"><a href="#atividades">Atividades</a></li>';
-                    echo '<li class="navbar__item"><a href="#pacotes">Pacotes</a></li>';
-                    echo '<li class="navbar__item"><a href="#contato">Contato</a></li>';
+                    echo '<li class="navbar__item"><a href="' . esc_url( home_url( '/#atividades' ) ) . '">Atividades</a></li>';
+                    echo '<li class="navbar__item"><a href="' . esc_url( home_url( '/#pacotes' ) ) . '">Pacotes</a></li>';
+                    echo '<li class="navbar__item"><a href="' . esc_url( home_url( '/#contato' ) ) . '">Contato</a></li>';
                 },
             ] );
             ?>
@@ -107,7 +107,7 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
         'items_wrap'     => '%3$s',
         'item_spacing'   => 'preserve',
         'fallback_cb'    => function() {
-            $links = [ 'Início' => '/', 'Atividades' => '#atividades', 'Pacotes' => '#pacotes', 'Galeria' => '#galeria', 'Contato' => '#contato' ];
+            $links = [ 'Início' => '/', 'Atividades' => '/#atividades', 'Pacotes' => '/#pacotes', 'Galeria' => '/#galeria', 'Contato' => '/#contato' ];
             foreach ( $links as $label => $href ) {
                 echo '<li class="navbar__item"><a href="' . esc_url( home_url( $href ) ) . '">' . esc_html( $label ) . '</a></li>';
             }
