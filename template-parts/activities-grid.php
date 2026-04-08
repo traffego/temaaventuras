@@ -48,10 +48,16 @@ $fallback = [
                      role="listitem"
                      aria-label="<?php the_title_attribute(); ?>">
 
-                <!-- Imagem -->
-                <?php if ( has_post_thumbnail() ) : ?>
+                <?php
+                $img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
+                $img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'aventura-card' ) : '';
+                if ( ! $img_url && has_post_thumbnail() ) {
+                    $img_url = get_the_post_thumbnail_url( get_the_ID(), 'aventura-card' );
+                }
+                ?>
+                <?php if ( $img_url ) : ?>
                     <div class="card-atividade__img-wrapper">
-                        <?php the_post_thumbnail( 'aventura-card', [ 'class' => 'card-atividade__img', 'loading' => 'lazy', 'alt' => get_the_title() ] ); ?>
+                        <img src="<?php echo esc_url( $img_url ); ?>" alt="<?php the_title_attribute(); ?>" class="card-atividade__img" loading="lazy">
                     </div>
                 <?php else : ?>
                     <div class="card-atividade__img" style="background: var(--gradiente-hero); display:flex; align-items:center; justify-content:center; font-size:4rem;">
