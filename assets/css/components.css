@@ -127,21 +127,27 @@
   text-decoration: none;
   min-width: 0;
   margin-right: 16px;
-  height: var(--altura-nav); /* Garante que o container da logo tenha a altura do header */
+  height: var(--altura-nav);
+  overflow: hidden; /* Trava de segurança para impedir vazamento visual */
 }
 
-.navbar__logo img,
+/* Link da logo (WordPress injeta .custom-logo-link) */
 .navbar__logo a,
+.custom-logo-link {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Imagem da logo (WordPress injeta .custom-logo) */
+.navbar__logo img,
 img.custom-logo,
-.custom-logo-link,
 .custom-logo-link img {
-  height: 100% !important;
-  max-height: var(--altura-nav) !important;
+  max-height: 100% !important;
+  height: auto !important; /* Mudado para auto junto com max-height 100% para preservar proporção */
   width: auto !important;
   object-fit: contain !important;
   flex-shrink: 0 !important;
-  display: flex !important;
-  align-items: center !important;
 }
 
 .navbar__logo-texto {
