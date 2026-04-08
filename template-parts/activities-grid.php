@@ -50,7 +50,9 @@ $fallback = [
 
                 <!-- Imagem -->
                 <?php if ( has_post_thumbnail() ) : ?>
-                    <?php the_post_thumbnail( 'aventura-card', [ 'class' => 'card-atividade__img', 'loading' => 'lazy', 'alt' => get_the_title() ] ); ?>
+                    <div class="card-atividade__img-wrapper">
+                        <?php the_post_thumbnail( 'aventura-card', [ 'class' => 'card-atividade__img', 'loading' => 'lazy', 'alt' => get_the_title() ] ); ?>
+                    </div>
                 <?php else : ?>
                     <div class="card-atividade__img" style="background: var(--gradiente-hero); display:flex; align-items:center; justify-content:center; font-size:4rem;">
                         🌊

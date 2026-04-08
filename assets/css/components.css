@@ -287,9 +287,24 @@
   height: 100%;
   object-fit: cover;
   transition: transform var(--transicao-lenta);
+  display: block;
 }
 
-.card-atividade:hover .card-atividade__img {
+.card-atividade__img-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.card-atividade__img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transicao-lenta);
+}
+
+.card-atividade:hover .card-atividade__img-wrapper img {
   transform: scale(1.08);
 }
 
