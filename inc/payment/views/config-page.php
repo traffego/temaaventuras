@@ -88,8 +88,8 @@ defined('ABSPATH') || exit;
         <tr>
             <th>Juros do Parcelamento</th>
             <td>
-                <label><input type="radio" name="ta_mp_juros" value="cliente" <?php checked($c['juros_por_conta'],'cliente'); ?>> Por conta do cliente</label><br>
-                <label><input type="radio" name="ta_mp_juros" value="empresa" <?php checked($c['juros_por_conta'],'empresa'); ?>> Parcelado sem juros (empresa absorve)</label>
+                <label><input type="radio" name="ta_mp_juros" value="cliente" <?php checked($c['juros_por_conta'] ?? 'cliente','cliente'); ?>> Por conta do cliente</label><br>
+                <label><input type="radio" name="ta_mp_juros" value="empresa" <?php checked($c['juros_por_conta'] ?? 'cliente','empresa'); ?>> Parcelado sem juros (empresa absorve)</label>
             </td>
         </tr>
     </table>
