@@ -141,10 +141,10 @@
 img.custom-logo,
 .custom-logo-link img {
   display: block !important;
-  height: 60px !important; /* Força a altura exata, submissa aos 80px do header (sobra 10px margem) */
-  max-height: 60px !important;
-  width: auto !important; /* Mantém proporção da largura */
-  max-width: 250px !important; /* Trava de segurança para que logos largas não empurrem o menu */
+  height: auto !important;
+  max-height: calc(var(--altura-nav) - 20px) !important;
+  width: auto !important;
+  max-width: 250px !important;
   object-fit: contain !important;
   margin: 0 !important;
   padding: 0 !important;
