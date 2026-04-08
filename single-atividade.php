@@ -1,6 +1,7 @@
 <?php
 /**
  * single-atividade.php – Template individual de Atividade (CPT)
+ * Redesign: Hero + Accordions
  *
  * @package TemaAventuras
  */
@@ -13,248 +14,153 @@ $nivel   = get_post_meta( get_the_ID(), '_atividade_nivel',   true ) ?: 'facil';
 $duracao = get_post_meta( get_the_ID(), '_atividade_duracao', true );
 $preco   = get_post_meta( get_the_ID(), '_atividade_preco',   true );
 $pessoas = get_post_meta( get_the_ID(), '_atividade_pessoas', true );
-$wa_msg  = urlencode( 'Olá! Quero reservar a atividade: ' . get_the_title() );
 $wa_link = ta_whatsapp_link( 'Olá! Quero saber mais sobre: ' . get_the_title() );
 
-// Campos adicionados na meta box
 $at_data    = get_post_meta( get_the_ID(), '_atividade_data',    true );
 $at_horario = get_post_meta( get_the_ID(), '_atividade_horario', true );
 $at_vagas   = get_post_meta( get_the_ID(), '_atividade_vagas',   true );
 $at_obs     = get_post_meta( get_the_ID(), '_atividade_obs',     true );
+
 $at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
+if ( !$at_img_id ) {
+    $at_img_id = get_post_thumbnail_id();
+}
+
+$hero_bg = $at_img_id ? wp_get_attachment_image_url( $at_img_id, 'full' ) : '';
+$tem_data   = !empty($at_data);
+$vagas_info = ta_vagas_disponiveis( get_the_ID() );
 ?>
 
 <main id="conteudo-principal" role="main">
 
-    <!-- Hero da Atividade -->
-    <div class="page-banner atividade-banner" style="min-height:0;padding-bottom:var(--espaco-3xl);">
-        <div class="page-banner__overlay" aria-hidden="true"></div>
-        <?php if ( has_post_thumbnail() ) : ?>
-            <?php the_post_thumbnail( 'aventura-banner', [ 'class' => 'page-banner__img', 'loading' => 'eager', 'alt' => '' ] ); ?>
-        <?php endif; ?>
-        <div class="container page-banner__conteudo">
-            <nav class="breadcrumb" aria-label="Navegação estrutural" style="margin-bottom:var(--espaco-md);">
-                <a href="<?php echo home_url('/'); ?>"><?php _e('Início','temaaventuras'); ?></a>
-                <span aria-hidden="true"> / </span>
-                <a href="<?php echo home_url('/atividades'); ?>"><?php _e('Atividades','temaaventuras'); ?></a>
-                <span aria-hidden="true"> / </span>
-                <span aria-current="page"><?php the_title(); ?></span>
+    <!-- HERO DA ATIVIDADE -->
+    <div class="atividade-hero" style="background-image: url('<?php echo esc_url($hero_bg); ?>');">
+        <div class="atividade-hero__overlay"></div>
+        <div class="container atividade-hero__conteudo">
+            
+            <nav class="breadcrumb" aria-label="Navegação" style="margin-bottom:var(--espaco-md);">
+                <a href="<?php echo home_url('/'); ?>" style="color:#fff;"><?php _e('Início','temaaventuras'); ?></a>
+                <span style="color:#aaa;"> / </span>
+                <a href="<?php echo home_url('/atividades'); ?>" style="color:#fff;"><?php _e('Atividades','temaaventuras'); ?></a>
+                <span style="color:#aaa;"> / </span>
+                <span style="color:#ccc;"><?php the_title(); ?></span>
             </nav>
 
-            <?php echo ta_nivel_badge($nivel); ?>&nbsp;
-            <?php
-            $cats = get_the_terms(get_the_ID(),'categoria_atividade');
-            if ($cats && !is_wp_error($cats)):
-                foreach ($cats as $cat) echo '<span class="badge badge--azul">' . esc_html($cat->name) . '</span>&nbsp;';
-            endif;
-            ?>
-
-            <h1 class="page-banner__titulo" style="margin-top:var(--espaco-md);"><?php the_title(); ?></h1>
-
-            <!-- Métricas rápidas -->
-            <div class="atividade-metricas">
-                <?php if ($duracao): ?>
-                <div class="metrica-item"><span class="metrica-icon">⏱</span><span><?php echo esc_html($duracao); ?></span></div>
-                <?php endif; ?>
-                <?php if ($preco): ?>
-                <div class="metrica-item"><span class="metrica-icon">💰</span><span><?php echo ta_preco($preco); ?> <?php _e('/pessoa','temaaventuras'); ?></span></div>
-                <?php endif; ?>
-                <?php if ($pessoas): ?>
-                <div class="metrica-item"><span class="metrica-icon">👥</span><span><?php printf(__('Mín. %d pessoas','temaaventuras'), intval($pessoas)); ?></span></div>
-                <?php endif; ?>
+            <div class="atividade-hero__badges">
+                <?php echo ta_nivel_badge($nivel); ?>
+                <?php
+                $cats = get_the_terms(get_the_ID(),'categoria_atividade');
+                if ($cats && !is_wp_error($cats)):
+                    foreach ($cats as $cat) echo '<span class="badge badge--azul">' . esc_html($cat->name) . '</span>';
+                endif;
+                ?>
             </div>
+
+            <h1 class="atividade-hero__titulo"><?php the_title(); ?></h1>
+            
+            <!-- Botão de Reserva sobre o Hero -->
+            <div class="atividade-hero__acoes">
+                <?php if ($tem_data && $vagas_info['livres'] > 0): ?>
+                    <a href="<?php echo esc_url( ta_checkout_url( get_the_ID() ) ); ?>" class="btn btn--primario btn--grande pulsar">
+                        🎟️ <?php _e('Reservar Etapa Agora','temaaventuras'); ?>
+                    </a>
+                <?php elseif ($tem_data): ?>
+                    <div class="btn" style="background:#555;color:#ccc;pointer-events:none;">
+                        😔 <?php _e('Evento Lotado','temaaventuras'); ?>
+                    </div>
+                <?php endif; ?>
+                <a href="<?php echo esc_url($wa_link); ?>" class="btn btn--ghost" target="_blank" rel="noopener noreferrer">
+                    📲 <?php _e('Falar no WhatsApp','temaaventuras'); ?>
+                </a>
+            </div>
+            
         </div>
     </div>
 
-    <!-- Conteúdo + Sidebar -->
-    <section class="section">
-        <div class="container">
-            <div class="atividade-layout">
-
-                <!-- Conteúdo principal -->
-                <div class="atividade-conteudo">
-
-                    <?php if ( $at_img_id ) :
-                        $at_img_src = wp_get_attachment_image_url( $at_img_id, 'large' );
-                        $at_img_alt = get_post_meta( $at_img_id, '_wp_attachment_image_alt', true ) ?: get_the_title();
-                    ?>
-                    <div class="atividade-imagem-destaque">
-                        <img src="<?php echo esc_url( $at_img_src ); ?>"
-                             alt="<?php echo esc_attr( $at_img_alt ); ?>"
-                             loading="eager"
-                             class="atividade-imagem-destaque__img" />
-                    </div>
-                    <?php endif; ?>
-
-                    <div class="wp-content">
-                        <?php the_content(); ?>
-                    </div>
-
-                    <!-- Galeria da atividade -->
-                    <?php
-                    $galeria_ids = get_post_meta(get_the_ID(), '_atividade_galeria', true);
-                    if ($galeria_ids && is_array($galeria_ids)) :
-                    ?>
-                    <div style="margin-top:var(--espaco-3xl);">
-                        <h2 style="font-size:1.8rem;margin-bottom:var(--espaco-xl);"><?php _e('Galeria','temaaventuras'); ?></h2>
-                        <div class="masonry">
-                            <?php foreach ($galeria_ids as $img_id):
-                                $src_full = wp_get_attachment_image_url($img_id,'full');
-                                $alt = get_post_meta($img_id,'_wp_attachment_image_alt',true);
-                            ?>
-                            <div class="masonry__item galeria-item">
-                                <a href="<?php echo esc_url($src_full); ?>"
-                                   data-lightbox="<?php echo esc_attr($src_full); ?>"
-                                   data-caption="<?php echo esc_attr($alt); ?>">
-                                    <?php echo wp_get_attachment_image($img_id,'aventura-galeria',false,['class'=>'galeria-img','loading'=>'lazy']); ?>
-                                    <div class="galeria-overlay" aria-hidden="true"><span class="galeria-zoom">🔍</span></div>
-                                </a>
-                            </div>
-                            <?php endforeach; ?>
+    <!-- CONTEÚDO EM ACORDEÃO -->
+    <section class="section section--pequena">
+        <div class="container container--estreito">
+            
+            <!-- Acordeão 1: Informações e Reserva -->
+            <details class="ta-accordion" open>
+                <summary class="ta-accordion__resumo">
+                    <h2>📅 Informações Técnicas & Valores</h2>
+                    <span class="ta-accordion__icon">▼</span>
+                </summary>
+                <div class="ta-accordion__conteudo">
+                    <div class="grid grid--2 gap-lg" style="margin-bottom:var(--espaco-xl);">
+                        
+                        <div style="background:var(--fundo-elevado);border:1px solid var(--borda-glass);padding:var(--espaco-xl);border-radius:var(--raio-lg);">
+                            <h3 style="margin-bottom:var(--espaco-md);color:var(--cor-secundaria); font-size: 1.2rem;">Detalhes da Reserva</h3>
+                            <?php if ($at_data): ?>
+                                <p><strong>Data:</strong> <?php echo date_i18n('d/m/Y', strtotime($at_data)); ?></p>
+                            <?php endif; ?>
+                            <?php if ($at_horario): ?>
+                                <p><strong>Horário:</strong> <?php echo esc_html($at_horario); ?></p>
+                            <?php endif; ?>
+                            <?php if ($tem_data): ?>
+                                <p><strong>Disponibilidade:</strong> <?php echo $vagas_info['livres']; ?> vagas de <?php echo intval($at_vagas); ?></p>
+                            <?php endif; ?>
+                            <?php if ($preco): ?>
+                                <p><strong>Investimento:</strong> <?php echo ta_preco($preco); ?> por pessoa</p>
+                            <?php endif; ?>
                         </div>
-                    </div>
-                    <?php endif; ?>
 
-                    <!-- Atividades relacionadas -->
-                    <?php
-                    $relacionadas = new WP_Query([
-                        'post_type'      => 'atividade',
-                        'posts_per_page' => 3,
-                        'post__not_in'   => [ get_the_ID() ],
-                        'orderby'        => 'rand',
-                    ]);
-                    if ($relacionadas->have_posts()):
-                    ?>
-                    <div style="margin-top:var(--espaco-4xl);">
-                        <h2 style="font-size:1.8rem;margin-bottom:var(--espaco-2xl);"><?php _e('Outras Aventuras','temaaventuras'); ?></h2>
-                        <div class="grid grid--3">
-                            <?php while ($relacionadas->have_posts()): $relacionadas->the_post();
-                                $n = get_post_meta(get_the_ID(),'_atividade_nivel',true) ?: 'facil';
-                                $p = get_post_meta(get_the_ID(),'_atividade_preco',true);
-                            ?>
-                            <article class="card-atividade" style="aspect-ratio:3/4;" aria-label="<?php the_title_attribute(); ?>">
-                                <!-- Imagem na listagem de relacionadas -->
-                                <?php 
-                                $rel_img_id = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
-                                if (has_post_thumbnail()): ?>
-                                    <?php the_post_thumbnail('aventura-card',['class'=>'card-atividade__img','loading'=>'lazy','alt'=>get_the_title()]); ?>
-                                <?php elseif ($rel_img_id): ?>
-                                    <?php echo wp_get_attachment_image( $rel_img_id, 'aventura-card', false, ['class'=>'card-atividade__img','loading'=>'lazy','alt'=>get_the_title()] ); ?>
-                                <?php else: ?>
-                                    <div class="card-atividade__img" style="background:var(--gradiente-hero);display:flex;align-items:center;justify-content:center;font-size:4rem;height:100%;">🌊</div>
-                                <?php endif; ?>
-                                <div class="card-atividade__overlay">
-                                    <div class="card-atividade__badge"><?php echo ta_nivel_badge($n); ?></div>
-                                    <h3 class="card-atividade__titulo"><?php the_title(); ?></h3>
-                                    <div class="card-atividade__meta">
-                                        <?php if($p): ?><span class="card-atividade__detalhe" style="color:var(--cor-secundaria);font-weight:700;"><?php echo ta_preco($p); ?>/pessoa</span><?php endif; ?>
-                                        <a href="<?php the_permalink(); ?>" class="btn btn--secundario btn--pequeno"><?php _e('Ver','temaaventuras'); ?></a>
-                                    </div>
-                                </div>
-                            </article>
-                            <?php endwhile; wp_reset_postdata(); ?>
+                        <div style="background:var(--fundo-elevado);border:1px solid var(--borda-glass);padding:var(--espaco-xl);border-radius:var(--raio-lg);">
+                            <h3 style="margin-bottom:var(--espaco-md);color:var(--cor-secundaria); font-size: 1.2rem;">Ficha Técnica</h3>
+                            <?php if ($duracao): ?>
+                                <p><strong>Duração:</strong> <?php echo esc_html($duracao); ?></p>
+                            <?php endif; ?>
+                            <?php if ($pessoas): ?>
+                                <p><strong>Mínimo:</strong> <?php echo intval($pessoas); ?> pessoas</p>
+                            <?php endif; ?>
+                            <p><strong>Nível:</strong> <?php echo strtoupper($nivel); ?></p>
+                            <?php if ($at_obs): ?>
+                                <p style="font-size:0.85em;color:var(--texto-muted);margin-top:10px;"><em>📝 Obs: <?php echo esc_html($at_obs); ?></em></p>
+                            <?php endif; ?>
                         </div>
+
                     </div>
-                    <?php endif; ?>
                 </div>
+            </details>
 
-                <!-- Sidebar: Reserva -->
-                <aside class="atividade-sidebar" aria-label="Reservar atividade">
-                    <div class="sidebar-reserva">
-                        <div class="sidebar-reserva__preco">
-                            <?php if ($preco): ?>
-                            <span class="sidebar-reserva__valor"><?php echo ta_preco($preco); ?></span>
-                            <span class="sidebar-reserva__label"><?php _e('por pessoa','temaaventuras'); ?></span>
-                            <?php endif; ?>
-                        </div>
+            <!-- Acordeão 2: Descrição -->
+            <details class="ta-accordion">
+                <summary class="ta-accordion__resumo">
+                    <h2>📝 Descrição da Aventura</h2>
+                    <span class="ta-accordion__icon">▼</span>
+                </summary>
+                <div class="ta-accordion__conteudo wp-content">
+                    <?php the_content(); ?>
+                </div>
+            </details>
 
-                        <div class="sidebar-reserva__meta">
-                            <?php if ( $at_data ) : ?>
-                            <div class="sidebar-meta-item">📅 <strong><?php _e('Data:','temaaventuras'); ?></strong> <?php echo date_i18n('d/m/Y', strtotime($at_data)); ?></div>
-                            <?php endif; ?>
-                            <?php if ( $at_horario ) : ?>
-                            <div class="sidebar-meta-item">⏰ <strong><?php _e('Horário:','temaaventuras'); ?></strong> <?php echo esc_html($at_horario); ?></div>
-                            <?php endif; ?>
-                            <?php if ( $at_vagas ) : ?>
-                            <div class="sidebar-meta-item">👥 <strong><?php _e('Vagas:','temaaventuras'); ?></strong> <?php echo intval($at_vagas); ?></div>
-                            <?php endif; ?>
-                            <?php if ($preco): ?>
-                            <div class="sidebar-meta-item">💰 <strong><?php _e('Preço/pessoa:','temaaventuras'); ?></strong> <?php echo ta_preco($preco); ?></div>
-                            <?php endif; ?>
-                            <?php if ($duracao): ?><div class="sidebar-meta-item">⏱ <strong><?php _e('Duração:','temaaventuras'); ?></strong> <?php echo esc_html($duracao); ?></div><?php endif; ?>
-                            <?php if ($pessoas): ?><div class="sidebar-meta-item">👥 <strong><?php _e('Mínimo:','temaaventuras'); ?></strong> <?php printf(_n('%d pessoa','%d pessoas',intval($pessoas),'temaaventuras'),intval($pessoas)); ?></div><?php endif; ?>
-                            <div class="sidebar-meta-item"><?php echo ta_nivel_badge($nivel); ?> <strong><?php _e('Dificuldade','temaaventuras'); ?></strong></div>
-                            <?php if ( $at_obs ) : ?>
-                            <div class="sidebar-meta-item sidebar-meta-obs">📝 <strong><?php _e('Obs:','temaaventuras'); ?></strong> <?php echo esc_html($at_obs); ?></div>
-                            <?php endif; ?>
-                        </div>
-
-                        <?php
-                        $data_atv   = get_post_meta( get_the_ID(), '_atividade_data', true );
-                        $hora_atv   = get_post_meta( get_the_ID(), '_atividade_horario', true );
-                        $vagas_info = ta_vagas_disponiveis( get_the_ID() );
-                        $tem_data   = !empty($data_atv);
-                        ?>
-
-                        <?php if ($tem_data && $vagas_info['livres'] > 0): ?>
-                        <div style="background:var(--fundo-glass);border:1px solid var(--borda-glass);border-radius:var(--raio-lg);padding:var(--espaco-md);margin-bottom:var(--espaco-lg);">
-                            <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--texto-muted);margin-bottom:var(--espaco-sm);">📅 Data do Evento</div>
-                            <div style="font-weight:var(--peso-negrito);color:var(--texto-primario);">
-                                <?php echo date_i18n('d/m/Y', strtotime($data_atv)); ?>
-                                <?php if ($hora_atv) echo ' às ' . esc_html($hora_atv); ?>
-                            </div>
-                            <div style="font-size:var(--tamanho-pequeno);color:var(--cor-primaria);margin-top:4px;">
-                                ✅ <?php echo $vagas_info['livres']; ?> vaga<?php echo $vagas_info['livres'] > 1 ? 's' : ''; ?> disponível<?php echo $vagas_info['livres'] > 1 ? 'eis' : ''; ?>
-                            </div>
-                        </div>
-
-                        <a href="<?php echo esc_url( ta_checkout_url( get_the_ID() ) ); ?>"
-                           class="btn btn--primario btn--grande pulsar"
-                           style="width:100%;justify-content:center;margin-bottom:var(--espaco-md);"
-                           id="atividade-reservar-btn">
-                            🎟️ <?php _e('Reservar Agora','temaaventuras'); ?>
-                        </a>
-
-                        <?php elseif ($tem_data): ?>
-                        <!-- Evento lotado -->
-                        <div style="background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:var(--raio-lg);padding:var(--espaco-md);margin-bottom:var(--espaco-lg);text-align:center;">
-                            <div style="font-size:1.5rem;margin-bottom:4px;">😔</div>
-                            <div style="color:var(--texto-muted);font-size:var(--tamanho-pequeno);">
-                                As vagas para este evento estão lotadas.
-                            </div>
-                        </div>
-
-                        <?php else: ?>
-                        <div style="text-align:center;padding:var(--espaco-md);margin-bottom:var(--espaco-lg);">
-                            <div style="font-size:0.85rem;color:var(--texto-muted);">
-                                Entre em contato para verificar disponibilidade.
-                            </div>
-                        </div>
-                        <?php endif; ?>
-
-                        <!-- Sempre mostrar WhatsApp como alternativa -->
-                        <a href="<?php echo esc_url($wa_link); ?>"
-                           class="btn btn--ghost"
-                           style="width:100%;justify-content:center;"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           id="atividade-whatsapp-btn">
-                            📲 <?php _e('Reservar pelo WhatsApp','temaaventuras'); ?>
-                        </a>
-
-                        <div class="sidebar-garantias">
-                            <div class="garantia-item">✅ <?php _e('Segurança certificada','temaaventuras'); ?></div>
-                            <div class="garantia-item">🏅 <?php _e('Guias especializados','temaaventuras'); ?></div>
-                            <div class="garantia-item">🌿 <?php _e('Equipamentos homologados','temaaventuras'); ?></div>
-                            <div class="garantia-item">💳 <?php _e('Parcelamento disponível','temaaventuras'); ?></div>
-                        </div>
-                    </div>
-                </aside>
-
-
-            </div><!-- /.atividade-layout -->
         </div>
     </section>
+
+    <!-- GALERIA -->
+    <?php
+    $galeria_ids = get_post_meta(get_the_ID(), '_atividade_galeria', true);
+    if ($galeria_ids && is_array($galeria_ids)) :
+    ?>
+    <section class="section section--sem-top">
+        <div class="container">
+            <h2 style="font-size:1.8rem;margin-bottom:var(--espaco-xl);text-align:center;"><?php _e('Galeria','temaaventuras'); ?></h2>
+            <div class="masonry">
+                <?php foreach ($galeria_ids as $img_id):
+                    $src_full = wp_get_attachment_image_url($img_id,'full');
+                    $alt = get_post_meta($img_id,'_wp_attachment_image_alt',true);
+                ?>
+                <div class="masonry__item galeria-item">
+                    <a href="<?php echo esc_url($src_full); ?>" data-lightbox="<?php echo esc_attr($src_full); ?>" data-caption="<?php echo esc_attr($alt); ?>">
+                        <?php echo wp_get_attachment_image($img_id,'aventura-galeria',false,['class'=>'galeria-img','loading'=>'lazy']); ?>
+                    </a>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
 
 </main>
 
@@ -262,137 +168,117 @@ $at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
 get_footer(); ?>
 
 <style>
-.atividade-banner .page-banner__overlay {
-    background: linear-gradient(135deg, rgba(0,39,118,0.75) 0%, rgba(0,0,0,0.7) 100%);
-}
-
-/* Imagem destacada da atividade (meta _atividade_imagem) */
-.atividade-imagem-destaque {
-    width: 100%;
-    border-radius: var(--raio-xl);
-    overflow: hidden;
-    margin-bottom: var(--espaco-2xl);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-    aspect-ratio: 16/9;
-}
-
-.atividade-imagem-destaque__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform .5s ease;
-}
-
-.atividade-imagem-destaque:hover .atividade-imagem-destaque__img {
-    transform: scale(1.03);
-}
-
-/* Observações na sidebar */
-.sidebar-meta-obs {
-    flex-direction: column;
-    align-items: flex-start !important;
-    gap: 2px;
-    font-size: 0.78rem;
-    line-height: 1.5;
-    color: var(--texto-muted);
-}
-
-.atividade-metricas {
+/* CSS do Novo Hero */
+.atividade-hero {
+    position: relative;
+    min-height: 85vh;
     display: flex;
-    gap: var(--espaco-xl);
+    align-items: flex-end; /* Conteúdo agrupado embaixo no Hero */
+    background-size: cover;
+    background-position: center;
+    padding-bottom: var(--espaco-4xl);
+}
+
+.atividade-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10,17,13,1) 0%, rgba(10,17,13,0.4) 60%, transparent 100%);
+    z-index: 1;
+}
+
+.atividade-hero__conteudo {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.atividade-hero__titulo {
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 1.1;
+    margin-bottom: var(--espaco-lg);
+    color: #fff;
+}
+
+.atividade-hero__badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
-    margin-top: var(--espaco-xl);
 }
 
-.metrica-item {
+.atividade-hero__acoes {
     display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--espaco-sm);
-    background: var(--fundo-glass);
-    border: 1px solid var(--borda-glass);
-    backdrop-filter: blur(10px);
-    padding: var(--espaco-sm) var(--espaco-md);
-    border-radius: var(--raio-full);
-    font-weight: var(--peso-medio);
-    font-size: 0.9rem;
 }
 
-.metrica-icon { font-size: 1.2rem; }
-
-.atividade-layout {
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: var(--espaco-3xl);
-    align-items: start;
-}
-
-/* Sidebar de reserva */
-.sidebar-reserva {
+/* CSS do Accordion Nativo */
+.ta-accordion {
     background: var(--fundo-card);
     border: 1px solid var(--borda-glass);
-    border-radius: var(--raio-xl);
-    padding: var(--espaco-xl);
-    position: sticky;
-    top: calc(var(--altura-nav) + var(--espaco-lg));
+    border-radius: var(--raio-lg);
+    margin-bottom: var(--espaco-md);
+    overflow: hidden;
 }
 
-.sidebar-reserva__preco {
-    text-align: center;
-    padding-bottom: var(--espaco-xl);
-    border-bottom: 1px solid var(--borda-glass);
-    margin-bottom: var(--espaco-xl);
-}
-
-.sidebar-reserva__valor {
-    display: block;
-    font-family: var(--fonte-titulo);
-    font-size: 3.5rem;
-    color: var(--cor-secundaria);
-    line-height: 1;
-}
-
-.sidebar-reserva__label {
-    font-size: var(--tamanho-pequeno);
-    color: var(--texto-muted);
-}
-
-.sidebar-reserva__meta {
+.ta-accordion__resumo {
     display: flex;
-    flex-direction: column;
-    gap: var(--espaco-sm);
-    margin-bottom: var(--espaco-xl);
-}
-
-.sidebar-meta-item {
-    font-size: var(--tamanho-pequeno);
-    color: var(--texto-secundario);
-    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: var(--espaco-sm);
-    padding: var(--espaco-sm) 0;
-    border-bottom: 1px solid var(--borda-glass);
+    padding: var(--espaco-lg) var(--espaco-xl);
+    cursor: pointer;
+    user-select: none;
+    list-style: none; /* remove seta padrão iOS/Chrome */
+    background: var(--fundo-elevado);
+    transition: background var(--transicao-rapida);
+}
+.ta-accordion__resumo::-webkit-details-marker {
+    display: none; /* Safari */
 }
 
-.sidebar-garantias {
-    display: flex;
-    flex-direction: column;
-    gap: var(--espaco-sm);
-    margin-top: var(--espaco-xl);
-    padding-top: var(--espaco-xl);
+.ta-accordion__resumo:hover {
+    background: var(--fundo-glass);
+}
+
+.ta-accordion__resumo h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--texto-primario);
+}
+
+.ta-accordion__icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    color: var(--cor-secundaria);
+}
+
+.ta-accordion[open] .ta-accordion__icon {
+    transform: rotate(-180deg);
+}
+
+.ta-accordion__conteudo {
+    padding: var(--espaco-xl);
     border-top: 1px solid var(--borda-glass);
+    animation: fadeIn 0.4s ease;
 }
 
-.garantia-item {
-    font-size: 0.8rem;
-    color: var(--texto-muted);
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 1024px) {
-    .atividade-layout {
-        grid-template-columns: 1fr;
+@media (max-width: 768px) {
+    .atividade-hero {
+        min-height: 90vh; /* Mais alto no mobile para caber os botões empilhados */
     }
-    .sidebar-reserva { position: static; }
-    .atividade-sidebar { order: -1; }
+    .atividade-hero__acoes {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .atividade-hero__acoes .btn {
+        width: 100%;
+        text-align: center;
+    }
 }
 </style>
