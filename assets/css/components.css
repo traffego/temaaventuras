@@ -111,6 +111,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  height: 100%;
 }
 
 .navbar--scrolled {
@@ -124,16 +125,18 @@
 .navbar__logo {
   display: flex;
   align-items: center;
+  height: 100%;
   gap: var(--espaco-sm);
   text-decoration: none;
   margin-right: 16px;
 }
 
-/* Link e Wrapper da logo */
-.navbar__logo a,
+/* Wrapper e link da logo: cadeia de altura até a imagem */
 .navbar__logo-wrapper,
 .custom-logo-link {
-  display: block; /* Display block evita comportamentos inesperados do flex-child */
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 /* Imagem da logo (WordPress injeta .custom-logo) */
@@ -141,10 +144,10 @@
 img.custom-logo,
 .custom-logo-link img {
   display: block !important;
-  height: calc(var(--altura-nav) - 20px) !important;
+  height: 100% !important;
   max-height: calc(var(--altura-nav) - 20px) !important;
   width: auto !important;
-  max-width: 250px !important;
+  max-width: 220px !important;
   object-fit: contain !important;
   margin: 0 !important;
   padding: 0 !important;
