@@ -38,6 +38,7 @@ $vagas_info = ta_vagas_disponiveis( get_the_ID() );
         <div class="atividade-hero__overlay"></div>
         <div class="container atividade-hero__conteudo">
             
+            <!-- Breadcrumb oculto
             <nav class="breadcrumb" aria-label="Navegação" style="margin-bottom:var(--espaco-md);">
                 <a href="<?php echo home_url('/'); ?>" style="color:#fff;"><?php _e('Início','temaaventuras'); ?></a>
                 <span style="color:#aaa;"> / </span>
@@ -45,6 +46,7 @@ $vagas_info = ta_vagas_disponiveis( get_the_ID() );
                 <span style="color:#aaa;"> / </span>
                 <span style="color:#ccc;"><?php the_title(); ?></span>
             </nav>
+            -->
 
             <div class="atividade-hero__badges">
                 <?php echo ta_nivel_badge($nivel); ?>

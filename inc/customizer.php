@@ -142,6 +142,27 @@ function tema_aventuras_customizer( $wp_customize ) {
         ] );
     }
 
+    // Checkboxes WhatsApp
+    $wp_customize->add_setting( 'mostrar_wa_header', [
+        'default'           => true,
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ] );
+    $wp_customize->add_control( 'mostrar_wa_header', [
+        'label'   => __( 'Menu: Mostrar botão Falar no WhatsApp no topo', 'temaaventuras' ),
+        'section' => 'tema_aventuras_empresa',
+        'type'    => 'checkbox',
+    ] );
+
+    $wp_customize->add_setting( 'mostrar_wa_flutuante', [
+        'default'           => false,
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ] );
+    $wp_customize->add_control( 'mostrar_wa_flutuante', [
+        'label'   => __( 'Global: Mostrar ícone flutuante do WhatsApp no canto da tela', 'temaaventuras' ),
+        'section' => 'tema_aventuras_empresa',
+        'type'    => 'checkbox',
+    ] );
+
     // =========================================
     // SEÇÃO: HERO (PÁGINA INICIAL)
     // =========================================

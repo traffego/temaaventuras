@@ -74,6 +74,7 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
         <div class="navbar__cta">
             <?php
             $wa_link = ta_whatsapp_link( 'Olá! Quero saber mais sobre os pacotes de aventura.' );
+            if ( ta_get('mostrar_wa_header', true) ) :
             ?>
             <a href="<?php echo esc_url( $wa_link ); ?>"
                class="btn btn--primario btn--pequeno"
@@ -83,6 +84,7 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
                aria-label="Falar no WhatsApp">
                 📲 WhatsApp
             </a>
+            <?php endif; ?>
 
             <button class="navbar__hamburger"
                     id="navbar-hamburger"
@@ -114,12 +116,14 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
         },
     ] );
     ?>
+    <?php if ( ta_get('mostrar_wa_header', true) ) : ?>
     <a href="<?php echo esc_url( $wa_link ); ?>"
        class="btn btn--primario btn--grande"
        target="_blank"
        rel="noopener noreferrer">
         📲 Falar no WhatsApp
     </a>
+    <?php endif; ?>
 </nav>
 
 <?php endif; // end elementor header check ?>
