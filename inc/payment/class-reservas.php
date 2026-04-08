@@ -115,9 +115,10 @@ function ta_render_inscritos_metabox($post) {
     $total    = (int) get_post_meta($post->ID, '_reserva_total_inscritos', true);
     $inscritos = get_post_meta($post->ID, '_reserva_inscritos', true) ?: [];
     if (empty($inscritos)) { echo '<p>Sem inscritos cadastrados.</p>'; return; }
-    echo '<table class="widefat"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th></tr></thead><tbody>';
+    echo '<table class="widefat"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Check-in</th></tr></thead><tbody>';
     foreach ($inscritos as $i => $p) {
-        echo '<tr><td>' . ($i+1) . '</td><td>' . esc_html($p['nome']) . '</td><td>' . esc_html($p['cpf']) . '</td><td>' . esc_html($p['telefone']) . '</td></tr>';
+        $checkin_tag = !empty($p['checkin']) ? '<span style="color:green;font-weight:bold;">✅ Presente</span>' : '<span style="color:#999;">Pendente</span>';
+        echo '<tr><td>' . ($i+1) . '</td><td>' . esc_html($p['nome']) . '</td><td>' . esc_html($p['cpf']) . '</td><td>' . esc_html($p['telefone']) . '</td><td>' . $checkin_tag . '</td></tr>';
     }
     echo '</tbody></table>';
 }

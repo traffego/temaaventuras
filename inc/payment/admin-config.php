@@ -14,6 +14,7 @@ function ta_payment_admin_menu() {
     add_menu_page( 'Aventuras', 'Aventuras', 'manage_options', 'ta-aventuras', '__return_null', 'dashicons-palmtree', 4 );
     add_submenu_page( 'ta-aventuras', 'Configurações de Pagamento', '💳 Pagamento', 'manage_options', 'ta-pagamento', 'ta_payment_config_page' );
     add_submenu_page( 'ta-aventuras', 'Reservas', '📋 Reservas', 'manage_options', 'ta-reservas', 'ta_reservas_admin_page' );
+    add_submenu_page( 'ta-aventuras', 'Check-in', '✅ Check-in', 'manage_options', 'ta-checkin', 'ta_checkin_admin_page' );
 }
 add_action( 'admin_menu', 'ta_payment_admin_menu' );
 
@@ -83,4 +84,50 @@ add_action( 'wp_ajax_ta_testar_mp', function() {
     if ( is_wp_error( $res ) ) wp_send_json_error( ['message' => $res->get_error_message()] );
     $cfg = tema_aventuras_payment_config();
     wp_send_json_success( ['ambiente' => $cfg['sandbox'] ? 'Sandbox' : 'Produção'] );
+} );
+
+/* =========================================
+   CHECKIN ADMIN PAGE
+   ========================================= */
+function ta_checkin_admin_page() {
+    // Select filter
+    $atividade_filter = isset($_GET['atividade']) ? intval($_GET['atividade']) : 0;
+    
+    // Get reservas if atividade selected
+    $reservas = [];
+    if ($atividade_filter > 0) {
+        $reservas = get_posts([
+            'post_type' => 'reserva',
+            'numberposts' => -1,
+            'post_status' => 'publish',
+            'meta_query' => [
+                ['key' => '_reserva_atividade_id', 'value' => $atividade_filter],
+                ['key' => '_reserva_status', 'value' => 'aprovado']
+            ]
+        ]);
+    }
+
+    include TEMA_AVENTURAS_DIR . '/inc/payment/views/checkin-page.php';
+}
+
+/* =========================================
+   AJAX: Fazer Check-in
+   ========================================= */
+add_action( 'wp_ajax_ta_fazer_checkin', function() {
+    check_ajax_referer( 'ta_admin_checkin', 'nonce' );
+    if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error('Sem permissão.');
+
+    $reserva_id = intval($_POST['reserva_id']);
+    $indice     = intval($_POST['indice']);
+    $estado     = $_POST['estado'] === '1'; // true para checkin, false para desfazer
+
+    $inscritos = get_post_meta($reserva_id, '_reserva_inscritos', true) ?: [];
+    if (!isset($inscritos[$indice])) {
+        wp_send_json_error('Inscrito não encontrado.');
+    }
+
+    $inscritos[$indice]['checkin'] = $estado;
+    update_post_meta($reserva_id, '_reserva_inscritos', $inscritos);
+
+    wp_send_json_success(['mensagem' => $estado ? 'Check-in realizado!' : 'Check-in desfeito.']);
 } );
