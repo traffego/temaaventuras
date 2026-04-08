@@ -278,6 +278,39 @@ add_action('save_post_atividade', function($post_id) {
 });
 
 /* =========================================
+   HELPER: próxima sessão com vagas livres
+   ========================================= */
+function ta_proxima_sessao(int $atividade_id): ?array {
+    $sessoes = ta_get_sessoes_atividade($atividade_id, true);
+    foreach ($sessoes as $s) {
+        $v = ta_vagas_disponiveis($atividade_id, $s['id']);
+        if ($v['livres'] > 0) {
+            return [
+                'id'     => $s['id'],
+                'data'   => $s['data'],
+                'hora'   => $s['hora'],
+                'livres' => $v['livres'],
+                'obs'    => $s['obs'] ?? '',
+            ];
+        }
+    }
+    return null;
+}
+
+/* =========================================
+   HELPER: URL da página de checkout
+   ========================================= */
+function ta_checkout_url(int $atividade_id, string $sessao_id = ''): string {
+    $checkout_page = get_page_by_path('checkout');
+    $base = $checkout_page ? get_permalink($checkout_page) : home_url('/checkout/');
+
+    $params = ['atividade' => $atividade_id];
+    if ($sessao_id) $params['sessao'] = $sessao_id;
+
+    return add_query_arg($params, $base);
+}
+
+/* =========================================
    HELPER: obter sessões de uma atividade
    ========================================= */
 function ta_get_sessoes_atividade(int $atividade_id, bool $apenas_futuras = false): array {
