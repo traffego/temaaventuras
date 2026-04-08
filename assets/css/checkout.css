@@ -1,0 +1,361 @@
+/* =========================================
+   CHECKOUT – Estilos do fluxo de pagamento
+   ========================================= */
+
+/* STEPPER */
+.checkout-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: var(--espaco-3xl);
+  position: relative;
+}
+
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.step-indicator__num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--fundo-elevado);
+  border: 2px solid var(--borda-glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--peso-negrito);
+  font-size: 0.9rem;
+  color: var(--texto-muted);
+  transition: all var(--transicao-normal);
+}
+
+.step-indicator__label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--texto-muted);
+  white-space: nowrap;
+  transition: color var(--transicao-normal);
+}
+
+.step-indicator.ativo .step-indicator__num {
+  background: var(--gradiente-cta);
+  border-color: var(--cor-primaria);
+  color: white;
+  box-shadow: var(--sombra-glow);
+}
+
+.step-indicator.ativo .step-indicator__label {
+  color: var(--cor-secundaria);
+}
+
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--borda-glass);
+  max-width: 120px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-connector.ativo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradiente-cta);
+  animation: carregarBarra 0.5s ease forwards;
+}
+
+@keyframes carregarBarra {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+/* ETAPAS */
+.checkout-step {
+  display: none;
+  animation: fadeInUp 0.4s ease;
+}
+
+.checkout-step.ativo {
+  display: block;
+}
+
+/* INSCRITOS */
+.inscrito-item {
+  background: var(--fundo-elevado);
+  border: 1px solid var(--borda-glass);
+  border-radius: var(--raio-lg);
+  padding: var(--espaco-xl);
+  margin-bottom: var(--espaco-md);
+  transition: border-color var(--transicao-normal);
+}
+
+.inscrito-item:hover {
+  border-color: var(--cor-primaria);
+}
+
+.inscrito-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--espaco-md);
+}
+
+.inscrito-header h4 {
+  font-size: 0.9rem;
+  color: var(--cor-secundaria);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+/* SESSÕES */
+.sessao-card {
+  background: var(--fundo-elevado);
+  border: 2px solid var(--borda-glass);
+  border-radius: var(--raio-lg);
+  padding: var(--espaco-lg);
+  cursor: pointer;
+  transition: all var(--transicao-normal);
+}
+
+.sessao-card:hover,
+.sessao-card.selecionada {
+  border-color: var(--cor-primaria);
+  background: var(--fundo-glass);
+}
+
+.sessao-card.selecionada {
+  box-shadow: var(--sombra-glow);
+}
+
+.sessao-card.sem-vagas {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.sessao-card__data {
+  font-family: var(--fonte-titulo);
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--cor-secundaria);
+}
+
+.sessao-card__hora {
+  color: var(--texto-muted);
+  font-size: var(--tamanho-pequeno);
+  margin-top: 4px;
+}
+
+.sessao-card__vagas {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: var(--raio-full);
+  background: rgba(0,156,59,0.15);
+  color: var(--cor-primaria);
+  margin-top: var(--espaco-sm);
+}
+
+.sessao-card__vagas.poucas {
+  background: rgba(220,150,0,0.15);
+  color: #e6a000;
+}
+
+/* MÉTODOS DE PAGAMENTO */
+.metodo-card {
+  background: var(--fundo-elevado);
+  border: 2px solid var(--borda-glass);
+  border-radius: var(--raio-xl);
+  padding: var(--espaco-xl);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transicao-normal);
+}
+
+.metodo-card:hover {
+  border-color: var(--cor-primaria);
+  transform: translateY(-4px);
+}
+
+.metodo-card.selecionado {
+  border-color: var(--cor-secundaria);
+  background: var(--fundo-glass);
+  box-shadow: var(--sombra-glow-sec);
+}
+
+.metodo-card__icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: var(--espaco-sm);
+}
+
+.metodo-card__nome {
+  font-family: var(--fonte-titulo);
+  font-size: 1.4rem;
+  color: var(--texto-primario);
+}
+
+.metodo-card__desc {
+  font-size: 0.75rem;
+  color: var(--texto-muted);
+  margin-top: 4px;
+}
+
+/* FORMULÁRIO DE CARTÃO MP */
+.mp-card-form {
+  background: var(--fundo-elevado);
+  border: 1px solid var(--borda-glass);
+  border-radius: var(--raio-xl);
+  padding: var(--espaco-xl);
+}
+
+.mp-field-wrapper {
+  background: var(--fundo-base);
+  border: 1px solid var(--borda-glass);
+  border-radius: var(--raio-md);
+  padding: var(--espaco-md);
+  min-height: 48px;
+  transition: border-color var(--transicao-rapida);
+}
+
+.mp-field-wrapper:focus-within {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 3px rgba(0,156,59,0.15);
+}
+
+/* PIX */
+.pix-container {
+  text-align: center;
+}
+
+.pix-qrcode-wrap {
+  display: inline-block;
+  padding: var(--espaco-lg);
+  background: white;
+  border-radius: var(--raio-xl);
+  box-shadow: var(--sombra-elevada);
+  margin: var(--espaco-xl) 0;
+}
+
+#pix-qrcode-img {
+  width: 220px;
+  height: 220px;
+}
+
+.pix-timer {
+  font-family: var(--fonte-titulo);
+  font-size: 2.5rem;
+  color: var(--cor-secundaria);
+  display: block;
+  letter-spacing: 0.1em;
+}
+
+.pix-copia-cola-wrap {
+  display: flex;
+  gap: var(--espaco-sm);
+  max-width: 500px;
+  margin: var(--espaco-md) auto;
+}
+
+.pix-copia-cola-wrap input {
+  flex: 1;
+  background: var(--fundo-elevado);
+  border: 1px solid var(--borda-glass);
+  border-radius: var(--raio-md);
+  padding: var(--espaco-md);
+  color: var(--texto-secundario);
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+/* VALOR TOTAL */
+.valor-total-box {
+  background: var(--fundo-card);
+  border: 1px solid var(--borda-glass);
+  border-radius: var(--raio-xl);
+  padding: var(--espaco-xl);
+  text-align: center;
+  position: sticky;
+  top: calc(var(--altura-nav) + var(--espaco-lg));
+}
+
+.valor-total-box__titulo {
+  font-size: var(--tamanho-pequeno);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--texto-muted);
+  margin-bottom: var(--espaco-sm);
+}
+
+.valor-total-box__valor {
+  font-family: var(--fonte-titulo);
+  font-size: 3rem;
+  color: var(--cor-secundaria);
+  line-height: 1;
+}
+
+.valor-total-box__sub {
+  font-size: var(--tamanho-pequeno);
+  color: var(--texto-muted);
+  margin-top: 4px;
+}
+
+/* ERRO */
+.checkout-erro {
+  background: rgba(220,38,38,0.15);
+  border: 1px solid rgba(220,38,38,0.4);
+  border-radius: var(--raio-md);
+  padding: var(--espaco-md) var(--espaco-lg);
+  color: #f87171;
+  margin-bottom: var(--espaco-md);
+  display: none;
+}
+
+/* SPINNER */
+#checkout-spinner {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,17,13,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  flex-direction: column;
+  gap: var(--espaco-lg);
+}
+
+.spinner-ring {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--borda-glass);
+  border-top-color: var(--cor-primaria);
+  border-radius: 50%;
+  animation: rotacionar 0.8s linear infinite;
+}
+
+/* CAMPO ERRO */
+input.erro, select.erro, textarea.erro {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248,113,113,0.2) !important;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .checkout-stepper { gap: 4px; }
+  .step-connector { max-width: 40px; }
+  .step-indicator__label { display: none; }
+  .pix-copia-cola-wrap { flex-direction: column; }
+}

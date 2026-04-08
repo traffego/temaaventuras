@@ -1,0 +1,366 @@
+<?php
+/**
+ * Template Name: Checkout – Reserva e Pagamento
+ * Template Post Type: page
+ *
+ * @package TemaAventuras
+ */
+defined('ABSPATH') || exit;
+
+// Obter atividade e sessão da query string
+$atividade_id = intval($_GET['atividade'] ?? 0);
+$sessao_id    = sanitize_text_field($_GET['sessao'] ?? '');
+$atividade    = $atividade_id ? get_post($atividade_id) : null;
+
+if (!$atividade || $atividade->post_type !== 'atividade') {
+    wp_redirect(home_url('/atividades'));
+    exit;
+}
+
+$sessoes     = ta_get_sessoes_atividade($atividade_id, true);
+$preco_base  = (float)(get_post_meta($atividade_id, '_atividade_preco', true) ?: 0);
+$nivel       = get_post_meta($atividade_id, '_atividade_nivel', true) ?: 'facil';
+$duracao     = get_post_meta($atividade_id, '_atividade_duracao', true);
+$cfg         = tema_aventuras_payment_config();
+$mp_pubkey   = $cfg['sandbox'] ? $cfg['pubkey_sandbox'] : $cfg['pubkey_producao'];
+$parcelas    = $cfg['parcelas_max'];
+
+wp_enqueue_style('ta-checkout-css', TEMA_AVENTURAS_URI . '/assets/css/checkout.css', [], TEMA_AVENTURAS_VERSION);
+wp_enqueue_script('mercadopago-sdk', 'https://sdk.mercadopago.com/js/v2', [], null, true);
+wp_enqueue_script('ta-checkout-js', TEMA_AVENTURAS_URI . '/assets/js/checkout.js', ['mercadopago-sdk'], TEMA_AVENTURAS_VERSION, true);
+wp_localize_script('ta-checkout-js', 'taCheckoutConfig', [
+    'publicKey'      => $mp_pubkey,
+    'ajaxUrl'        => admin_url('admin-ajax.php'),
+    'nonce'          => wp_create_nonce('ta_checkout_nonce'),
+    'reservaId'      => '',
+    'precoPorPessoa' => $preco_base,
+    'parcelas_max'   => $parcelas,
+]);
+
+get_header();
+?>
+
+<main id="conteudo-principal" role="main" style="padding-top: var(--altura-nav);">
+
+<!-- Spinner de loading -->
+<div id="checkout-spinner" aria-live="polite" aria-label="Processando pagamento">
+    <div class="spinner-ring"></div>
+    <p style="color:var(--texto-primario)">Processando...</p>
+</div>
+
+<section class="section">
+<div class="container">
+
+    <!-- HEADER DA PÁGINA -->
+    <div class="texto-centro" style="margin-bottom:var(--espaco-3xl);">
+        <span class="section-header__eyebrow">🏔️ Reservar Atividade</span>
+        <h1 style="font-size:clamp(2rem,5vw,3rem);margin-top:var(--espaco-md);"><?php echo esc_html($atividade->post_title); ?></h1>
+        <div style="display:flex;justify-content:center;gap:var(--espaco-md);flex-wrap:wrap;margin-top:var(--espaco-md);">
+            <?php echo ta_nivel_badge($nivel); ?>
+            <?php if($duracao): ?><span class="badge badge--azul">⏱ <?php echo esc_html($duracao); ?></span><?php endif; ?>
+            <span class="badge badge--verde">💰 <?php echo ta_preco($preco_base); ?>/pessoa</span>
+        </div>
+    </div>
+
+    <!-- STEPPER -->
+    <div class="checkout-stepper" aria-label="Progresso do checkout">
+        <?php $step_labels = ['Dados & Inscritos', 'Escolha a Sessão', 'Pagamento']; ?>
+        <?php foreach ($step_labels as $i => $label): ?>
+            <div class="step-indicator <?php echo $i === 0 ? 'ativo' : ''; ?>" id="step-dot-<?php echo $i; ?>">
+                <div class="step-indicator__num"><?php echo $i + 1; ?></div>
+                <div class="step-indicator__label"><?php echo esc_html($label); ?></div>
+            </div>
+            <?php if ($i < count($step_labels) - 1): ?>
+            <div class="step-connector"></div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- ERRO GLOBAL -->
+    <div class="checkout-erro" id="checkout-erro" role="alert"></div>
+
+    <!-- LAYOUT: form + sidebar -->
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:var(--espaco-3xl);align-items:start;" class="checkout-grid">
+
+        <div>
+        <form id="form-checkout" method="post" novalidate>
+            <?php wp_nonce_field('ta_checkout_nonce', '_ta_nonce'); ?>
+            <input type="hidden" name="atividade_id" value="<?php echo $atividade_id; ?>">
+            <input type="hidden" id="campo-metodo" name="metodo" value="pix">
+            <input type="hidden" id="campo-reserva-id" name="reserva_id" value="">
+            <input type="hidden" id="campo-valor-total" name="valor_total" value="">
+            <input type="hidden" id="campo-qtd-inscritos" name="qtd_inscritos" value="1">
+
+            <!-- ======================== ETAPA 1: DADOS + INSCRITOS ======================== -->
+            <div class="checkout-step ativo" id="step-0" aria-label="Etapa 1: Dados e inscritos">
+                <h2 style="font-size:1.6rem;margin-bottom:var(--espaco-xl);">👤 Dados do Responsável</h2>
+
+                <div class="grid grid--2" style="margin-bottom:var(--espaco-lg);">
+                    <div class="form-grupo">
+                        <label for="resp-nome">Nome completo *</label>
+                        <input type="text" id="resp-nome" name="resp_nome" required placeholder="Seu nome completo">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="resp-email">E-mail *</label>
+                        <input type="email" id="resp-email" name="resp_email" required placeholder="seu@email.com">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="resp-tel">Telefone / WhatsApp *</label>
+                        <input type="text" id="resp-tel" name="resp_telefone" required placeholder="(11) 99999-9999" class="tel-mask">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="resp-cpf">CPF *</label>
+                        <input type="text" id="resp-cpf" name="resp_cpf" required placeholder="000.000.000-00" class="cpf-mask">
+                    </div>
+                </div>
+
+                <h2 style="font-size:1.6rem;margin:var(--espaco-2xl) 0 var(--espaco-xl);">👥 Inscritos</h2>
+                <p style="color:var(--texto-muted);font-size:var(--tamanho-pequeno);margin-bottom:var(--espaco-lg);">
+                    Cadastre todos os participantes. Necessário para emissão do comprovante de inscrição.
+                </p>
+
+                <div id="inscritos-wrap">
+                    <!-- Inscrito 1 (responsável) -->
+                    <div class="inscrito-item">
+                        <div class="inscrito-header">
+                            <h4>Inscrito 1 (Responsável)</h4>
+                        </div>
+                        <div class="grid grid--3">
+                            <div class="form-grupo">
+                                <label>Nome completo *</label>
+                                <input type="text" name="inscrito_nome[]" required placeholder="Nome completo">
+                            </div>
+                            <div class="form-grupo">
+                                <label>CPF *</label>
+                                <input type="text" name="inscrito_cpf[]" required placeholder="000.000.000-00" class="cpf-mask">
+                            </div>
+                            <div class="form-grupo">
+                                <label>Telefone *</label>
+                                <input type="text" name="inscrito_telefone[]" required placeholder="(11) 99999-9999" class="tel-mask">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" id="add-inscrito" class="btn btn--ghost" style="margin-bottom:var(--espaco-2xl);">
+                    + Adicionar mais um inscrito
+                </button>
+
+                <button type="button" class="btn btn--primario btn--grande" data-step-next="1" style="width:100%">
+                    Escolher Data e Horário →
+                </button>
+            </div>
+
+            <!-- ======================== ETAPA 2: SESSÃO ======================== -->
+            <div class="checkout-step" id="step-1" aria-label="Etapa 2: Escolha a sessão" aria-hidden="true">
+                <h2 style="font-size:1.6rem;margin-bottom:var(--espaco-xl);">📅 Escolha a Data e Horário</h2>
+
+                <?php if (empty($sessoes)): ?>
+                <div style="text-align:center;padding:var(--espaco-3xl);">
+                    <p style="font-size:2rem">📅</p>
+                    <p>Nenhuma sessão disponível no momento. Entre em contato.</p>
+                    <a href="<?php echo esc_url(ta_whatsapp_link('Olá! Quero reservar ' . get_the_title($atividade_id))); ?>"
+                       class="btn btn--primario" target="_blank" rel="noopener noreferrer">
+                        📲 Falar no WhatsApp
+                    </a>
+                </div>
+                <?php else: ?>
+                <div class="grid grid--auto-fit-sm" role="radiogroup" aria-label="Sessões disponíveis">
+                    <input type="hidden" name="sessao_id" id="campo-sessao-id" required>
+                    <?php foreach ($sessoes as $s):
+                        $vagas_info = ta_vagas_disponiveis($atividade_id, $s['id']);
+                        $sem_vagas  = $vagas_info['livres'] < 1;
+                        $poucas     = $vagas_info['livres'] <= 3;
+                    ?>
+                    <div class="sessao-card <?php echo $sem_vagas ? 'sem-vagas' : ''; ?>"
+                         data-sessao-id="<?php echo esc_attr($s['id']); ?>"
+                         data-sessao-data="<?php echo esc_attr($s['data']); ?>"
+                         data-sessao-hora="<?php echo esc_attr($s['hora']); ?>"
+                         data-sessao-preco="<?php echo esc_attr($s['preco']); ?>"
+                         role="radio" aria-checked="false"
+                         tabindex="0">
+                        <div class="sessao-card__data"><?php echo date('d/m', strtotime($s['data'])); ?></div>
+                        <div style="font-size:0.7rem;color:var(--texto-muted);"><?php echo date('Y', strtotime($s['data'])); ?></div>
+                        <div class="sessao-card__hora">⏰ <?php echo esc_html($s['hora']); ?></div>
+                        <?php if ($s['preco'] && $s['preco'] != $preco_base): ?>
+                        <div style="color:var(--cor-secundaria);font-weight:bold;font-size:0.9rem;margin-top:6px;">
+                            R$ <?php echo number_format($s['preco'], 2, ',', '.'); ?>/pessoa
+                        </div>
+                        <?php endif; ?>
+                        <div class="sessao-card__vagas <?php echo $poucas ? 'poucas' : ''; ?>">
+                            <?php if ($sem_vagas): ?>❌ Esgotado
+                            <?php elseif ($poucas): ?>⚠️ <?php echo $vagas_info['livres']; ?> vagas
+                            <?php else: ?>✅ <?php echo $vagas_info['livres']; ?> vagas livres<?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+
+                <div style="display:flex;gap:var(--espaco-md);margin-top:var(--espaco-2xl);">
+                    <button type="button" class="btn btn--ghost btn--grande" data-step-prev="0">← Voltar</button>
+                    <button type="button" class="btn btn--primario btn--grande" data-step-next="2" style="flex:1">
+                        Ir para Pagamento →
+                    </button>
+                </div>
+            </div>
+
+            <!-- ======================== ETAPA 3: PAGAMENTO ======================== -->
+            <div class="checkout-step" id="step-2" aria-label="Etapa 3: Pagamento" aria-hidden="true">
+                <h2 style="font-size:1.6rem;margin-bottom:var(--espaco-xl);">💳 Forma de Pagamento</h2>
+
+                <!-- MÉTODOS -->
+                <div class="grid grid--2" style="margin-bottom:var(--espaco-xl);" role="radiogroup" aria-label="Método de pagamento">
+                    <div class="metodo-card selecionado" data-metodo="pix" role="radio" aria-checked="true" tabindex="0">
+                        <span class="metodo-card__icon">🏦</span>
+                        <div class="metodo-card__nome">PIX</div>
+                        <div class="metodo-card__desc">Aprovação imediata • Sem taxas</div>
+                    </div>
+                    <div class="metodo-card" data-metodo="credit_card" role="radio" aria-checked="false" tabindex="0">
+                        <span class="metodo-card__icon">💳</span>
+                        <div class="metodo-card__nome">Cartão de Crédito</div>
+                        <div class="metodo-card__desc">Em até <?php echo $parcelas; ?>x • Aprovação na hora</div>
+                    </div>
+                </div>
+
+                <!-- FORM PIX (informativo) -->
+                <div data-metodo-form="pix" class="ativo">
+                    <div class="pix-container">
+                        <p style="color:var(--texto-secundario);">Após confirmar, um QR Code PIX será gerado. Você terá <strong>30 minutos</strong> para pagar.</p>
+                        <div style="background:var(--fundo-glass);border:1px solid var(--borda-glass);border-radius:var(--raio-xl);padding:var(--espaco-xl);margin-top:var(--espaco-lg);">
+                            <div id="pix-display" style="display:none;">
+                                <p style="color:var(--cor-primaria);font-weight:bold;">✅ QR Code gerado! Escaneie para pagar:</p>
+                                <div class="pix-qrcode-wrap">
+                                    <img id="pix-qrcode-img" src="" alt="QR Code PIX" style="display:none;">
+                                </div>
+                                <p>Expira em: <span class="pix-timer" id="pix-timer">30:00</span></p>
+                                <div class="pix-copia-cola-wrap">
+                                    <input type="text" id="pix-copia-cola" readonly placeholder="Código PIX aparecerá aqui">
+                                    <button type="button" id="btn-copiar-pix" class="btn btn--secundario">📋 Copiar código</button>
+                                </div>
+                                <p style="font-size:var(--tamanho-pequeno);color:var(--texto-muted);text-align:center;margin-top:var(--espaco-md);">
+                                    Aguardando confirmação de pagamento automaticamente...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORM CARTÃO -->
+                <div data-metodo-form="credit_card" style="display:none;">
+                    <form id="form-cartao">
+                        <div class="mp-card-form">
+                            <div class="grid grid--2">
+                                <div class="form-grupo" style="grid-column:1/-1;">
+                                    <label>Número do Cartão *</label>
+                                    <div class="mp-field-wrapper" id="mp-cardNumber"></div>
+                                </div>
+                                <div class="form-grupo" style="grid-column:1/-1;">
+                                    <label>Nome no Cartão *</label>
+                                    <div class="mp-field-wrapper" id="mp-cardholderName"></div>
+                                </div>
+                                <div class="form-grupo">
+                                    <label>Validade *</label>
+                                    <div style="display:flex;gap:8px;">
+                                        <div class="mp-field-wrapper" id="mp-cardExpirationMonth" style="flex:1;"></div>
+                                        <div class="mp-field-wrapper" id="mp-cardExpirationYear" style="flex:1;"></div>
+                                    </div>
+                                </div>
+                                <div class="form-grupo">
+                                    <label>CVV *</label>
+                                    <div class="mp-field-wrapper" id="mp-securityCode"></div>
+                                </div>
+                                <div class="form-grupo">
+                                    <label>Tipo de Documento</label>
+                                    <div class="mp-field-wrapper" id="mp-identificationType"></div>
+                                </div>
+                                <div class="form-grupo">
+                                    <label>CPF *</label>
+                                    <div class="mp-field-wrapper" id="mp-identificationNumber"></div>
+                                </div>
+                                <div class="form-grupo">
+                                    <label>E-mail *</label>
+                                    <div class="mp-field-wrapper" id="mp-email"></div>
+                                </div>
+                                <div class="form-grupo">
+                                    <label>Parcelas</label>
+                                    <div class="mp-field-wrapper" id="mp-installments"></div>
+                                </div>
+                                <div id="mp-issuer" style="display:none;"></div>
+                            </div>
+                            <div id="mp-progress" style="display:none;color:var(--texto-muted);font-size:var(--tamanho-pequeno);">⏳ Verificando cartão...</div>
+                        </div>
+                    </form>
+                </div>
+
+                <div style="display:flex;gap:var(--espaco-md);margin-top:var(--espaco-2xl);">
+                    <button type="button" class="btn btn--ghost btn--grande" data-step-prev="1">← Voltar</button>
+                    <button type="submit" id="btn-finalizar" class="btn btn--primario btn--grande" style="flex:1;">
+                        🔒 Finalizar e Pagar
+                    </button>
+                </div>
+
+                <p style="text-align:center;font-size:0.75rem;color:var(--texto-muted);margin-top:var(--espaco-md);">
+                    🔒 Pagamento processado com segurança pelo Mercado Pago
+                </p>
+            </div>
+
+        </form>
+        </div>
+
+        <!-- SIDEBAR: Resumo -->
+        <aside>
+            <div class="valor-total-box">
+                <div class="valor-total-box__titulo">Total da Reserva</div>
+                <div class="valor-total-box__valor" id="valor-total-display">R$ 0,00</div>
+                <div class="valor-total-box__sub" id="qtd-inscritos-display">0 inscritos × R$ <?php echo number_format($preco_base, 2, ',', '.'); ?></div>
+
+                <div style="margin-top:var(--espaco-xl);padding-top:var(--espaco-lg);border-top:1px solid var(--borda-glass);">
+                    <div style="font-size:0.8rem;color:var(--texto-muted);display:flex;flex-direction:column;gap:8px;">
+                        <span>✅ Pagamento seguro</span>
+                        <span>🔒 Dados criptografados</span>
+                        <span>📧 Confirmação por e-mail</span>
+                        <span>📱 Suporte via WhatsApp</span>
+                    </div>
+                </div>
+
+                <?php if ($atividade): ?>
+                <div style="margin-top:var(--espaco-lg);padding-top:var(--espaco-lg);border-top:1px solid var(--borda-glass);font-size:var(--tamanho-pequeno);color:var(--texto-muted);">
+                    <strong style="color:var(--texto-primario);"><?php echo esc_html($atividade->post_title); ?></strong><br>
+                    <?php if ($duracao): ?>⏱ <?php echo esc_html($duracao); ?><br><?php endif; ?>
+                    <?php echo ta_nivel_badge($nivel); ?>
+                </div>
+                <?php endif; ?>
+            </div>
+        </aside>
+    </div>
+
+</div>
+</section>
+</main>
+
+<script>
+// Seleção de sessão via JS
+document.querySelectorAll('.sessao-card:not(.sem-vagas)').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.sessao-card').forEach(c => c.classList.remove('selecionada'));
+        card.classList.add('selecionada');
+        document.getElementById('campo-sessao-id').value = card.dataset.sessaoId;
+        // Atualizar preço se a sessão tem preço diferente
+        const preco = parseFloat(card.dataset.sessaoPreco) || <?php echo $preco_base; ?>;
+        if (window.taCheckoutConfig) window.taCheckoutConfig.precoPorPessoa = preco;
+    });
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') card.click(); });
+});
+
+// Atualizar display de qtd inscritos
+const observer = new MutationObserver(() => {
+    const qtd = document.querySelectorAll('.inscrito-item').length;
+    const el  = document.getElementById('qtd-inscritos-display');
+    const preco = window.taCheckoutConfig?.precoPorPessoa || <?php echo $preco_base; ?>;
+    if (el) el.textContent = qtd + ' inscrito(s) × R$ ' + preco.toLocaleString('pt-BR', {minimumFractionDigits:2});
+});
+observer.observe(document.getElementById('inscritos-wrap'), { childList: true });
+</script>
+
+<?php get_footer(); ?>

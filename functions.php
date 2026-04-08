@@ -24,6 +24,16 @@ require_once TEMA_AVENTURAS_DIR . '/inc/widgets.php';
 require_once TEMA_AVENTURAS_DIR . '/inc/helpers.php';
 
 // =========================================
+// MÓDULO DE PAGAMENTOS
+// =========================================
+require_once TEMA_AVENTURAS_DIR . '/inc/payment/class-mercadopago.php';
+require_once TEMA_AVENTURAS_DIR . '/inc/payment/admin-config.php';
+require_once TEMA_AVENTURAS_DIR . '/inc/payment/class-reservas.php';
+require_once TEMA_AVENTURAS_DIR . '/inc/payment/webhook.php';
+require_once TEMA_AVENTURAS_DIR . '/inc/payment/emails.php';
+require_once TEMA_AVENTURAS_DIR . '/inc/payment/ajax-checkout.php';
+
+// =========================================
 // SETUP DO TEMA
 // =========================================
 function tema_aventuras_setup() {
