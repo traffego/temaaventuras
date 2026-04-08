@@ -143,11 +143,13 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
                             $links = [
                                 'Início'      => home_url( '/' ),
                                 'Atividades'  => home_url( '/atividades' ),
-                                'Pacotes'     => home_url( '/pacotes' ),
                                 'Blog'        => home_url( '/blog' ),
                                 'Sobre Nós'   => home_url( '/sobre' ),
                                 'Contato'     => home_url( '/contato' ),
                             ];
+                            if ( ta_get('mostrar_pacotes', true) ) {
+                                $links['Pacotes'] = home_url( '/pacotes' );
+                            }
                             foreach ( $links as $label => $url ) {
                                 echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
                             }

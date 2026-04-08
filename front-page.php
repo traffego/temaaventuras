@@ -24,7 +24,11 @@ if ( ta_is_elementor_page() ) {
 <?php get_template_part( 'template-parts/hero' ); ?>
 <?php get_template_part( 'template-parts/stats-counter' ); ?>
 <?php get_template_part( 'template-parts/activities-grid' ); ?>
-<?php get_template_part( 'template-parts/packages' ); ?>
+<?php 
+if ( ta_get('mostrar_pacotes', true) ) {
+    get_template_part( 'template-parts/packages' );
+}
+?>
 <?php get_template_part( 'template-parts/gallery-section' ); ?>
 <?php get_template_part( 'template-parts/testimonials' ); ?>
 <?php get_template_part( 'template-parts/blog-preview' ); ?>

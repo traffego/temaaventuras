@@ -164,6 +164,23 @@ function tema_aventuras_customizer( $wp_customize ) {
     ] );
 
     // =========================================
+    // SEÇÃO: MÓDULOS & FUNCIONALIDADES
+    // =========================================
+    $wp_customize->add_section( 'tema_aventuras_modulos', [
+        'title'    => __( '⚙️ Módulos & Funcionalidades', 'temaaventuras' ),
+        'panel'    => 'tema_aventuras_painel',
+        'priority' => 25,
+    ] );
+
+    $wp_customize->add_setting( 'mostrar_pacotes', [
+        'default'           => true,
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ] );
+    $wp_customize->add_control( 'mostrar_pacotes', [
+        'label'   => __( 'Ativar seção e sistema de Pacotes', 'temaaventuras' ),
+        'section' => 'tema_aventuras_modulos',
+        'type'    => 'checkbox',
+    ] );
     // SEÇÃO: HERO (PÁGINA INICIAL)
     // =========================================
     $wp_customize->add_section( 'tema_aventuras_hero', [
