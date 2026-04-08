@@ -130,10 +130,13 @@
 }
 
 .navbar__logo-img,
-.navbar__logo img {
+.navbar__logo img,
+img.custom-logo {
   height: 44px;
   width: auto;
   max-width: 100%;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .navbar__logo-texto {
