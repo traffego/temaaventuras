@@ -150,7 +150,7 @@ img.custom-logo,
   padding: 0 !important;
 }
 
-/* Texto da logo (sempre visível se não houver imagem, oculto se houver imagem e transparente) */
+/* Texto da logo (oculto por padrão no menu transparente do topo) */
 .navbar__logo-texto {
   font-family: var(--fonte-titulo);
   font-size: clamp(1.2rem, 4vw, 1.6rem);
@@ -158,19 +158,16 @@ img.custom-logo,
   color: var(--texto-primario);
   line-height: 1;
   white-space: nowrap;
-}
-
-/* Se existir a imagem (.navbar__logo-wrapper), oculta o texto por padrão no topo */
-.navbar__logo-wrapper + .navbar__logo-texto {
   display: none;
 }
 
-/* No estado Sticky (scrolled) */
+/* No estado Sticky (quando rolar a página) */
 .navbar--scrolled .navbar__logo-wrapper {
-  display: none; /* Oculta a imagem */
+  display: none !important; /* Oculta a imagem da logo */
 }
-.navbar--scrolled .navbar__logo-wrapper + .navbar__logo-texto {
-  display: block; /* Mostra o texto */
+
+.navbar--scrolled .navbar__logo-texto {
+  display: block !important; /* Mostra o nome em texto */
 }
 
 .navbar__logo-texto span {
