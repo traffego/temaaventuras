@@ -795,12 +795,11 @@ img.custom-logo,
 =========================== */
 .page-banner {
     position: relative;
-    min-height: 320px;
+    min-height: clamp(200px, 30vw, 320px);
     display: flex;
     align-items: center;
     background: var(--gradiente-hero);
     overflow: hidden;
-    margin-top: var(--altura-nav);
 }
 
 .page-banner__img {
@@ -821,7 +820,7 @@ img.custom-logo,
 .page-banner__conteudo {
     position: relative;
     z-index: 2;
-    padding-block: var(--espaco-3xl);
+    padding-block: clamp(3rem, 6vw, var(--espaco-3xl));
 }
 
 .page-banner__titulo {

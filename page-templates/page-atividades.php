@@ -49,7 +49,7 @@ get_header();
     <?php endif; ?>
 
     <!-- Grid de Atividades -->
-    <section class="section">
+    <section class="section section--pequena">
         <div class="container">
             <?php
             $args = [

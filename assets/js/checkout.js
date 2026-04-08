@@ -1,61 +1,39 @@
 /**
- * checkout.js – Lógica do checkout com Mercado Pago
- * CardForm JS + polling PIX + stepper de etapas
+ * checkout.js – Single-page checkout com Mercado Pago
+ * Sem stepper. Tudo visível numa única tela.
  */
 
 'use strict';
 
 (function () {
 
-  // =========================================
-  // CONFIGURAÇÃO (injetada via wp_localize_script)
-  // =========================================
   const CFG = window.taCheckoutConfig || {};
-  const { publicKey, ajaxUrl, nonce, reservaId, metodoPagamento, parcelas_max } = CFG;
-
-  // =========================================
-  // STEPPER
-  // =========================================
-  const steps     = document.querySelectorAll('.checkout-step');
-  const stepBtns  = document.querySelectorAll('[data-step-next]');
-  const stepPrevs = document.querySelectorAll('[data-step-prev]');
-  let currentStep = 0;
-
-  function goToStep(n) {
-    steps.forEach((s, i) => {
-      s.classList.toggle('ativo', i === n);
-      s.setAttribute('aria-hidden', i !== n);
-    });
-    document.querySelectorAll('.step-indicator').forEach((dot, i) => {
-      dot.classList.toggle('ativo', i <= n);
-    });
-    currentStep = n;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  stepBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = parseInt(btn.dataset.stepNext);
-      if (validarEtapa(currentStep)) goToStep(target);
-    });
-  });
-
-  stepPrevs.forEach(btn => {
-    btn.addEventListener('click', () => goToStep(parseInt(btn.dataset.stepPrev)));
-  });
+  const { publicKey, ajaxUrl, nonce, parcelas_max } = CFG;
+  const pricePerPerson = parseFloat(CFG.precoPorPessoa || 0);
 
   // =========================================
   // SELEÇÃO DE MÉTODO DE PAGAMENTO
   // =========================================
   document.querySelectorAll('.metodo-card').forEach(card => {
     card.addEventListener('click', () => {
-      document.querySelectorAll('.metodo-card').forEach(c => c.classList.remove('selecionado'));
+      document.querySelectorAll('.metodo-card').forEach(c => {
+        c.classList.remove('selecionado');
+        c.setAttribute('aria-checked', 'false');
+      });
       card.classList.add('selecionado');
+      card.setAttribute('aria-checked', 'true');
+
       const metodo = card.dataset.metodo;
       document.querySelectorAll('[data-metodo-form]').forEach(f => {
-        f.classList.toggle('ativo', f.dataset.metodoForm === metodo);
+        const show = f.dataset.metodoForm === metodo;
+        f.classList.toggle('ativo', show);
+        f.style.display = show ? '' : 'none';
       });
       document.getElementById('campo-metodo').value = metodo;
+
+      if (metodo === 'credit_card' && !mpInstance) {
+        initCardForm();
+      }
     });
   });
 
@@ -64,7 +42,7 @@
   // =========================================
   const addInscritoBtn = document.getElementById('add-inscrito');
   const inscritosWrap  = document.getElementById('inscritos-wrap');
-  let inscritoCount    = parseInt(document.querySelectorAll('.inscrito-item').length) || 1;
+  let inscritoCount    = document.querySelectorAll('.inscrito-item').length || 1;
 
   addInscritoBtn?.addEventListener('click', () => {
     inscritoCount++;
@@ -73,7 +51,7 @@
     div.innerHTML = `
       <div class="inscrito-header">
         <h4>Inscrito ${inscritoCount}</h4>
-        <button type="button" class="btn-remover-inscrito btn btn--ghost btn--pequeno">✕ Remover</button>
+        <button type="button" class="btn-remover-inscrito btn btn--ghost btn--pequeno">✕</button>
       </div>
       <div class="grid grid--3">
         <div class="form-grupo">
@@ -86,7 +64,7 @@
         </div>
         <div class="form-grupo">
           <label>Telefone *</label>
-          <input type="text" name="inscrito_telefone[]" required placeholder="(11) 99999-9999">
+          <input type="text" name="inscrito_telefone[]" required placeholder="(11) 99999-9999" class="tel-mask">
         </div>
       </div>`;
     inscritosWrap?.appendChild(div);
@@ -98,7 +76,6 @@
     atualizarValorTotal();
   });
 
-  // Remover inscrito existente
   document.addEventListener('click', e => {
     if (e.target.matches('.btn-remover-inscrito')) {
       e.target.closest('.inscrito-item')?.remove();
@@ -109,15 +86,17 @@
   // =========================================
   // CALCULAR VALOR TOTAL
   // =========================================
-  const pricePerPerson = parseFloat(CFG.precoPorPessoa || 0);
-
   function atualizarValorTotal() {
     const qtd   = document.querySelectorAll('.inscrito-item').length;
     const total = qtd * pricePerPerson;
     const el    = document.getElementById('valor-total-display');
+    const sub   = document.getElementById('qtd-inscritos-display');
     if (el) el.textContent = 'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-    document.getElementById('campo-valor-total').value = total.toFixed(2);
-    document.getElementById('campo-qtd-inscritos').value = qtd;
+    if (sub) sub.textContent = qtd + ' inscrito(s)';
+    const campoTotal = document.getElementById('campo-valor-total');
+    const campoQtd   = document.getElementById('campo-qtd-inscritos');
+    if (campoTotal) campoTotal.value = total.toFixed(2);
+    if (campoQtd)   campoQtd.value = qtd;
   }
 
   atualizarValorTotal();
@@ -162,7 +141,7 @@
           const fd = new FormData();
           fd.append('action', 'ta_processar_cartao');
           fd.append('nonce', nonce);
-          fd.append('reserva_id', reservaId || document.getElementById('campo-reserva-id')?.value || '');
+          fd.append('reserva_id', document.getElementById('campo-reserva-id')?.value || '');
           fd.append('token', token);
           fd.append('pm_id', paymentMethodId);
           fd.append('issuer_id', issuerId);
@@ -195,21 +174,12 @@
     });
   }
 
-  // Iniciar CardForm quando a aba de cartão for selecionada
-  document.querySelectorAll('.metodo-card').forEach(card => {
-    card.addEventListener('click', () => {
-      if (card.dataset.metodo === 'credit_card' && !mpInstance) {
-        initCardForm();
-      }
-    });
-  });
-
   // =========================================
-  // SUBMIT DO FORMULÁRIO PRINCIPAL (DADOS + SESSÃO)
+  // SUBMIT PRINCIPAL
   // =========================================
   document.getElementById('form-checkout')?.addEventListener('submit', async function(e) {
     e.preventDefault();
-    if (!validarEtapa(0)) return;
+    if (!validarTudo()) return;
 
     setLoading(true);
     const fd = new FormData(this);
@@ -227,13 +197,10 @@
         if (metodo === 'pix') {
           renderizarPix(json.data.pix);
           document.getElementById('pix-display').style.display = 'block';
-          const btnFinalizar = document.getElementById('btn-finalizar');
-          if(btnFinalizar) btnFinalizar.style.display = 'none';
-          document.querySelector('.checkout-stepper').style.display = 'none';
-          goToStep(1);
+          document.getElementById('btn-finalizar').style.display = 'none';
           iniciarPollingPix(json.data.reserva_id);
         } else {
-          goToStep(1);
+          // Cartão: já foi processado pelo CardForm
         }
       } else {
         mostrarErro(json.data?.message || 'Erro ao processar. Tente novamente.');
@@ -249,9 +216,9 @@
   // RENDERIZAR PIX
   // =========================================
   function renderizarPix(pix) {
-    const imgEl   = document.getElementById('pix-qrcode-img');
-    const copyEl  = document.getElementById('pix-copia-cola');
-    const timer   = document.getElementById('pix-timer');
+    const imgEl  = document.getElementById('pix-qrcode-img');
+    const copyEl = document.getElementById('pix-copia-cola');
+    const timer  = document.getElementById('pix-timer');
 
     if (imgEl && pix.qr_code_base64) {
       imgEl.src = 'data:image/png;base64,' + pix.qr_code_base64;
@@ -259,7 +226,6 @@
     }
     if (copyEl) copyEl.value = pix.qr_code || '';
 
-    // Timer 30 minutos
     if (timer) {
       let segundos = 30 * 60;
       const interval = setInterval(() => {
@@ -284,22 +250,20 @@
     navigator.clipboard.writeText(val).then(() => {
       const btn = document.getElementById('btn-copiar-pix');
       btn.textContent = '✅ Copiado!';
-      setTimeout(() => btn.textContent = '📋 Copiar código', 2000);
+      setTimeout(() => btn.textContent = '📋 Copiar', 2000);
     });
   });
 
   // =========================================
-  // POLLING PIX (verificar a cada 5s)
+  // POLLING PIX
   // =========================================
   function iniciarPollingPix(reservaId) {
     if (!reservaId) return;
-
     const interval = setInterval(async () => {
       const fd = new FormData();
       fd.append('action', 'ta_consultar_pix');
       fd.append('nonce', nonce);
       fd.append('reserva_id', reservaId);
-
       try {
         const res  = await fetch(ajaxUrl, { method: 'POST', body: fd });
         const json = await res.json();
@@ -309,12 +273,10 @@
         }
       } catch { /* silencioso */ }
     }, 5000);
-
-    window.taPixPolling = interval;
   }
 
   // =========================================
-  // MÁSCARAS DE INPUT
+  // MÁSCARAS
   // =========================================
   function aplicarMascaras(root = document) {
     root.querySelectorAll('.cpf-mask').forEach(input => {
@@ -339,12 +301,12 @@
   aplicarMascaras();
 
   // =========================================
-  // VALIDAÇÃO DE ETAPA
+  // VALIDAÇÃO COMPLETA
   // =========================================
-  function validarEtapa(step) {
-    const currentEl = steps[step];
-    if (!currentEl) return true;
-    const inputs = currentEl.querySelectorAll('[required]');
+  function validarTudo() {
+    const form = document.getElementById('form-checkout');
+    if (!form) return true;
+    const inputs = form.querySelectorAll('[required]');
     let valid = true;
     inputs.forEach(input => {
       if (!input.value.trim()) {
@@ -353,7 +315,11 @@
         valid = false;
       }
     });
-    if (!valid) mostrarErro('Preencha todos os campos obrigatórios.');
+    if (!valid) {
+      mostrarErro('Preencha todos os campos obrigatórios.');
+      const primeiro = form.querySelector('.erro');
+      if (primeiro) primeiro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     return valid;
   }
 
