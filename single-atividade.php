@@ -15,6 +15,13 @@ $preco   = get_post_meta( get_the_ID(), '_atividade_preco',   true );
 $pessoas = get_post_meta( get_the_ID(), '_atividade_pessoas', true );
 $wa_msg  = urlencode( 'Olá! Quero reservar a atividade: ' . get_the_title() );
 $wa_link = ta_whatsapp_link( 'Olá! Quero saber mais sobre: ' . get_the_title() );
+
+// Campos adicionados na meta box
+$at_data    = get_post_meta( get_the_ID(), '_atividade_data',    true );
+$at_horario = get_post_meta( get_the_ID(), '_atividade_horario', true );
+$at_vagas   = get_post_meta( get_the_ID(), '_atividade_vagas',   true );
+$at_obs     = get_post_meta( get_the_ID(), '_atividade_obs',     true );
+$at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
 ?>
 
 <main id="conteudo-principal" role="main">
@@ -66,6 +73,19 @@ $wa_link = ta_whatsapp_link( 'Olá! Quero saber mais sobre: ' . get_the_title() 
 
                 <!-- Conteúdo principal -->
                 <div class="atividade-conteudo">
+
+                    <?php if ( $at_img_id ) :
+                        $at_img_src = wp_get_attachment_image_url( $at_img_id, 'large' );
+                        $at_img_alt = get_post_meta( $at_img_id, '_wp_attachment_image_alt', true ) ?: get_the_title();
+                    ?>
+                    <div class="atividade-imagem-destaque">
+                        <img src="<?php echo esc_url( $at_img_src ); ?>"
+                             alt="<?php echo esc_attr( $at_img_alt ); ?>"
+                             loading="eager"
+                             class="atividade-imagem-destaque__img" />
+                    </div>
+                    <?php endif; ?>
+
                     <div class="wp-content">
                         <?php the_content(); ?>
                     </div>
@@ -144,9 +164,24 @@ $wa_link = ta_whatsapp_link( 'Olá! Quero saber mais sobre: ' . get_the_title() 
                         </div>
 
                         <div class="sidebar-reserva__meta">
+                            <?php if ( $at_data ) : ?>
+                            <div class="sidebar-meta-item">📅 <strong><?php _e('Data:','temaaventuras'); ?></strong> <?php echo date_i18n('d/m/Y', strtotime($at_data)); ?></div>
+                            <?php endif; ?>
+                            <?php if ( $at_horario ) : ?>
+                            <div class="sidebar-meta-item">⏰ <strong><?php _e('Horário:','temaaventuras'); ?></strong> <?php echo esc_html($at_horario); ?></div>
+                            <?php endif; ?>
+                            <?php if ( $at_vagas ) : ?>
+                            <div class="sidebar-meta-item">👥 <strong><?php _e('Vagas:','temaaventuras'); ?></strong> <?php echo intval($at_vagas); ?></div>
+                            <?php endif; ?>
+                            <?php if ($preco): ?>
+                            <div class="sidebar-meta-item">💰 <strong><?php _e('Preço/pessoa:','temaaventuras'); ?></strong> <?php echo ta_preco($preco); ?></div>
+                            <?php endif; ?>
                             <?php if ($duracao): ?><div class="sidebar-meta-item">⏱ <strong><?php _e('Duração:','temaaventuras'); ?></strong> <?php echo esc_html($duracao); ?></div><?php endif; ?>
                             <?php if ($pessoas): ?><div class="sidebar-meta-item">👥 <strong><?php _e('Mínimo:','temaaventuras'); ?></strong> <?php printf(_n('%d pessoa','%d pessoas',intval($pessoas),'temaaventuras'),intval($pessoas)); ?></div><?php endif; ?>
                             <div class="sidebar-meta-item"><?php echo ta_nivel_badge($nivel); ?> <strong><?php _e('Dificuldade','temaaventuras'); ?></strong></div>
+                            <?php if ( $at_obs ) : ?>
+                            <div class="sidebar-meta-item sidebar-meta-obs">📝 <strong><?php _e('Obs:','temaaventuras'); ?></strong> <?php echo esc_html($at_obs); ?></div>
+                            <?php endif; ?>
                         </div>
 
                         <?php
@@ -254,6 +289,38 @@ get_footer(); ?>
 <style>
 .atividade-banner .page-banner__overlay {
     background: linear-gradient(135deg, rgba(0,39,118,0.75) 0%, rgba(0,0,0,0.7) 100%);
+}
+
+/* Imagem destacada da atividade (meta _atividade_imagem) */
+.atividade-imagem-destaque {
+    width: 100%;
+    border-radius: var(--raio-xl);
+    overflow: hidden;
+    margin-bottom: var(--espaco-2xl);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    aspect-ratio: 16/9;
+}
+
+.atividade-imagem-destaque__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .5s ease;
+}
+
+.atividade-imagem-destaque:hover .atividade-imagem-destaque__img {
+    transform: scale(1.03);
+}
+
+/* Observações na sidebar */
+.sidebar-meta-obs {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 2px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--texto-muted);
 }
 
 .atividade-metricas {
