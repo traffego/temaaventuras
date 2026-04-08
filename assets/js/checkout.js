@@ -226,10 +226,14 @@
 
         if (metodo === 'pix') {
           renderizarPix(json.data.pix);
-          goToStep(2);
+          document.getElementById('pix-display').style.display = 'block';
+          const btnFinalizar = document.getElementById('btn-finalizar');
+          if(btnFinalizar) btnFinalizar.style.display = 'none';
+          document.querySelector('.checkout-stepper').style.display = 'none';
+          goToStep(1);
           iniciarPollingPix(json.data.reserva_id);
         } else {
-          goToStep(2);
+          goToStep(1);
         }
       } else {
         mostrarErro(json.data?.message || 'Erro ao processar. Tente novamente.');

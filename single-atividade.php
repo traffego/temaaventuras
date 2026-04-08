@@ -190,27 +190,22 @@ $at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
                         </div>
 
                         <?php
-                        // Próximas sessões disponíveis
-                        $proxima = ta_proxima_sessao( get_the_ID() );
-                        $sessoes_futuras = ta_get_sessoes_atividade( get_the_ID(), true );
+                        $data_atv   = get_post_meta( get_the_ID(), '_atividade_data', true );
+                        $hora_atv   = get_post_meta( get_the_ID(), '_atividade_horario', true );
+                        $vagas_info = ta_vagas_disponiveis( get_the_ID() );
+                        $tem_data   = !empty($data_atv);
                         ?>
 
-                        <?php if ($proxima): ?>
-                        <!-- Próxima data disponível -->
+                        <?php if ($tem_data && $vagas_info['livres'] > 0): ?>
                         <div style="background:var(--fundo-glass);border:1px solid var(--borda-glass);border-radius:var(--raio-lg);padding:var(--espaco-md);margin-bottom:var(--espaco-lg);">
-                            <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--texto-muted);margin-bottom:var(--espaco-sm);">📅 Próxima data</div>
+                            <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--texto-muted);margin-bottom:var(--espaco-sm);">📅 Data do Evento</div>
                             <div style="font-weight:var(--peso-negrito);color:var(--texto-primario);">
-                                <?php echo date_i18n('d/m/Y', strtotime($proxima['data'])); ?>
-                                <?php echo ' às ' . esc_html($proxima['hora']); ?>
+                                <?php echo date_i18n('d/m/Y', strtotime($data_atv)); ?>
+                                <?php if ($hora_atv) echo ' às ' . esc_html($hora_atv); ?>
                             </div>
                             <div style="font-size:var(--tamanho-pequeno);color:var(--cor-primaria);margin-top:4px;">
-                                ✅ <?php echo $proxima['livres']; ?> vaga<?php echo $proxima['livres'] > 1 ? 's' : ''; ?> disponível<?php echo $proxima['livres'] > 1 ? 'eis' : ''; ?>
+                                ✅ <?php echo $vagas_info['livres']; ?> vaga<?php echo $vagas_info['livres'] > 1 ? 's' : ''; ?> disponível<?php echo $vagas_info['livres'] > 1 ? 'eis' : ''; ?>
                             </div>
-                            <?php if (!empty($proxima['obs'])): ?>
-                            <div style="font-size:0.75rem;color:var(--texto-muted);margin-top:var(--espaco-sm);border-top:1px solid var(--borda-glass);padding-top:var(--espaco-sm);">
-                                📝 <?php echo esc_html($proxima['obs']); ?>
-                            </div>
-                            <?php endif; ?>
                         </div>
 
                         <a href="<?php echo esc_url( ta_checkout_url( get_the_ID() ) ); ?>"
@@ -220,17 +215,16 @@ $at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
                             🎟️ <?php _e('Reservar Agora','temaaventuras'); ?>
                         </a>
 
-                        <?php elseif (!empty($sessoes_futuras)): ?>
-                        <!-- Sessões disponíveis mas todas lotadas -->
+                        <?php elseif ($tem_data): ?>
+                        <!-- Evento lotado -->
                         <div style="background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:var(--raio-lg);padding:var(--espaco-md);margin-bottom:var(--espaco-lg);text-align:center;">
                             <div style="font-size:1.5rem;margin-bottom:4px;">😔</div>
                             <div style="color:var(--texto-muted);font-size:var(--tamanho-pequeno);">
-                                Todas as sessões disponíveis estão lotadas.
+                                As vagas para este evento estão lotadas.
                             </div>
                         </div>
 
                         <?php else: ?>
-                        <!-- Sem sessões cadastradas -->
                         <div style="text-align:center;padding:var(--espaco-md);margin-bottom:var(--espaco-lg);">
                             <div style="font-size:0.85rem;color:var(--texto-muted);">
                                 Entre em contato para verificar disponibilidade.
@@ -247,30 +241,6 @@ $at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
                            id="atividade-whatsapp-btn">
                             📲 <?php _e('Reservar pelo WhatsApp','temaaventuras'); ?>
                         </a>
-
-                        <!-- Mini-lista de sessões abertas -->
-                        <?php if (count($sessoes_futuras) > 1): ?>
-                        <details style="margin-top:var(--espaco-lg);">
-                            <summary style="cursor:pointer;font-size:var(--tamanho-pequeno);color:var(--texto-muted);list-style:none;display:flex;justify-content:space-between;align-items:center;padding:var(--espaco-sm) 0;border-top:1px solid var(--borda-glass);">
-                                <span>📅 Ver todas as datas (<?php echo count($sessoes_futuras); ?>)</span>
-                                <span>▾</span>
-                            </summary>
-                            <div style="margin-top:var(--espaco-md);display:flex;flex-direction:column;gap:var(--espaco-sm);">
-                                <?php foreach (array_slice($sessoes_futuras, 0, 5) as $s):
-                                    $vi = ta_vagas_disponiveis(get_the_ID(), $s['id']);
-                                    $cor_v = $vi['livres'] === 0 ? '#ef4444' : ($vi['livres'] <= 3 ? '#f59e0b' : '#22c55e');
-                                ?>
-                                <a href="<?php echo esc_url( ta_checkout_url( get_the_ID(), $s['id'] ) ); ?>"
-                                   style="display:flex;justify-content:space-between;align-items:center;background:var(--fundo-glass);border:1px solid var(--borda-glass);border-radius:var(--raio-md);padding:var(--espaco-sm) var(--espaco-md);font-size:0.8rem;text-decoration:none;color:var(--texto-secundario);<?php echo $vi['livres'] === 0 ? 'opacity:.5;pointer-events:none;' : ''; ?>">
-                                    <span><?php echo date_i18n('d/m', strtotime($s['data'])) . ' · ' . esc_html($s['hora']); ?></span>
-                                    <span style="color:<?php echo $cor_v; ?>;font-weight:var(--peso-medio);">
-                                        <?php echo $vi['livres'] === 0 ? 'Lotado' : $vi['livres'] . ' vaga' . ($vi['livres'] > 1 ? 's' : ''); ?>
-                                    </span>
-                                </a>
-                                <?php endforeach; ?>
-                            </div>
-                        </details>
-                        <?php endif; ?>
 
                         <div class="sidebar-garantias">
                             <div class="garantia-item">✅ <?php _e('Segurança certificada','temaaventuras'); ?></div>

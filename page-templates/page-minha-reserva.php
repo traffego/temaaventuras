@@ -116,17 +116,7 @@ $m = $reserva ? fn( $k ) => get_post_meta( $reserva->ID, $k, true ) : null;
         $inscritos  = $m( '_reserva_inscritos' ) ?: [];
         $valor      = number_format( (float) $m( '_reserva_valor_total' ), 2, ',', '.' );
         $metodo     = strtoupper( $m( '_reserva_metodo' ) ?: '' );
-        $obs_sessao = '';
-        // Buscar observação da sessão
         $atividade_id = (int) $m( '_reserva_atividade_id' );
-        $sessao_id    = $m( '_reserva_sessao_id' );
-        if ( $atividade_id && $sessao_id ) {
-            $sessoes = ta_get_sessoes_atividade( $atividade_id );
-            foreach ( $sessoes as $s ) {
-                if ( $s['id'] === $sessao_id ) { $obs_sessao = $s['obs'] ?? ''; break; }
-            }
-        }
-
         $cores  = [ 'pendente' => '#f0ad4e', 'aprovado' => '#22c55e', 'rejeitado' => '#ef4444', 'cancelado' => '#6b7280' ];
         $icones = [ 'pendente' => '⏳', 'aprovado' => '✅', 'rejeitado' => '❌', 'cancelado' => '🚫' ];
         $cor    = $cores[ $status ] ?? '#6b7280';
@@ -171,12 +161,6 @@ $m = $reserva ? fn( $k ) => get_post_meta( $reserva->ID, $k, true ) : null;
             </div>
             <?php endforeach; ?>
         </div>
-        <?php if ( $obs_sessao ) : ?>
-        <div style="margin-top:var(--espaco-lg);padding-top:var(--espaco-lg);border-top:1px solid var(--borda-glass);">
-            <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--texto-muted);margin-bottom:var(--espaco-sm);">📝 Observações da Sessão</div>
-            <p style="color:var(--texto-secundario);"><?php echo esc_html( $obs_sessao ); ?></p>
-        </div>
-        <?php endif; ?>
     </div>
 
     <!-- LISTA DE INSCRITOS -->

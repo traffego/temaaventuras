@@ -16,7 +16,6 @@ function ta_ajax_criar_reserva_checkout(): void {
     check_ajax_referer('ta_checkout_nonce', 'nonce');
 
     $atividade_id  = intval($_POST['atividade_id'] ?? 0);
-    $sessao_id     = sanitize_text_field($_POST['sessao_id'] ?? '');
     $metodo        = sanitize_text_field($_POST['metodo'] ?? 'pix');
     $resp_nome     = sanitize_text_field($_POST['resp_nome'] ?? '');
     $resp_email    = sanitize_email($_POST['resp_email'] ?? '');
@@ -25,7 +24,7 @@ function ta_ajax_criar_reserva_checkout(): void {
     $valor_total   = floatval($_POST['valor_total'] ?? 0);
 
     // Validações básicas
-    if (!$atividade_id || !$sessao_id) wp_send_json_error(['message' => 'Atividade ou sessão inválida.']);
+    if (!$atividade_id) wp_send_json_error(['message' => 'Atividade inválida.']);
     if (!$resp_nome || !$resp_email)    wp_send_json_error(['message' => 'Dados do responsável incompletos.']);
     if ($valor_total <= 0)              wp_send_json_error(['message' => 'Valor inválido.']);
 
@@ -46,18 +45,19 @@ function ta_ajax_criar_reserva_checkout(): void {
 
     if (empty($inscritos)) wp_send_json_error(['message' => 'Adicione pelo menos um inscrito.']);
 
-    // Obter dados da sessão
-    $sessoes = ta_get_sessoes_atividade($atividade_id);
-    $sessao  = null;
-    foreach ($sessoes as $s) { if ($s['id'] === $sessao_id) { $sessao = $s; break; } }
-    if (!$sessao) wp_send_json_error(['message' => 'Sessão não encontrada.']);
+    // Obter dados do evento
+    $data_atividade = get_post_meta($atividade_id, '_atividade_data', true);
+    $hora_atividade = get_post_meta($atividade_id, '_atividade_horario', true);
+    
+    if (!$data_atividade) {
+        wp_send_json_error(['message' => 'Esta atividade não possui uma data agendada.']);
+    }
 
     // Criar reserva
     $reserva_id = ta_criar_reserva([
         'atividade_id'   => $atividade_id,
-        'sessao_id'      => $sessao_id,
-        'data_atividade' => $sessao['data'],
-        'hora_atividade' => $sessao['hora'],
+        'data_atividade' => $data_atividade,
+        'hora_atividade' => $hora_atividade,
         'nome'           => $resp_nome,
         'email'          => $resp_email,
         'telefone'       => $resp_tel,

@@ -143,13 +143,12 @@ function ta_reading_time( $post_id = null ): int {
 }
 
 /**
- * URL da página de checkout para uma atividade (+ sessão opcional)
+ * URL da página de checkout para uma atividade
  */
-function ta_checkout_url( int $atividade_id, string $sessao_id = '' ): string {
+function ta_checkout_url( int $atividade_id ): string {
     $page = get_page_by_path( 'reservar' ) ?? get_page_by_path( 'checkout' );
     $base = $page ? get_permalink( $page ) : home_url( '/reservar/' );
     $args = [ 'atividade' => $atividade_id ];
-    if ( $sessao_id ) $args['sessao'] = $sessao_id;
     return add_query_arg( $args, $base );
 }
 
@@ -159,46 +158,4 @@ function ta_checkout_url( int $atividade_id, string $sessao_id = '' ): string {
 function ta_minha_reserva_url(): string {
     $page = get_page_by_path( 'minha-reserva' );
     return $page ? get_permalink( $page ) : home_url( '/minha-reserva/' );
-}
-
-/**
- * Retorna as sessões cadastradas de uma atividade.
- * Lógica baseada nos dados salvos por ta_render_sessoes_metabox
- */
-function ta_get_sessoes_atividade( int $atividade_id, bool $somente_futuras = false ): array {
-    $sessoes = get_post_meta( $atividade_id, '_atividade_sessoes', true );
-    if ( ! is_array( $sessoes ) ) {
-        return [];
-    }
-
-    // Ordenar por data e hora (crescente)
-    usort( $sessoes, function( $a, $b ) {
-        $datetime_a = ($a['data'] ?? '') . ' ' . ($a['hora'] ?? '');
-        $datetime_b = ($b['data'] ?? '') . ' ' . ($b['hora'] ?? '');
-        return strcmp( $datetime_a, $datetime_b );
-    });
-
-    if ( $somente_futuras ) {
-        $agora = wp_date( 'Y-m-d H:i:s' );
-        $sessoes = array_filter( $sessoes, function( $s ) use ( $agora ) {
-            $datetime_s = ($s['data'] ?? '') . ' ' . ($s['hora'] ?? '00:00:00');
-            return $datetime_s >= $agora;
-        });
-    }
-
-    return array_values( $sessoes );
-}
-
-/**
- * Próxima sessão disponível de uma atividade (com vagas livres)
- * Retorna null se não houver sessões abertas.
- */
-function ta_proxima_sessao( int $atividade_id ): ?array {
-    if ( ! function_exists( 'ta_get_sessoes_atividade' ) ) return null;
-    $sessoes = ta_get_sessoes_atividade( $atividade_id, true );
-    foreach ( $sessoes as $s ) {
-        $info = ta_vagas_disponiveis( $atividade_id, $s['id'] );
-        if ( $info['livres'] > 0 ) return array_merge( $s, $info );
-    }
-    return null;
 }

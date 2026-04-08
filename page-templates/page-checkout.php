@@ -17,7 +17,6 @@ if (!$atividade || $atividade->post_type !== 'atividade') {
     exit;
 }
 
-$sessoes     = ta_get_sessoes_atividade($atividade_id, true);
 $preco_base  = (float)(get_post_meta($atividade_id, '_atividade_preco', true) ?: 0);
 $nivel       = get_post_meta($atividade_id, '_atividade_nivel', true) ?: 'facil';
 $duracao     = get_post_meta($atividade_id, '_atividade_duracao', true);
@@ -64,7 +63,7 @@ get_header();
 
     <!-- STEPPER -->
     <div class="checkout-stepper" aria-label="Progresso do checkout">
-        <?php $step_labels = ['Dados & Inscritos', 'Escolha a Sessão', 'Pagamento']; ?>
+        <?php $step_labels = ['Dados & Inscritos', 'Pagamento']; ?>
         <?php foreach ($step_labels as $i => $label): ?>
             <div class="step-indicator <?php echo $i === 0 ? 'ativo' : ''; ?>" id="step-dot-<?php echo $i; ?>">
                 <div class="step-indicator__num"><?php echo $i + 1; ?></div>
@@ -147,66 +146,12 @@ get_header();
                 </button>
 
                 <button type="button" class="btn btn--primario btn--grande" data-step-next="1" style="width:100%">
-                    Escolher Data e Horário →
+                    Ir para Pagamento →
                 </button>
             </div>
 
-            <!-- ======================== ETAPA 2: SESSÃO ======================== -->
-            <div class="checkout-step" id="step-1" aria-label="Etapa 2: Escolha a sessão" aria-hidden="true">
-                <h2 style="font-size:1.6rem;margin-bottom:var(--espaco-xl);">📅 Escolha a Data e Horário</h2>
-
-                <?php if (empty($sessoes)): ?>
-                <div style="text-align:center;padding:var(--espaco-3xl);">
-                    <p style="font-size:2rem">📅</p>
-                    <p>Nenhuma sessão disponível no momento. Entre em contato.</p>
-                    <a href="<?php echo esc_url(ta_whatsapp_link('Olá! Quero reservar ' . get_the_title($atividade_id))); ?>"
-                       class="btn btn--primario" target="_blank" rel="noopener noreferrer">
-                        📲 Falar no WhatsApp
-                    </a>
-                </div>
-                <?php else: ?>
-                <div class="grid grid--auto-fit-sm" role="radiogroup" aria-label="Sessões disponíveis">
-                    <input type="hidden" name="sessao_id" id="campo-sessao-id" required>
-                    <?php foreach ($sessoes as $s):
-                        $vagas_info = ta_vagas_disponiveis($atividade_id, $s['id']);
-                        $sem_vagas  = $vagas_info['livres'] < 1;
-                        $poucas     = $vagas_info['livres'] <= 3;
-                    ?>
-                    <div class="sessao-card <?php echo $sem_vagas ? 'sem-vagas' : ''; ?>"
-                         data-sessao-id="<?php echo esc_attr($s['id']); ?>"
-                         data-sessao-data="<?php echo esc_attr($s['data']); ?>"
-                         data-sessao-hora="<?php echo esc_attr($s['hora']); ?>"
-                         data-sessao-preco="<?php echo esc_attr($s['preco']); ?>"
-                         role="radio" aria-checked="false"
-                         tabindex="0">
-                        <div class="sessao-card__data"><?php echo date('d/m', strtotime($s['data'])); ?></div>
-                        <div style="font-size:0.7rem;color:var(--texto-muted);"><?php echo date('Y', strtotime($s['data'])); ?></div>
-                        <div class="sessao-card__hora">⏰ <?php echo esc_html($s['hora']); ?></div>
-                        <?php if ($s['preco'] && $s['preco'] != $preco_base): ?>
-                        <div style="color:var(--cor-secundaria);font-weight:bold;font-size:0.9rem;margin-top:6px;">
-                            R$ <?php echo number_format($s['preco'], 2, ',', '.'); ?>/pessoa
-                        </div>
-                        <?php endif; ?>
-                        <div class="sessao-card__vagas <?php echo $poucas ? 'poucas' : ''; ?>">
-                            <?php if ($sem_vagas): ?>❌ Esgotado
-                            <?php elseif ($poucas): ?>⚠️ <?php echo $vagas_info['livres']; ?> vagas
-                            <?php else: ?>✅ <?php echo $vagas_info['livres']; ?> vagas livres<?php endif; ?>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-                <?php endif; ?>
-
-                <div style="display:flex;gap:var(--espaco-md);margin-top:var(--espaco-2xl);">
-                    <button type="button" class="btn btn--ghost btn--grande" data-step-prev="0">← Voltar</button>
-                    <button type="button" class="btn btn--primario btn--grande" data-step-next="2" style="flex:1">
-                        Ir para Pagamento →
-                    </button>
-                </div>
-            </div>
-
-            <!-- ======================== ETAPA 3: PAGAMENTO ======================== -->
-            <div class="checkout-step" id="step-2" aria-label="Etapa 3: Pagamento" aria-hidden="true">
+            <!-- ======================== ETAPA 2: PAGAMENTO ======================== -->
+            <div class="checkout-step" id="step-1" aria-label="Etapa 2: Pagamento" aria-hidden="true">
                 <h2 style="font-size:1.6rem;margin-bottom:var(--espaco-xl);">💳 Forma de Pagamento</h2>
 
                 <!-- MÉTODOS -->
@@ -340,18 +285,6 @@ get_header();
 </main>
 
 <script>
-// Seleção de sessão via JS
-document.querySelectorAll('.sessao-card:not(.sem-vagas)').forEach(card => {
-    card.addEventListener('click', () => {
-        document.querySelectorAll('.sessao-card').forEach(c => c.classList.remove('selecionada'));
-        card.classList.add('selecionada');
-        document.getElementById('campo-sessao-id').value = card.dataset.sessaoId;
-        // Atualizar preço se a sessão tem preço diferente
-        const preco = parseFloat(card.dataset.sessaoPreco) || <?php echo $preco_base; ?>;
-        if (window.taCheckoutConfig) window.taCheckoutConfig.precoPorPessoa = preco;
-    });
-    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') card.click(); });
-});
 
 // Atualizar display de qtd inscritos
 const observer = new MutationObserver(() => {
