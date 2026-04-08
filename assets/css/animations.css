@@ -1,0 +1,239 @@
+/* =========================================
+   ANIMATIONS – Keyframes e Classes de Animação
+   ========================================= */
+
+/* === KEYFRAMES === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: var(--sombra-glow);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 50px rgba(0, 156, 59, 0.5);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes rotacionar {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes gradienteAnimar {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes piscar {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+@keyframes entrarHero {
+  0%   { opacity: 0; transform: translateY(60px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes scrollIndicador {
+  0%   { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(12px); }
+}
+
+/* === CLASSES DE ANIMAÇÃO === */
+.animar-entrada {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.animar-entrada.visivel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Delays em cascata */
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+.delay-5 { transition-delay: 0.5s; }
+.delay-6 { transition-delay: 0.6s; }
+
+/* === HERO ANIMAÇÕES === */
+.hero-titulo {
+  animation: entrarHero 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.hero-subtitulo {
+  animation: entrarHero 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
+}
+
+.hero-botoes {
+  animation: entrarHero 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s both;
+}
+
+/* === SCROLL INDICATOR === */
+.scroll-indicador {
+  position: absolute;
+  bottom: var(--espaco-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-sm);
+  z-index: 2;
+  color: var(--texto-secundario);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.scroll-indicador__seta {
+  width: 30px;
+  height: 50px;
+  border: 2px solid var(--borda-glass);
+  border-radius: var(--raio-full);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.scroll-indicador__seta::after {
+  content: '';
+  width: 4px;
+  height: 8px;
+  background: var(--cor-secundaria);
+  border-radius: var(--raio-full);
+  animation: scrollIndicador 1.5s ease-in-out infinite;
+}
+
+/* === GRADIENTE ANIMADO (usado no hero e CTA) === */
+.gradiente-animado {
+  background: linear-gradient(
+    270deg,
+    var(--cor-primaria),
+    var(--cor-terciaria),
+    var(--cor-primaria)
+  );
+  background-size: 400% 400%;
+  animation: gradienteAnimar 8s ease infinite;
+}
+
+/* === FLOAT (para ícones e elementos decorativos) === */
+.flutuar { animation: float 4s ease-in-out infinite; }
+.flutuar--lento { animation: float 6s ease-in-out infinite; }
+.flutuar--rapido { animation: float 2.5s ease-in-out infinite; }
+
+/* === PULSE (CTA, ícone de reserva) === */
+.pulsar { animation: pulse 3s ease-in-out infinite; }
+
+/* === SHIMMER (loading skeleton) === */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--fundo-card) 25%,
+    var(--fundo-elevado) 50%,
+    var(--fundo-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* === LINHA DECORATIVA ANIMADA === */
+.linha-animada {
+  position: absolute;
+  height: 2px;
+  background: var(--gradiente-cta);
+  bottom: 0;
+  left: 0;
+  width: 0;
+  transition: width var(--transicao-lenta);
+}
+
+*:hover > .linha-animada {
+  width: 100%;
+}
+
+/* Respeitar preferências de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animar-entrada {
+    opacity: 1;
+    transform: none;
+  }
+}

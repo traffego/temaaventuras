@@ -1,0 +1,102 @@
+/* =========================================
+   VARIÁVEIS DO TEMA - TOKENS DINÂMICOS
+   Geradas também via Customizer (customizer.php)
+   ========================================= */
+:root {
+  /* === PALETA PRINCIPAL (Bandeira do Brasil) === */
+  --cor-primaria:       #009C3B; /* Verde */
+  --cor-secundaria:     #FFDF00; /* Amarelo */
+  --cor-terciaria:      #002776; /* Azul */
+  --cor-neutra:         #FFFFFF; /* Branco */
+
+  /* === VARIAÇÕES AUTOMÁTICAS === */
+  --cor-primaria-dark:  color-mix(in srgb, var(--cor-primaria) 70%, #000);
+  --cor-primaria-light: color-mix(in srgb, var(--cor-primaria) 40%, #fff);
+  --cor-sec-dark:       color-mix(in srgb, var(--cor-secundaria) 70%, #000);
+  --cor-ter-dark:       color-mix(in srgb, var(--cor-terciaria) 70%, #000);
+
+  /* === FUNDO E SUPERFÍCIES === */
+  --fundo-base:         #0A110D;
+  --fundo-card:         #111A12;
+  --fundo-elevado:      #182117;
+  --fundo-glass:        rgba(0, 156, 59, 0.08);
+  --borda-glass:        rgba(0, 156, 59, 0.2);
+
+  /* === TEXTO === */
+  --texto-primario:     #F4F9F5;
+  --texto-secundario:   #B0C4B5;
+  --texto-muted:        #6B8A72;
+  --texto-inverso:      #0A110D;
+
+  /* === GRADIENTES === */
+  --gradiente-hero:     linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-terciaria) 100%);
+  --gradiente-card:     linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.85) 100%);
+  --gradiente-cta:      linear-gradient(90deg, var(--cor-primaria), var(--cor-terciaria));
+  --gradiente-botao:    linear-gradient(135deg, var(--cor-secundaria), var(--cor-primaria));
+
+  /* === TIPOGRAFIA === */
+  --fonte-titulo:       'Bebas Neue', 'Arial Black', sans-serif;
+  --fonte-corpo:        'Inter', 'Helvetica Neue', sans-serif;
+
+  --tamanho-h1:         clamp(3rem, 8vw, 7rem);
+  --tamanho-h2:         clamp(2rem, 5vw, 4rem);
+  --tamanho-h3:         clamp(1.4rem, 3vw, 2rem);
+  --tamanho-corpo:      1rem;
+  --tamanho-pequeno:    0.875rem;
+
+  --peso-leve:          300;
+  --peso-normal:        400;
+  --peso-medio:         500;
+  --peso-negrito:       700;
+  --peso-extra:         900;
+
+  /* === ESPAÇAMENTO === */
+  --espaco-xs:          0.25rem;
+  --espaco-sm:          0.5rem;
+  --espaco-md:          1rem;
+  --espaco-lg:          1.5rem;
+  --espaco-xl:          2rem;
+  --espaco-2xl:         3rem;
+  --espaco-3xl:         5rem;
+  --espaco-4xl:         8rem;
+
+  /* === BORDAS === */
+  --raio-sm:            4px;
+  --raio-md:            8px;
+  --raio-lg:            16px;
+  --raio-xl:            24px;
+  --raio-full:          9999px;
+
+  /* === SOMBRAS === */
+  --sombra-card:        0 8px 32px rgba(0, 0, 0, 0.4);
+  --sombra-elevada:     0 20px 60px rgba(0, 0, 0, 0.6);
+  --sombra-glow:        0 0 30px rgba(0, 156, 59, 0.3);
+  --sombra-glow-sec:    0 0 30px rgba(255, 223, 0, 0.3);
+
+  /* === TRANSIÇÕES === */
+  --transicao-rapida:   0.15s ease;
+  --transicao-normal:   0.3s ease;
+  --transicao-lenta:    0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* === LAYOUT === */
+  --largura-max:        1400px;
+  --largura-conteudo:   900px;
+  --altura-nav:         80px;
+
+  /* === Z-INDEX === */
+  --z-base:             1;
+  --z-elevado:          10;
+  --z-modal:            100;
+  --z-nav:              1000;
+  --z-topo:             9999;
+}
+
+/* === MODO CLARO (se implementado no futuro) === */
+@media (prefers-color-scheme: light) {
+  :root.tema-auto {
+    --fundo-base:     #F4F9F5;
+    --fundo-card:     #FFFFFF;
+    --texto-primario: #0A110D;
+    --texto-secundario: #2A3D2F;
+  }
+}
