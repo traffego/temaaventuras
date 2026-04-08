@@ -27,7 +27,7 @@ $at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
 <main id="conteudo-principal" role="main">
 
     <!-- Hero da Atividade -->
-    <div class="page-banner atividade-banner" style="min-height:70vh;">
+    <div class="page-banner atividade-banner" style="min-height:0;padding-bottom:var(--espaco-3xl);">
         <div class="page-banner__overlay" aria-hidden="true"></div>
         <?php if ( has_post_thumbnail() ) : ?>
             <?php the_post_thumbnail( 'aventura-banner', [ 'class' => 'page-banner__img', 'loading' => 'eager', 'alt' => '' ] ); ?>
