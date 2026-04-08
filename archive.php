@@ -45,16 +45,42 @@ get_header();
                             $nivel   = get_post_meta(get_the_ID(),'_atividade_nivel',true) ?: 'facil';
                             $duracao = get_post_meta(get_the_ID(),'_atividade_duracao',true);
                             $preco   = get_post_meta(get_the_ID(),'_atividade_preco',true);
+                            
+                            $at_data    = get_post_meta( get_the_ID(), '_atividade_data', true );
+                            $vagas_info = ta_vagas_disponiveis( get_the_ID() );
+                            $at_img_id  = (int) get_post_meta( get_the_ID(), '_atividade_imagem', true );
                     ?>
                         <article id="post-<?php the_ID(); ?>" <?php post_class('card-atividade'); ?> style="aspect-ratio:3/4;" aria-label="<?php the_title_attribute(); ?>">
-                            <?php if (has_post_thumbnail()) the_post_thumbnail('aventura-card',['class'=>'card-atividade__img','loading'=>'lazy','alt'=>get_the_title()]); ?>
+                            <?php 
+                            if ($at_img_id): 
+                                echo wp_get_attachment_image( $at_img_id, 'aventura-card', false, ['class'=>'card-atividade__img','loading'=>'lazy','alt'=>get_the_title()] );
+                            elseif (has_post_thumbnail()): 
+                                the_post_thumbnail('aventura-card',['class'=>'card-atividade__img','loading'=>'lazy','alt'=>get_the_title()]); 
+                            else: ?>
+                                <div class="card-atividade__img" style="background:var(--gradiente-hero);display:flex;align-items:center;justify-content:center;font-size:4rem;height:100%;">🌊</div>
+                            <?php endif; ?>
+                            
                             <div class="card-atividade__overlay">
-                                <div class="card-atividade__badge"><?php echo ta_nivel_badge($nivel); ?></div>
+                                <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;">
+                                    <div class="card-atividade__badge"><?php echo ta_nivel_badge($nivel); ?></div>
+                                    <?php if ($at_data): ?>
+                                        <div class="badge" style="background:rgba(0,0,0,0.5);font-size:0.7rem;backdrop-filter:blur(4px);">📅 <?php echo date_i18n('d/m', strtotime($at_data)); ?></div>
+                                    <?php endif; ?>
+                                </div>
                                 <h2 class="card-atividade__titulo"><?php the_title(); ?></h2>
                                 <div class="card-atividade__meta">
-                                    <?php if($duracao): ?><span class="card-atividade__detalhe">⏱ <?php echo esc_html($duracao); ?></span><?php endif; ?>
-                                    <?php if($preco): ?><span class="card-atividade__detalhe" style="color:var(--cor-secundaria);font-weight:700;"><?php echo ta_preco($preco); ?>/pessoa</span><?php endif; ?>
-                                    <a href="<?php the_permalink(); ?>" class="btn btn--secundario btn--pequeno">Ver Detalhes</a>
+                                    <?php if($at_data): 
+                                        if ($vagas_info['livres'] > 0): ?>
+                                            <span class="card-atividade__detalhe" style="color:#4ade80;">✅ <?php echo $vagas_info['livres']; ?> vagas</span>
+                                        <?php else: ?>
+                                            <span class="card-atividade__detalhe" style="color:#ef4444;">Lotado</span>
+                                        <?php endif;
+                                    elseif($duracao): ?>
+                                        <span class="card-atividade__detalhe">⏱ <?php echo esc_html($duracao); ?></span>
+                                    <?php endif; ?>
+                                    
+                                    <?php if($preco): ?><span class="card-atividade__detalhe" style="color:var(--cor-secundaria);font-weight:700;"><?php echo ta_preco($preco); ?> p/p</span><?php endif; ?>
+                                    <a href="<?php the_permalink(); ?>" class="btn btn--secundario btn--pequeno" style="padding:0.4rem 0.8rem;font-size:0.8rem;">Ver Detalhes</a>
                                 </div>
                             </div>
                         </article>
