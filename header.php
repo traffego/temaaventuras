@@ -34,11 +34,11 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
     <div class="container navbar__inner">
 
         <!-- LOGO -->
-        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="navbar__logo" aria-label="<?php bloginfo( 'name' ); ?> – Página Inicial">
+        <div class="navbar__logo">
             <?php if ( has_custom_logo() ) : ?>
                 <?php the_custom_logo(); ?>
             <?php else : ?>
-                <span class="navbar__logo-texto">
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="navbar__logo-texto" aria-label="<?php bloginfo( 'name' ); ?> – Página Inicial" style="text-decoration:none;">
                     <?php
                     $nome = ta_get( 'empresa_nome', get_bloginfo( 'name' ) );
                     $partes = explode( ' ', $nome, 2 );
@@ -47,9 +47,9 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
                         echo ' <span>' . esc_html( $partes[1] ) . '</span>';
                     }
                     ?>
-                </span>
+                </a>
             <?php endif; ?>
-        </a>
+        </div>
 
         <!-- MENU DESKTOP -->
         <nav class="navbar__menu" id="menu-desktop" role="navigation" aria-label="Menu Principal">
