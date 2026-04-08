@@ -310,18 +310,7 @@ function ta_checkout_url(int $atividade_id, string $sessao_id = ''): string {
     return add_query_arg($params, $base);
 }
 
-/* =========================================
-   HELPER: obter sessões de uma atividade
-   ========================================= */
-function ta_get_sessoes_atividade(int $atividade_id, bool $apenas_futuras = false): array {
-    $sessoes = get_post_meta($atividade_id, '_atividade_sessoes', true) ?: [];
-    if ($apenas_futuras) {
-        $hoje = date('Y-m-d');
-        $sessoes = array_filter($sessoes, fn($s) => $s['data'] >= $hoje);
-    }
-    usort($sessoes, fn($a, $b) => strcmp($a['data'] . $a['hora'], $b['data'] . $b['hora']));
-    return array_values($sessoes);
-}
+
 
 /* =========================================
    HELPER: vagas disponíveis de uma sessão
