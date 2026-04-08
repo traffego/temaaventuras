@@ -125,19 +125,26 @@
   align-items: center;
   gap: var(--espaco-sm);
   text-decoration: none;
+  min-width: 0; /* Permite truncamento do filho */
+  margin-right: 16px;
 }
 
 .navbar__logo-img {
   height: 44px;
   width: auto;
+  max-width: 100%;
 }
 
 .navbar__logo-texto {
   font-family: var(--fonte-titulo);
-  font-size: 1.6rem;
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
   letter-spacing: 0.05em;
   color: var(--texto-primario);
   line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .navbar__logo-texto span {
