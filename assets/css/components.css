@@ -133,14 +133,15 @@
 .navbar__logo img,
 .navbar__logo a,
 img.custom-logo,
-.custom-logo-link {
-  height: 100%;
-  max-height: var(--altura-nav);
-  width: auto;
-  object-fit: contain;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
+.custom-logo-link,
+.custom-logo-link img {
+  height: 100% !important;
+  max-height: var(--altura-nav) !important;
+  width: auto !important;
+  object-fit: contain !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .navbar__logo-texto {
