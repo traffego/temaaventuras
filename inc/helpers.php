@@ -159,3 +159,24 @@ function ta_minha_reserva_url(): string {
     $page = get_page_by_path( 'minha-reserva' );
     return $page ? get_permalink( $page ) : home_url( '/minha-reserva/' );
 }
+
+/**
+ * Verifica se a URL é do YouTube
+ */
+function ta_is_youtube_url( $url ) {
+    return ( strpos( $url, 'youtube.com/' ) !== false || strpos( $url, 'youtu.be/' ) !== false );
+}
+
+/**
+ * Converte link comum do YouTube em link Embed
+ */
+function ta_get_youtube_embed_url( $url ) {
+    // Regex para capturar ID do vídeo do YouTube
+    preg_match( '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i', $url, $match );
+    if ( isset( $match[1] ) ) {
+        $id = $match[1];
+        // Retorna URL embed com parâmetros de autoplay, mute e loop infinito
+        return "https://www.youtube.com/embed/{$id}?autoplay=1&mute=1&loop=1&playlist={$id}&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1";
+    }
+    return $url;
+}

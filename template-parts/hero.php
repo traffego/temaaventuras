@@ -21,12 +21,22 @@ $wa_link        = ta_whatsapp_link( 'Olá! Gostaria de reservar uma aventura.' )
 
     <!-- FUNDO: Vídeo ou Imagem -->
     <?php if ( $hero_video ) : ?>
-        <video class="hero__fundo"
-               autoplay muted loop playsinline
-               aria-hidden="true"
-               poster="<?php echo esc_url( $hero_imagem ); ?>">
-            <source src="<?php echo esc_url( $hero_video ); ?>" type="video/mp4">
-        </video>
+        <div class="hero__fundo-container">
+            <?php if ( ta_is_youtube_url( $hero_video ) ) : ?>
+                <iframe class="hero__fundo hero__fundo--youtube"
+                        src="<?php echo esc_url( ta_get_youtube_embed_url( $hero_video ) ); ?>"
+                        frameborder="0"
+                        allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope"
+                        title="Background Video"></iframe>
+            <?php else : ?>
+                <video class="hero__fundo"
+                       autoplay muted loop playsinline
+                       aria-hidden="true"
+                       poster="<?php echo esc_url( $hero_imagem ); ?>">
+                    <source src="<?php echo esc_url( $hero_video ); ?>" type="video/mp4">
+                </video>
+            <?php endif; ?>
+        </div>
     <?php else : ?>
         <img class="hero__fundo"
              src="<?php echo esc_url( $hero_imagem ); ?>"
@@ -138,6 +148,23 @@ $wa_link        = ta_whatsapp_link( 'Olá! Gostaria de reservar uma aventura.' )
     line-height: 1.7;
     margin-bottom: var(--espaco-2xl);
 }
+
+/* Fundo de vídeo */
+.hero__fundo-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.hero__fundo--youtube {
+    width: 300%;
+    height: 300%;
+    margin-left: -100%;
+    margin-top: -100%;
+    pointer-events: none;
+}
+
 
 .hero__botoes {
     display: flex;

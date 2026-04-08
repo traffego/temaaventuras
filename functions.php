@@ -49,8 +49,8 @@ function tema_aventuras_setup() {
 
     // Logo personalizado no Customizer
     add_theme_support( 'custom-logo', [
-        'height'               => 80,
-        'width'                => 250,
+        'height'               => 100,
+        'width'                => 400,
         'flex-height'          => true,
         'flex-width'           => true,
         'unlink-homepage-logo' => false,

@@ -132,9 +132,9 @@
 .navbar__logo-img,
 .navbar__logo img,
 img.custom-logo {
-  height: 44px;
+  max-height: calc(var(--altura-nav) - 20px);
+  height: auto;
   width: auto;
-  max-width: 100%;
   object-fit: contain;
   flex-shrink: 0;
 }
