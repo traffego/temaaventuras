@@ -90,7 +90,7 @@ get_header();
                     <form id="form-checkout" method="post" novalidate>
                         <?php wp_nonce_field('ta_checkout_nonce', '_ta_nonce'); ?>
                         <input type="hidden" name="atividade_id" value="<?php echo $atividade_id; ?>">
-                        <input type="hidden" id="campo-metodo" name="metodo" value="pix">
+                        <input type="hidden" id="campo-metodo" name="metodo" value="">
                         <input type="hidden" id="campo-reserva-id" name="reserva_id" value="">
                         <input type="hidden" id="campo-valor-total" name="valor_total" value="">
                         <input type="hidden" id="campo-qtd-inscritos" name="qtd_inscritos" value="1">
@@ -144,7 +144,7 @@ get_header();
 
                             <!-- Seletor de método -->
                             <div class="metodo-grid" role="radiogroup" aria-label="Método de pagamento">
-                                <div class="metodo-card selecionado" data-metodo="pix" role="radio" aria-checked="true"
+                                <div class="metodo-card" data-metodo="pix" role="radio" aria-checked="false"
                                     tabindex="0">
                                     <span class="metodo-card__icon">🏦</span>
                                     <div class="metodo-card__nome">PIX</div>
@@ -250,7 +250,7 @@ get_header();
 
 <!-- BOTÃO FLUTUANTE -->
 <div class="checkout-submit-wrapper" id="checkout-submit-wrapper"
-    style="position:fixed; bottom:10px; width:90%; left:20px;">
+    style="position:fixed; bottom:10px; width:90%; left:20px; display:none;">
     <button type="button" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit" disabled>
         🔒 Pagar <span id="btn-total-display">R$ 0,00</span>
     </button>
