@@ -82,12 +82,7 @@
   document.getElementById('btn-finalizar')?.addEventListener('click', () => {
     if (!validarTudo()) return;
     const secao = document.getElementById('secao-pagamento');
-    if (secao) {
-      secao.style.display = '';
-      setTimeout(() => secao.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-    }
-    // Esconde o botão "Pagar" e mostra instrução de selecionar método
-    document.getElementById('btn-finalizar').style.display = 'none';
+    if (secao) secao.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   // =========================================

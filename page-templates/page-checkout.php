@@ -217,7 +217,7 @@ get_header();
                         </div>
 
                         <!-- ── MÉTODO DE PAGAMENTO (oculto até clicar Pagar) ── -->
-                        <div class="checkout-section" id="secao-pagamento" style="display:none;">
+                        <div class="checkout-section" id="secao-pagamento">
                             <h2 class="checkout-section__titulo">💳 Como quer pagar?</h2>
 
                             <div class="metodo-grid" role="radiogroup" aria-label="Método de pagamento">
