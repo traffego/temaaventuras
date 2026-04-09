@@ -176,6 +176,15 @@
         identificationNumber: { id: 'mp-identificationNumber', placeholder: '000.000.000-00' },
         issuer: { id: 'mp-issuer' },
       },
+      style: {
+        customVariables: {
+          textPrimaryColor: '#e8e8e8',
+          textSecondaryColor: '#b0b0b0',
+          inputBackgroundColor: 'transparent',
+          formBackgroundColor: 'transparent',
+          baseColor: '#00c853',
+        },
+      },
       callbacks: {
         onFormMounted: err => { 
           if (err) return console.error('CardForm error:', err); 

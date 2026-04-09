@@ -635,13 +635,17 @@ img.custom-logo,
 /* Corrige o iframe injetado pelo Mercado Pago */
 .mp-field-wrapper {
   display: flex !important;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  padding: 0 var(--espaco-md) !important;
+  overflow: hidden;
 }
 
 .mp-field-wrapper iframe {
   width: 100% !important;
-  height: 100% !important;
+  height: 44px !important;
   border: none !important;
   padding: 0 !important;
   margin: 0 !important;
