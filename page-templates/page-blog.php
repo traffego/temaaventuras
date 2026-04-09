@@ -41,21 +41,13 @@ $post_destaque = $destaque_query->have_posts() ? $destaque_query->posts[0] : nul
 
 <main id="conteudo-principal" role="main">
 
-    <!-- Banner -->
-    <div class="page-banner">
-        <div class="page-banner__overlay" aria-hidden="true"></div>
-        <?php 
-        $banner_img = get_the_post_thumbnail_url(get_the_ID(), 'aventura-banner') ?: wp_get_attachment_image_url( 78, 'aventura-banner' );
-        if ($banner_img) : ?>
-            <img src="<?php echo esc_url($banner_img); ?>" class="page-banner__img" loading="eager" alt="" />
+    <!-- Cabeçalho simples -->
+    <div class="container" style="padding-top:calc(var(--altura-nav) + var(--espaco-3xl));padding-bottom:var(--espaco-2xl);">
+        <span class="section-header__eyebrow">📝 <?php _e('Aventuras & Dicas', 'temaaventuras'); ?></span>
+        <h1 class="page-banner__titulo" style="font-size:clamp(2rem,5vw,3.5rem);margin-top:var(--espaco-md);"><?php the_title(); ?></h1>
+        <?php if (get_the_excerpt()) : ?>
+            <p style="color:var(--texto-secundario);max-width:600px;margin-top:var(--espaco-md);"><?php the_excerpt(); ?></p>
         <?php endif; ?>
-        <div class="container page-banner__conteudo">
-            <span class="section-header__eyebrow" style="margin-bottom:var(--espaco-md);">📝 <?php _e('Aventuras & Dicas', 'temaaventuras'); ?></span>
-            <h1 class="page-banner__titulo"><?php the_title(); ?></h1>
-            <?php if (get_the_excerpt()) : ?>
-                <p style="color:rgba(255,255,255,0.75);max-width:600px;margin-top:var(--espaco-md);"><?php the_excerpt(); ?></p>
-            <?php endif; ?>
-        </div>
     </div>
 
     <?php if ($post_destaque && !$cat_slug && $paged === 1) :
