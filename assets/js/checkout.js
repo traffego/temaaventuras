@@ -1,57 +1,48 @@
 /**
- * checkout.js – Single-page checkout com Mercado Pago
- * Sem stepper. Tudo visível numa única tela.
+ * checkout.js – Fluxo de reserva de atividade
+ * @package TemaAventuras
  */
-
 'use strict';
 
 (function () {
 
-  const CFG = window.taCheckoutConfig || {};
+  const CFG            = window.taCheckoutConfig || {};
   const { publicKey, ajaxUrl, nonce, parcelas_max } = CFG;
   const pricePerPerson = parseFloat(CFG.precoPorPessoa || 0);
+  let mpInstance       = null;
 
   // =========================================
-  // SELEÇÃO DE MÉTODO DE PAGAMENTO
+  // VALOR TOTAL
   // =========================================
-  document.querySelectorAll('.metodo-card').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.metodo-card').forEach(c => {
-        c.classList.remove('selecionado');
-        c.setAttribute('aria-checked', 'false');
-      });
-      card.classList.add('selecionado');
-      card.setAttribute('aria-checked', 'true');
+  function atualizarValorTotal() {
+    const qtdExtras = document.querySelectorAll('.inscrito-item').length;
+    const qtd       = 1 + qtdExtras;
+    const total     = qtd * pricePerPerson;
 
-      const metodo = card.dataset.metodo;
-      document.querySelectorAll('[data-metodo-form]').forEach(f => {
-        const show = f.dataset.metodoForm === metodo;
-        f.style.display = show ? '' : 'none';
-      });
-      document.getElementById('campo-metodo').value = metodo;
+    const fmt = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
-      const btnPagar    = document.getElementById('btn-finalizar');
-      const btnCartao   = document.getElementById('btn-confirmar-cartao');
+    const elBtn   = document.getElementById('btn-total-display');
+    const elTotal = document.getElementById('resumo-total');
+    const elQtd   = document.getElementById('resumo-qtd');
 
-      if (metodo === 'pix') {
-        if (btnPagar)  btnPagar.style.display  = 'none';
-        if (btnCartao) btnCartao.style.display = 'none';
-        const form = document.getElementById('form-checkout');
-        if (form) form.requestSubmit();
-      } else {
-        if (btnPagar)  btnPagar.style.display  = 'none';
-        if (btnCartao) btnCartao.style.display = '';
-        if (!mpInstance) setTimeout(initCardForm, 300);
-      }
-    });
-  });
+    if (elBtn)   elBtn.textContent   = fmt(total);
+    if (elTotal) elTotal.textContent = fmt(total);
+    if (elQtd)   elQtd.textContent   = qtd;
+
+    const campoTotal = document.getElementById('campo-valor-total');
+    const campoQtd   = document.getElementById('campo-qtd-inscritos');
+    if (campoTotal) campoTotal.value = total.toFixed(2);
+    if (campoQtd)   campoQtd.value   = qtd;
+  }
+
+  atualizarValorTotal();
 
   // =========================================
   // ACOMPANHANTES DINÂMICOS
   // =========================================
+  let adicCount = 0;
   const addInscritoBtn = document.getElementById('add-inscrito');
   const inscritosWrap  = document.getElementById('inscritos-wrap');
-  let adicCount        = 0;
 
   addInscritoBtn?.addEventListener('click', () => {
     adicCount++;
@@ -85,53 +76,75 @@
     atualizarValorTotal();
   });
 
-  document.addEventListener('click', e => {
-    if (e.target.matches('.btn-remover-inscrito')) {
-      e.target.closest('.inscrito-item')?.remove();
-      atualizarValorTotal();
+  // =========================================
+  // BOTÃO PAGAR → valida + revela pagamento
+  // =========================================
+  document.getElementById('btn-finalizar')?.addEventListener('click', () => {
+    if (!validarTudo()) return;
+    const secao = document.getElementById('secao-pagamento');
+    if (secao) {
+      secao.style.display = '';
+      setTimeout(() => secao.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     }
+    // Esconde o botão "Pagar" e mostra instrução de selecionar método
+    document.getElementById('btn-finalizar').style.display = 'none';
   });
 
   // =========================================
-  // CALCULAR VALOR TOTAL E ATUALIZAR BOTÃO
+  // SELEÇÃO DE MÉTODO DE PAGAMENTO
   // =========================================
-  function atualizarValorTotal() {
-    // 1 (Responsável) + qtd de acompanhantes
-    const qtdExtras = document.querySelectorAll('.inscrito-item').length;
-    const qtd       = 1 + qtdExtras;
-    const total     = qtd * pricePerPerson;
-    
-    const btnTotal = document.getElementById('btn-total-display');
-    if (btnTotal) {
-      btnTotal.textContent = 'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-    }
-    
-    // Como apagamos o aside, não atualizar mais #valor-total-display ou #qtd-inscritos-display
-    const campoTotal = document.getElementById('campo-valor-total');
-    const campoQtd   = document.getElementById('campo-qtd-inscritos');
-    
-    if (campoTotal) campoTotal.value = total.toFixed(2);
-    if (campoQtd)   campoQtd.value = qtd;
-  }
+  document.querySelectorAll('.metodo-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.metodo-card').forEach(c => {
+        c.classList.remove('selecionado');
+        c.setAttribute('aria-checked', 'false');
+      });
+      card.classList.add('selecionado');
+      card.setAttribute('aria-checked', 'true');
 
-  atualizarValorTotal();
+      const metodo = card.dataset.metodo;
+      document.querySelectorAll('[data-metodo-form]').forEach(f => {
+        const show = f.dataset.metodoForm === metodo;
+        f.style.display = show ? '' : 'none';
+      });
+      document.getElementById('campo-metodo').value = metodo;
+
+      const btnConfirmar = document.getElementById('btn-confirmar-cartao');
+
+      if (metodo === 'pix') {
+        if (btnConfirmar) btnConfirmar.style.display = 'none';
+        // Submete o form direto — gera PIX via AJAX
+        const form = document.getElementById('form-checkout');
+        if (form) form.requestSubmit();
+      } else {
+        if (btnConfirmar) btnConfirmar.style.display = '';
+        if (!mpInstance) setTimeout(initCardForm, 300);
+        setTimeout(preencherDadosCartao, 100);
+      }
+    });
+  });
 
   // =========================================
-  // COPIAR DADOS DO RESPONSÁVEL PRO CARTÃO
+  // BOTÃO CONFIRMAR CARTÃO
+  // =========================================
+  document.getElementById('btn-confirmar-cartao')?.addEventListener('click', () => {
+    const form = document.getElementById('form-checkout');
+    if (form) form.requestSubmit();
+  });
+
+  // =========================================
+  // COPIAR DADOS DO RESPONSÁVEL → CARTÃO
   // =========================================
   const chkUsarResp = document.getElementById('usar-dados-resp');
-  const mpName  = document.getElementById('mp-cardholderName');
-  const mpCpf   = document.getElementById('mp-identificationNumber');
-  const mpEmail = document.getElementById('mp-email');
+  const mpName      = document.getElementById('mp-cardholderName');
+  const mpCpf       = document.getElementById('mp-identificationNumber');
+  const mpEmail     = document.getElementById('mp-email');
 
   function preencherDadosCartao() {
     if (!chkUsarResp?.checked) return;
-    const nome  = document.getElementById('resp-nome')?.value || '';
-    const cpf   = document.getElementById('resp-cpf')?.value || '';
-    const email = document.getElementById('resp-email')?.value || '';
-    if (mpName)  mpName.value = nome;
-    if (mpCpf)   mpCpf.value = cpf;
-    if (mpEmail) mpEmail.value = email;
+    if (mpName)  mpName.value  = document.getElementById('resp-nome')?.value  || '';
+    if (mpCpf)   mpCpf.value   = document.getElementById('resp-cpf')?.value   || '';
+    if (mpEmail) mpEmail.value = document.getElementById('resp-email')?.value || '';
   }
 
   chkUsarResp?.addEventListener('change', () => {
@@ -140,62 +153,50 @@
       preencherDadosCartao();
       if (wrap) wrap.style.display = 'none';
     } else {
-      if (mpName)  mpName.value = '';
-      if (mpCpf)   mpCpf.value = '';
+      if (mpName)  mpName.value  = '';
+      if (mpCpf)   mpCpf.value   = '';
       if (mpEmail) mpEmail.value = '';
       if (wrap) wrap.style.display = '';
     }
   });
 
-  // Preenche ao selecionar cartão como método
-  document.querySelectorAll('.metodo-card').forEach(card => {
-    card.addEventListener('click', () => {
-      if (card.dataset.metodo === 'credit_card') {
-        setTimeout(preencherDadosCartao, 100);
-      }
-    });
-  });
-
   // =========================================
   // MERCADO PAGO – CARDFORM
   // =========================================
-  let mpInstance = null;
-
   function initCardForm() {
     if (!window.MercadoPago || !publicKey) return;
-
     mpInstance = new window.MercadoPago(publicKey, { locale: 'pt-BR' });
 
     const cardForm = mpInstance.cardForm({
       amount: document.getElementById('campo-valor-total')?.value || '0',
       iframe: true,
       form: {
-        id: 'form-cartao',
-        cardholderName: { id: 'mp-cardholderName', placeholder: 'Nome como no cartão' },
-        cardholderEmail: { id: 'mp-email', placeholder: 'email@dominio.com' },
-        cardNumber: { id: 'mp-cardNumber', placeholder: '•••• •••• •••• ••••' },
-        cardExpirationMonth: { id: 'mp-cardExpirationMonth', placeholder: 'MM' },
-        cardExpirationYear: { id: 'mp-cardExpirationYear', placeholder: 'YY' },
-        securityCode: { id: 'mp-securityCode', placeholder: 'CVV' },
-        installments: { id: 'mp-installments' },
+        id:                 'form-cartao',
+        cardholderName:     { id: 'mp-cardholderName',        placeholder: 'Nome como no cartão' },
+        cardholderEmail:    { id: 'mp-email',                 placeholder: 'email@dominio.com' },
+        cardNumber:         { id: 'mp-cardNumber',            placeholder: '•••• •••• •••• ••••' },
+        cardExpirationMonth:{ id: 'mp-cardExpirationMonth',   placeholder: 'MM' },
+        cardExpirationYear: { id: 'mp-cardExpirationYear',    placeholder: 'YY' },
+        securityCode:       { id: 'mp-securityCode',          placeholder: 'CVV' },
+        installments:       { id: 'mp-installments' },
         identificationType: { id: 'mp-identificationType' },
-        identificationNumber: { id: 'mp-identificationNumber', placeholder: '000.000.000-00' },
-        issuer: { id: 'mp-issuer' },
+        identificationNumber:{ id: 'mp-identificationNumber', placeholder: '000.000.000-00' },
+        issuer:             { id: 'mp-issuer' },
       },
       style: {
         customVariables: {
-          textPrimaryColor: '#e8e8e8',
+          textPrimaryColor:   '#e8e8e8',
           textSecondaryColor: '#b0b0b0',
           inputBackgroundColor: 'transparent',
-          formBackgroundColor: 'transparent',
+          formBackgroundColor:  'transparent',
           baseColor: '#00c853',
         },
       },
       callbacks: {
-        onFormMounted: err => { 
-          if (err) return console.error('CardForm error:', err); 
-          const btnCartao = document.getElementById('btn-confirmar-cartao');
-          if (btnCartao) btnCartao.disabled = false;
+        onFormMounted: err => {
+          if (err) return console.error('CardForm:', err);
+          const btn = document.getElementById('btn-confirmar-cartao');
+          if (btn) btn.disabled = false;
         },
         onSubmit: async e => {
           e.preventDefault();
@@ -205,62 +206,41 @@
           } = cardForm.getCardFormData();
 
           setLoading(true);
-
           const fd = new FormData();
-          fd.append('action', 'ta_processar_cartao');
-          fd.append('nonce', nonce);
+          fd.append('action',     'ta_processar_cartao');
+          fd.append('nonce',      nonce);
           fd.append('reserva_id', document.getElementById('campo-reserva-id')?.value || '');
-          fd.append('token', token);
-          fd.append('pm_id', paymentMethodId);
-          fd.append('issuer_id', issuerId);
-          fd.append('parcelas', installments);
-          fd.append('email', cardholderEmail);
-          fd.append('cpf', identificationNumber);
-          fd.append('valor', amount);
+          fd.append('token',      token);
+          fd.append('pm_id',      paymentMethodId);
+          fd.append('issuer_id',  issuerId);
+          fd.append('parcelas',   installments);
+          fd.append('email',      cardholderEmail);
+          fd.append('cpf',        identificationNumber);
+          fd.append('valor',      amount);
 
           try {
             const res  = await fetch(ajaxUrl, { method: 'POST', body: fd });
             const json = await res.json();
-
             if (json.success && json.data.aprovado) {
               window.location.href = json.data.redirect;
             } else {
               mostrarErro(json.data?.message || 'Pagamento não aprovado. Tente novamente.');
             }
-          } catch (err) {
-            mostrarErro('Erro de conexão. Verifique sua internet.');
-          } finally {
-            setLoading(false);
-          }
+          } catch { mostrarErro('Erro de conexão. Verifique sua internet.'); }
+          finally  { setLoading(false); }
         },
-        onFetching: resource => {
-          const progress = document.getElementById('mp-progress');
-          if (progress) progress.style.display = 'block';
-          return () => { if (progress) progress.style.display = 'none'; };
+        onFetching: () => {
+          const p = document.getElementById('mp-progress');
+          if (p) p.style.display = 'block';
+          return () => { if (p) p.style.display = 'none'; };
         },
       },
     });
   }
 
   // =========================================
-  // SUBMIT PRINCIPAL
+  // SUBMIT PRINCIPAL (PIX)
   // =========================================
-  // btn-finalizar → valida + revela seção de pagamento
-  document.getElementById('btn-finalizar')?.addEventListener('click', () => {
-    if (!validarTudo()) return;
-    const secao = document.getElementById('secao-pagamento');
-    if (secao) {
-      secao.style.display = '';
-      secao.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
-
-  // btn-confirmar-cartao → dispara submit do CardForm
-  document.getElementById('btn-confirmar-cartao')?.addEventListener('click', () => {
-    const form = document.getElementById('form-checkout');
-    if (form) form.requestSubmit();
-  });
-
   document.getElementById('form-checkout')?.addEventListener('submit', async function(e) {
     e.preventDefault();
     if (!validarTudo()) return;
@@ -268,7 +248,7 @@
     setLoading(true);
     const fd = new FormData(this);
     fd.append('action', 'ta_criar_reserva_checkout');
-    fd.append('nonce', nonce);
+    fd.append('nonce',  nonce);
 
     try {
       const res  = await fetch(ajaxUrl, { method: 'POST', body: fd });
@@ -280,20 +260,18 @@
 
         if (metodo === 'pix') {
           renderizarPix(json.data.pix);
-          const pixModal = document.getElementById('pix-modal');
-          if (pixModal) pixModal.style.display = 'flex';
+          const modal = document.getElementById('pix-modal');
+          if (modal) modal.style.display = 'flex';
           iniciarPollingPix(json.data.reserva_id);
-        } else {
-          // Cartão: já foi processado pelo CardForm
         }
       } else {
         mostrarErro(json.data?.message || 'Erro ao processar. Tente novamente.');
+        // Reexibir botão Pagar se der erro
+        const btn = document.getElementById('btn-finalizar');
+        if (btn) btn.style.display = '';
       }
-    } catch (err) {
-      mostrarErro('Erro de conexão. Verifique sua internet.');
-    } finally {
-      setLoading(false);
-    }
+    } catch { mostrarErro('Erro de conexão. Verifique sua internet.'); }
+    finally  { setLoading(false); }
   });
 
   // =========================================
@@ -311,16 +289,13 @@
     if (copyEl) copyEl.value = pix.qr_code || '';
 
     if (timer) {
-      let segundos = 30 * 60;
-      const interval = setInterval(() => {
-        segundos--;
-        const m = String(Math.floor(segundos / 60)).padStart(2, '0');
-        const s = String(segundos % 60).padStart(2, '0');
+      let seg = 30 * 60;
+      const iv = setInterval(() => {
+        seg--;
+        const m = String(Math.floor(seg / 60)).padStart(2, '0');
+        const s = String(seg % 60).padStart(2, '0');
         timer.textContent = `${m}:${s}`;
-        if (segundos <= 0) {
-          clearInterval(interval);
-          timer.textContent = 'Expirado';
-        }
+        if (seg <= 0) { clearInterval(iv); timer.textContent = 'Expirado'; }
       }, 1000);
     }
   }
@@ -338,7 +313,9 @@
     });
   });
 
+  // =========================================
   // FECHAR MODAL PIX
+  // =========================================
   document.getElementById('pix-modal-fechar')?.addEventListener('click', () => {
     const modal = document.getElementById('pix-modal');
     if (modal) modal.style.display = 'none';
@@ -349,16 +326,16 @@
   // =========================================
   function iniciarPollingPix(reservaId) {
     if (!reservaId) return;
-    const interval = setInterval(async () => {
+    const iv = setInterval(async () => {
       const fd = new FormData();
-      fd.append('action', 'ta_consultar_pix');
-      fd.append('nonce', nonce);
+      fd.append('action',     'ta_consultar_pix');
+      fd.append('nonce',      nonce);
       fd.append('reserva_id', reservaId);
       try {
         const res  = await fetch(ajaxUrl, { method: 'POST', body: fd });
         const json = await res.json();
         if (json.success && json.data.status === 'aprovado') {
-          clearInterval(interval);
+          clearInterval(iv);
           window.location.href = json.data.redirect;
         }
       } catch { /* silencioso */ }
@@ -369,18 +346,17 @@
   // MÁSCARAS
   // =========================================
   function aplicarMascaras(root = document) {
-    root.querySelectorAll('.cpf-mask').forEach(input => {
-      input.addEventListener('input', e => {
+    root.querySelectorAll('.cpf-mask').forEach(el => {
+      el.addEventListener('input', e => {
         let v = e.target.value.replace(/\D/g, '').slice(0, 11);
-        v = v.replace(/(\d{3})(\d)/, '$1.$2')
+        v = v.replace(/(\d{3})(\d)/,       '$1.$2')
              .replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
-             .replace(/\.(\d{3})(\d)/, '.$1-$2');
+             .replace(/\.(\d{3})(\d)/,     '.$1-$2');
         e.target.value = v;
       });
     });
-
-    root.querySelectorAll('.tel-mask').forEach(input => {
-      input.addEventListener('input', e => {
+    root.querySelectorAll('.tel-mask').forEach(el => {
+      el.addEventListener('input', e => {
         let v = e.target.value.replace(/\D/g, '').slice(0, 11);
         v = v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
         e.target.value = v;
@@ -391,24 +367,24 @@
   aplicarMascaras();
 
   // =========================================
-  // VALIDAÇÃO COMPLETA
+  // VALIDAÇÃO
   // =========================================
   function validarTudo() {
     const form = document.getElementById('form-checkout');
     if (!form) return true;
-    const inputs = form.querySelectorAll('[required]');
+    // Valida apenas os campos dentro das seções visíveis (exclui seção de pagamento ao validar campos pessoais)
+    const inputs = form.querySelectorAll('[required]:not(#secao-pagamento *)');
     let valid = true;
-    inputs.forEach(input => {
-      if (!input.value.trim()) {
-        input.classList.add('erro');
-        input.addEventListener('input', () => input.classList.remove('erro'), { once: true });
+    inputs.forEach(inp => {
+      if (!inp.value.trim()) {
+        inp.classList.add('erro');
+        inp.addEventListener('input', () => inp.classList.remove('erro'), { once: true });
         valid = false;
       }
     });
     if (!valid) {
       mostrarErro('Preencha todos os campos obrigatórios.');
-      const primeiro = form.querySelector('.erro');
-      if (primeiro) primeiro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      form.querySelector('.erro')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     return valid;
   }
@@ -416,11 +392,14 @@
   // =========================================
   // UTILITÁRIOS
   // =========================================
-  function setLoading(loading) {
-    const btn  = document.getElementById('btn-finalizar');
+  function setLoading(on) {
     const spin = document.getElementById('checkout-spinner');
-    if (btn)  btn.disabled = loading;
-    if (spin) spin.style.display = loading ? 'flex' : 'none';
+    if (spin) spin.style.display = on ? 'flex' : 'none';
+
+    const btnF = document.getElementById('btn-finalizar');
+    const btnC = document.getElementById('btn-confirmar-cartao');
+    if (btnF && btnF.style.display !== 'none') btnF.disabled = on;
+    if (btnC && btnC.style.display !== 'none') btnC.disabled = on;
   }
 
   function mostrarErro(msg) {

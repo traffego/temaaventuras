@@ -8,31 +8,66 @@
 defined('ABSPATH') || exit;
 
 $atividade_id = intval($_GET['id'] ?? 0);
-$atividade = $atividade_id ? get_post($atividade_id) : null;
+$atividade    = $atividade_id ? get_post($atividade_id) : null;
 
 if (!$atividade || $atividade->post_type !== 'atividade') {
     wp_redirect(home_url('/atividades'));
     exit;
 }
 
-$preco_base = (float) (get_post_meta($atividade_id, '_atividade_preco', true) ?: 0);
-$nivel = get_post_meta($atividade_id, '_atividade_nivel', true) ?: 'facil';
-$duracao = get_post_meta($atividade_id, '_atividade_duracao', true);
-$data_atv = get_post_meta($atividade_id, '_atividade_data', true);
-$hora_atv = get_post_meta($atividade_id, '_atividade_horario', true);
-$cfg = tema_aventuras_payment_config();
-$mp_pubkey = $cfg['sandbox'] ? $cfg['pubkey_sandbox'] : $cfg['pubkey_producao'];
-$parcelas = $cfg['parcelas_max'];
+// Dados da atividade
+$preco_base = (float)(get_post_meta($atividade_id, '_atividade_preco',   true) ?: 0);
+$nivel      =         get_post_meta($atividade_id, '_atividade_nivel',   true) ?: 'facil';
+$duracao    =         get_post_meta($atividade_id, '_atividade_duracao', true);
+$data_atv   =         get_post_meta($atividade_id, '_atividade_data',    true);
+$hora_atv   =         get_post_meta($atividade_id, '_atividade_horario', true);
+$vagas      = (int)   get_post_meta($atividade_id, '_atividade_vagas',   true);
+$obs        =         get_post_meta($atividade_id, '_atividade_obs',     true);
+$pessoas_min= (int)   get_post_meta($atividade_id, '_atividade_pessoas', true) ?: 1;
 
-wp_enqueue_style('ta-checkout-css', TEMA_AVENTURAS_URI . '/assets/css/checkout.css', [], TEMA_AVENTURAS_VERSION);
+// Imagem
+$at_img_id = (int) get_post_meta($atividade_id, '_atividade_imagem', true);
+$img_url   = $at_img_id
+    ? wp_get_attachment_image_url($at_img_id, 'full')
+    : get_the_post_thumbnail_url($atividade_id, 'full');
+if (!$img_url) $img_url = ta_get('hero_imagem', '');
+
+// Descrição
+$descricao = get_the_excerpt($atividade_id) ?: wp_trim_words(
+    wp_strip_all_tags(get_the_content(null, false, $atividade_id)), 25, '…'
+);
+
+// Vagas restantes (descontar reservas aprovadas)
+$reservas_aprovadas = get_posts([
+    'post_type'   => 'reserva',
+    'numberposts' => -1,
+    'post_status' => 'publish',
+    'meta_query'  => [
+        ['key' => '_reserva_atividade_id', 'value' => $atividade_id],
+        ['key' => '_reserva_status',       'value' => 'aprovado'],
+    ],
+]);
+$inscritos_confirmados = 0;
+foreach ($reservas_aprovadas as $r) {
+    $ins = get_post_meta($r->ID, '_reserva_inscritos', true) ?: [];
+    $inscritos_confirmados += count($ins);
+}
+$vagas_restantes = $vagas > 0 ? max(0, $vagas - $inscritos_confirmados) : null;
+
+// Config pagamento
+$cfg       = tema_aventuras_payment_config();
+$mp_pubkey = $cfg['sandbox'] ? $cfg['pubkey_sandbox'] : $cfg['pubkey_producao'];
+$parcelas  = $cfg['parcelas_max'];
+
+wp_enqueue_style('ta-checkout-css',  TEMA_AVENTURAS_URI . '/assets/css/checkout.css', [], TEMA_AVENTURAS_VERSION);
 wp_enqueue_script('mercadopago-sdk', 'https://sdk.mercadopago.com/js/v2', [], null, true);
-wp_enqueue_script('ta-checkout-js', TEMA_AVENTURAS_URI . '/assets/js/checkout.js', ['mercadopago-sdk'], TEMA_AVENTURAS_VERSION, true);
+wp_enqueue_script('ta-checkout-js',  TEMA_AVENTURAS_URI . '/assets/js/checkout.js', ['mercadopago-sdk'], TEMA_AVENTURAS_VERSION, true);
 wp_localize_script('ta-checkout-js', 'taCheckoutConfig', [
-    'publicKey' => $mp_pubkey,
-    'ajaxUrl' => admin_url('admin-ajax.php'),
-    'nonce' => wp_create_nonce('ta_checkout_nonce'),
-    'precoPorPessoa' => $preco_base,
-    'parcelas_max' => $parcelas,
+    'publicKey'     => $mp_pubkey,
+    'ajaxUrl'       => admin_url('admin-ajax.php'),
+    'nonce'         => wp_create_nonce('ta_checkout_nonce'),
+    'precoPorPessoa'=> $preco_base,
+    'parcelas_max'  => $parcelas,
 ]);
 
 get_header();
@@ -40,127 +75,169 @@ get_header();
 
 <main id="conteudo-principal" role="main">
 
-    <?php
-    $at_img_id = (int) get_post_meta($atividade_id, '_atividade_imagem', true);
-    $img_url = $at_img_id ? wp_get_attachment_image_url($at_img_id, 'full') : get_the_post_thumbnail_url($atividade_id, 'full');
-    if (!$img_url) {
-        if (ta_get('hero_imagem')) {
-            $img_url = ta_get('hero_imagem');
-        }
-    }
-    ?>
-
-    <!-- HERO DA ATIVIDADE -->
-    <div class="checkout-hero"
-        style="position:relative; width:100%; height:40vh; min-height:280px; background: url('<?php echo esc_url($img_url); ?>') center/cover no-repeat; display:flex; align-items:flex-end; padding-bottom:var(--espaco-xl);">
-        <div
-            style="position:absolute; inset:0; background: linear-gradient(to top, var(--fundo-base) 0%, rgba(10,17,13,0.2) 60%, rgba(10,17,13,0.7) 100%); z-index:1;">
-        </div>
-        <div class="container" style="position:relative; z-index:2;">
-            <span
-                style="display:inline-block; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--cor-secundaria); font-weight:700; margin-bottom:var(--espaco-sm);">🎫
-                Checkout Seguro</span>
-            <h1
-                style="font-size: clamp(2.5rem, 5vw, 4rem); text-shadow: 0 4px 15px rgba(0,0,0,0.8); margin-bottom: 0; line-height: 1;">
+    <!-- ===== HERO ===== -->
+    <?php if ($img_url): ?>
+    <div class="checkout-hero" style="position:relative;width:100%;height:38vh;min-height:260px;background:url('<?php echo esc_url($img_url); ?>') center/cover no-repeat;display:flex;align-items:flex-end;padding-bottom:var(--espaco-xl);">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,var(--fundo-base) 0%,rgba(10,17,13,.15) 55%,rgba(10,17,13,.75) 100%);z-index:1;"></div>
+        <div class="container" style="position:relative;z-index:2;">
+            <span style="display:inline-block;font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--cor-secundaria);font-weight:700;margin-bottom:var(--espaco-xs);">🎫 Checkout Seguro</span>
+            <h1 style="font-size:clamp(2rem,5vw,3.5rem);text-shadow:0 4px 15px rgba(0,0,0,.8);margin-bottom:0;line-height:1.1;">
                 <?php echo esc_html(get_the_title($atividade_id)); ?>
             </h1>
-            <div style="display:flex; gap:16px; margin-top:12px; color:#ddd; font-size:0.9rem;">
-                <?php if ($data_atv): ?><span>📅
-                        <?php echo date_i18n('d/m/Y', strtotime($data_atv)); ?></span><?php endif; ?>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;color:#ddd;font-size:.85rem;">
+                <?php if ($data_atv): ?><span>📅 <?php echo date_i18n('d/m/Y', strtotime($data_atv)); ?></span><?php endif; ?>
                 <?php if ($hora_atv): ?><span>⏰ <?php echo esc_html($hora_atv); ?></span><?php endif; ?>
+                <?php if ($duracao):  ?><span>⌛ <?php echo esc_html($duracao); ?></span><?php endif; ?>
+                <?php if ($vagas_restantes !== null): ?>
+                    <span style="color:<?php echo $vagas_restantes <= 3 ? '#f59e0b' : 'var(--cor-primaria)'; ?>;">
+                        🎟️ <?php echo $vagas_restantes; ?> vaga<?php echo $vagas_restantes !== 1 ? 's' : ''; ?> disponível<?php echo $vagas_restantes !== 1 ? 'eis' : ''; ?>
+                    </span>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
     <!-- Spinner -->
-    <div id="checkout-spinner" aria-live="polite" aria-label="Processando pagamento">
+    <div id="checkout-spinner" aria-live="polite" aria-label="Processando">
         <div class="spinner-ring"></div>
         <p style="color:var(--texto-primario)">Processando...</p>
     </div>
 
-    <!-- ERRO GLOBAL -->
+    <!-- Erro global -->
     <div class="checkout-erro" id="checkout-erro" role="alert"></div>
 
     <section class="checkout-page">
         <div class="container">
             <div class="checkout-grid">
-
-                <!-- ==================== COLUNA PRINCIPAL ==================== -->
                 <div class="checkout-main">
                     <form id="form-checkout" method="post" novalidate>
                         <?php wp_nonce_field('ta_checkout_nonce', '_ta_nonce'); ?>
-                        <input type="hidden" name="atividade_id" value="<?php echo $atividade_id; ?>">
-                        <input type="hidden" id="campo-metodo" name="metodo" value="">
-                        <input type="hidden" id="campo-reserva-id" name="reserva_id" value="">
-                        <input type="hidden" id="campo-valor-total" name="valor_total" value="">
+                        <input type="hidden" name="atividade_id"   value="<?php echo $atividade_id; ?>">
+                        <input type="hidden" id="campo-metodo"     name="metodo"       value="">
+                        <input type="hidden" id="campo-reserva-id" name="reserva_id"   value="">
+                        <input type="hidden" id="campo-valor-total"name="valor_total"  value="">
                         <input type="hidden" id="campo-qtd-inscritos" name="qtd_inscritos" value="1">
 
-                        <!-- SEÇÃO 1: DADOS DO RESPONSÁVEL -->
-                        <div class="checkout-section">
-                            <h2 class="checkout-section__titulo">👤 Dados do Responsável</h2>
-                            <div class="grid grid--2">
-                                <div class="form-grupo">
-                                    <label for="resp-nome">Nome completo *</label>
-                                    <input type="text" id="resp-nome" name="resp_nome" required
-                                        placeholder="Seu nome completo">
+                        <!-- ── RESUMO DA ATIVIDADE ── -->
+                        <div class="checkout-section co-resumo-atividade">
+                            <div style="display:flex;gap:var(--espaco-md);align-items:flex-start;flex-wrap:wrap;">
+                                <div style="flex:1;min-width:200px;">
+                                    <h2 class="checkout-section__titulo" style="margin-bottom:var(--espaco-xs);">
+                                        <?php echo esc_html(get_the_title($atividade_id)); ?>
+                                    </h2>
+                                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:var(--espaco-sm);">
+                                        <?php echo ta_nivel_badge($nivel); ?>
+                                        <?php if ($duracao): ?><span class="badge badge--verde">⌛ <?php echo esc_html($duracao); ?></span><?php endif; ?>
+                                    </div>
+                                    <?php if ($descricao): ?>
+                                        <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);line-height:1.6;margin-bottom:var(--espaco-sm);"><?php echo esc_html($descricao); ?></p>
+                                    <?php endif; ?>
+                                    <div style="display:flex;flex-wrap:wrap;gap:var(--espaco-md);font-size:.8rem;">
+                                        <?php if ($data_atv): ?>
+                                            <div style="color:var(--texto-muted);">📅 <strong style="color:var(--texto-primario);"><?php echo date_i18n('d \d\e F \d\e Y', strtotime($data_atv)); ?></strong></div>
+                                        <?php endif; ?>
+                                        <?php if ($hora_atv): ?>
+                                            <div style="color:var(--texto-muted);">⏰ <strong style="color:var(--texto-primario);"><?php echo esc_html($hora_atv); ?></strong></div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php if ($obs): ?>
+                                        <div style="margin-top:var(--espaco-sm);padding:var(--espaco-sm);background:var(--fundo-elevado);border-radius:var(--raio-md);border-left:3px solid var(--cor-secundaria);font-size:.8rem;color:var(--texto-secundario);">
+                                            📝 <?php echo esc_html($obs); ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
-                                <div class="form-grupo">
-                                    <label for="resp-email">E-mail *</label>
-                                    <input type="email" id="resp-email" name="resp_email" required
-                                        placeholder="seu@email.com">
-                                </div>
-                                <div class="form-grupo">
-                                    <label for="resp-tel">Telefone / WhatsApp *</label>
-                                    <input type="text" id="resp-tel" name="resp_telefone" required
-                                        placeholder="(11) 99999-9999" class="tel-mask">
-                                </div>
-                                <div class="form-grupo">
-                                    <label for="resp-cpf">CPF *</label>
-                                    <input type="text" id="resp-cpf" name="resp_cpf" required
-                                        placeholder="000.000.000-00" class="cpf-mask">
+                                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:120px;">
+                                    <div style="font-size:.7rem;color:var(--texto-muted);text-align:right;">por pessoa</div>
+                                    <div style="font-family:var(--fonte-titulo);font-size:2rem;color:var(--cor-secundaria);line-height:1;"><?php echo ta_preco($preco_base); ?></div>
+                                    <?php if ($vagas_restantes !== null): ?>
+                                        <div style="font-size:.72rem;color:<?php echo $vagas_restantes <= 3 ? '#f59e0b' : 'var(--texto-muted)'; ?>;">
+                                            <?php if ($vagas_restantes === 0): ?>
+                                                ⛔ Esgotado
+                                            <?php else: ?>
+                                                🎟️ <?php echo $vagas_restantes; ?> vaga<?php echo $vagas_restantes !== 1 ? 's' : ''; ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- SEÇÃO 2: DEMAIS INSCRITOS (OPCIONAL) -->
+                        <!-- ── PARTICIPANTES ── -->
                         <div class="checkout-section">
-                            <h2 class="checkout-section__titulo">👥 Acompanhantes (Opcional)</h2>
-                            <p class="checkout-section__desc">Você (Responsável) já conta como o 1º inscrito. Se for
-                                acompanhado, adicione as demais pessoas abaixo:</p>
-
-                            <div id="inscritos-wrap">
-                                <!-- Acompanhantes dinâmicos via JS -->
+                            <h2 class="checkout-section__titulo">👤 Dados do Responsável</h2>
+                            <p class="checkout-section__desc">Responsável pela reserva — já conta como 1º participante.</p>
+                            <div class="grid grid--2">
+                                <div class="form-grupo" style="grid-column:1/-1;">
+                                    <label for="resp-nome">Nome completo *</label>
+                                    <input type="text" id="resp-nome" name="resp_nome" required placeholder="Seu nome completo">
+                                </div>
+                                <div class="form-grupo">
+                                    <label for="resp-email">E-mail *</label>
+                                    <input type="email" id="resp-email" name="resp_email" required placeholder="seu@email.com">
+                                </div>
+                                <div class="form-grupo">
+                                    <label for="resp-tel">WhatsApp *</label>
+                                    <input type="text" id="resp-tel" name="resp_telefone" required placeholder="(11) 99999-9999" class="tel-mask">
+                                </div>
+                                <div class="form-grupo">
+                                    <label for="resp-cpf">CPF *</label>
+                                    <input type="text" id="resp-cpf" name="resp_cpf" required placeholder="000.000.000-00" class="cpf-mask">
+                                </div>
                             </div>
+                        </div>
 
-                            <button type="button" id="add-inscrito" class="btn btn--ghost btn--pequeno"
-                                style="margin-top:var(--espaco-md);">
+                        <!-- ── ACOMPANHANTES ── -->
+                        <div class="checkout-section">
+                            <h2 class="checkout-section__titulo">👥 Acompanhantes <span style="font-size:.75rem;font-weight:400;color:var(--texto-muted);">(opcional)</span></h2>
+                            <div id="inscritos-wrap"></div>
+                            <button type="button" id="add-inscrito" class="btn btn--ghost btn--pequeno" style="margin-top:var(--espaco-md);">
                                 + Adicionar Acompanhante
                             </button>
                         </div>
 
-                        <!-- SEÇÃO 3: PAGAMENTO -->
-                        <div class="checkout-section" id="secao-pagamento" style="display:none;">
-                            <h2 class="checkout-section__titulo">💳 Forma de Pagamento</h2>
+                        <!-- ── RESUMO FINANCEIRO ── -->
+                        <div class="checkout-section co-resumo-financeiro">
+                            <h2 class="checkout-section__titulo">💰 Resumo</h2>
+                            <div style="display:flex;flex-direction:column;gap:var(--espaco-xs);">
+                                <div class="resumo-linha" style="display:flex;justify-content:space-between;font-size:.9rem;color:var(--texto-secundario);">
+                                    <span>Preço por pessoa</span>
+                                    <span><?php echo ta_preco($preco_base); ?></span>
+                                </div>
+                                <div class="resumo-linha" style="display:flex;justify-content:space-between;font-size:.9rem;color:var(--texto-secundario);">
+                                    <span>Participantes</span>
+                                    <span id="resumo-qtd">1</span>
+                                </div>
+                                <div style="height:1px;background:var(--borda-glass);margin:var(--espaco-xs) 0;"></div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span style="font-size:1rem;font-weight:600;color:var(--texto-primario);">Total</span>
+                                    <span id="resumo-total" style="font-family:var(--fonte-titulo);font-size:1.8rem;color:var(--cor-secundaria);"><?php echo ta_preco($preco_base); ?></span>
+                                </div>
+                            </div>
+                        </div>
 
-                            <!-- Seletor de método -->
+                        <!-- ── MÉTODO DE PAGAMENTO (oculto até clicar Pagar) ── -->
+                        <div class="checkout-section" id="secao-pagamento" style="display:none;">
+                            <h2 class="checkout-section__titulo">💳 Como quer pagar?</h2>
+
                             <div class="metodo-grid" role="radiogroup" aria-label="Método de pagamento">
-                                <div class="metodo-card" data-metodo="pix" role="radio" aria-checked="false"
-                                    tabindex="0">
+                                <div class="metodo-card" data-metodo="pix" role="radio" aria-checked="false" tabindex="0">
                                     <span class="metodo-card__icon">🏦</span>
                                     <div class="metodo-card__nome">PIX</div>
                                     <div class="metodo-card__desc">Aprovação imediata</div>
                                 </div>
-                                <div class="metodo-card" data-metodo="credit_card" role="radio" aria-checked="false"
-                                    tabindex="0">
+                                <div class="metodo-card" data-metodo="credit_card" role="radio" aria-checked="false" tabindex="0">
                                     <span class="metodo-card__icon">💳</span>
                                     <div class="metodo-card__nome">Cartão</div>
                                     <div class="metodo-card__desc">Até <?php echo $parcelas; ?>x</div>
                                 </div>
                             </div>
 
-                            <!-- PIX (texto informativo) -->
+                            <!-- PIX: info -->
                             <div data-metodo-form="pix" style="display:none;">
-                                <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);">Clique em PIX acima para gerar o QR Code.</p>
+                                <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);text-align:center;margin-top:calc(-1 * var(--espaco-sm));">
+                                    QR Code gerado na hora — escaneie e confirme.
+                                </p>
                             </div>
 
                             <!-- Cartão -->
@@ -168,16 +245,15 @@ get_header();
                                 <div id="form-cartao">
                                     <div class="mp-card-form">
                                         <div class="grid grid--2">
-                                            <!-- Campos IFRAME (sensíveis – o SDK injeta iframes aqui) -->
                                             <div class="form-grupo" style="grid-column:1/-1;">
                                                 <label>Número do Cartão *</label>
                                                 <div class="mp-field-wrapper" id="mp-cardNumber"></div>
                                             </div>
                                             <div class="form-grupo">
                                                 <label>Validade *</label>
-                                                <div style="display:flex; gap:8px;">
+                                                <div style="display:flex;gap:8px;">
                                                     <div class="mp-field-wrapper" id="mp-cardExpirationMonth" style="flex:1;"></div>
-                                                    <span style="color:var(--texto-muted); display:flex; align-items:center; font-size:1.2rem;">/</span>
+                                                    <span style="color:var(--texto-muted);display:flex;align-items:center;">/</span>
                                                     <div class="mp-field-wrapper" id="mp-cardExpirationYear" style="flex:1;"></div>
                                                 </div>
                                             </div>
@@ -185,30 +261,21 @@ get_header();
                                                 <label>CVV *</label>
                                                 <div class="mp-field-wrapper" id="mp-securityCode"></div>
                                             </div>
-
-                                            <!-- Parcelas -->
                                             <div class="form-grupo" style="grid-column:1/-1;">
                                                 <label>Parcelas</label>
                                                 <select id="mp-installments" style="height:44px;"></select>
                                             </div>
-
-                                            <!-- Usar dados do responsável -->
                                             <div class="form-grupo" style="grid-column:1/-1;">
-                                                <label class="checkbox-inline"
-                                                    style="display:flex; align-items:center; gap:8px; cursor:pointer; text-transform:none; letter-spacing:0;">
-                                                    <input type="checkbox" id="usar-dados-resp" checked
-                                                        style="width:auto; min-height:auto;">
+                                                <label class="checkbox-inline" style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;">
+                                                    <input type="checkbox" id="usar-dados-resp" checked style="width:auto;min-height:auto;">
                                                     Usar dados do responsável para o pagamento
                                                 </label>
                                             </div>
-
-                                            <!-- Campos NATIVOS (ocultos quando usar dados do responsável) -->
-                                            <div id="campos-pagador" style="display:none; grid-column:1/-1;">
+                                            <div id="campos-pagador" style="display:none;grid-column:1/-1;">
                                                 <div class="grid grid--2">
                                                     <div class="form-grupo" style="grid-column:1/-1;">
                                                         <label>Nome no Cartão *</label>
-                                                        <input type="text" id="mp-cardholderName"
-                                                            placeholder="Nome como no cartão">
+                                                        <input type="text" id="mp-cardholderName" placeholder="Nome como no cartão">
                                                     </div>
                                                     <div class="form-grupo">
                                                         <label>Tipo de Documento</label>
@@ -216,13 +283,11 @@ get_header();
                                                     </div>
                                                     <div class="form-grupo">
                                                         <label>CPF *</label>
-                                                        <input type="text" id="mp-identificationNumber"
-                                                            placeholder="000.000.000-00">
+                                                        <input type="text" id="mp-identificationNumber" placeholder="000.000.000-00">
                                                     </div>
                                                     <div class="form-grupo" style="grid-column:1/-1;">
                                                         <label>E-mail *</label>
-                                                        <input type="email" id="mp-email"
-                                                            placeholder="email@dominio.com">
+                                                        <input type="email" id="mp-email" placeholder="email@dominio.com">
                                                     </div>
                                                 </div>
                                             </div>
@@ -230,9 +295,7 @@ get_header();
                                                 <select id="mp-issuer"></select>
                                             </div>
                                         </div>
-                                        <div id="mp-progress"
-                                            style="display:none;color:var(--texto-muted);font-size:var(--tamanho-pequeno);">
-                                            ⏳ Verificando cartão...</div>
+                                        <div id="mp-progress" style="display:none;color:var(--texto-muted);font-size:var(--tamanho-pequeno);">⏳ Verificando cartão...</div>
                                     </div>
                                 </div>
                             </div>
@@ -260,18 +323,18 @@ get_header();
 </div>
 
 <!-- MODAL PIX -->
-<div id="pix-modal" style="display:none; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); align-items:center; justify-content:center;">
-    <div style="background:var(--fundo-card); border:1px solid var(--borda-glass); border-radius:var(--raio-xl); padding:var(--espaco-2xl); max-width:420px; width:90%; text-align:center; position:relative;">
-        <button type="button" id="pix-modal-fechar" style="position:absolute; top:12px; right:16px; background:none; border:none; color:var(--texto-muted); font-size:1.5rem; cursor:pointer;">✕</button>
-        <p style="color:var(--cor-primaria); font-weight:bold; font-size:1.1rem; margin-bottom:var(--espaco-md);">✅ QR Code PIX gerado!</p>
+<div id="pix-modal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);align-items:center;justify-content:center;">
+    <div style="background:var(--fundo-card);border:1px solid var(--borda-glass);border-radius:var(--raio-xl);padding:var(--espaco-2xl);max-width:420px;width:90%;text-align:center;position:relative;">
+        <button type="button" id="pix-modal-fechar" style="position:absolute;top:12px;right:16px;background:none;border:none;color:var(--texto-muted);font-size:1.5rem;cursor:pointer;" aria-label="Fechar">✕</button>
+        <p style="color:var(--cor-primaria);font-weight:700;font-size:1.1rem;margin-bottom:var(--espaco-md);">✅ QR Code PIX gerado!</p>
         <div class="pix-qrcode-wrap" style="margin-bottom:var(--espaco-md);">
             <img id="pix-qrcode-img" src="" alt="QR Code PIX" style="display:none;">
         </div>
-        <p style="color:var(--texto-primario);">Expira em: <span class="pix-timer" id="pix-timer" style="font-family:var(--fonte-titulo); font-size:1.8rem; color:var(--cor-secundaria);">30:00</span></p>
-        <div style="display:flex; gap:var(--espaco-sm); margin:var(--espaco-md) auto; max-width:350px;">
-            <input type="text" id="pix-copia-cola" readonly placeholder="Código PIX" style="flex:1; background:var(--fundo-elevado); border:1px solid var(--borda-glass); border-radius:var(--raio-md); padding:8px 12px; color:var(--texto-secundario); font-size:0.75rem; font-family:monospace;">
+        <p style="color:var(--texto-primario);margin-bottom:var(--espaco-xs);">Expira em: <span id="pix-timer" style="font-family:var(--fonte-titulo);font-size:1.8rem;color:var(--cor-secundaria);">30:00</span></p>
+        <div style="display:flex;gap:var(--espaco-sm);margin:var(--espaco-md) auto;max-width:350px;">
+            <input type="text" id="pix-copia-cola" readonly placeholder="Código PIX" style="flex:1;background:var(--fundo-elevado);border:1px solid var(--borda-glass);border-radius:var(--raio-md);padding:8px 12px;color:var(--texto-secundario);font-size:.75rem;font-family:monospace;">
             <button type="button" id="btn-copiar-pix" class="btn btn--secundario btn--pequeno">📋 Copiar</button>
         </div>
-        <p style="font-size:0.75rem; color:var(--texto-muted); margin-top:var(--espaco-sm);">Aguardando confirmação automaticamente...</p>
+        <p style="font-size:.75rem;color:var(--texto-muted);">Aguardando confirmação automaticamente...</p>
     </div>
 </div>
