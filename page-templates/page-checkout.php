@@ -38,7 +38,32 @@ wp_localize_script('ta-checkout-js', 'taCheckoutConfig', [
 get_header();
 ?>
 
-<main id="conteudo-principal" role="main" style="padding-top:var(--altura-nav);">
+<main id="conteudo-principal" role="main">
+
+<?php
+$at_img_id = (int) get_post_meta($atividade_id, '_atividade_imagem', true);
+$img_url   = $at_img_id ? wp_get_attachment_image_url($at_img_id, 'full') : get_the_post_thumbnail_url($atividade_id, 'full');
+if (!$img_url) {
+    if (ta_get('hero_imagem')) {
+        $img_url = ta_get('hero_imagem');
+    }
+}
+?>
+
+<!-- HERO DA ATIVIDADE -->
+<div class="checkout-hero" style="position:relative; width:100%; height:40vh; min-height:280px; background: url('<?php echo esc_url($img_url); ?>') center/cover no-repeat; display:flex; align-items:flex-end; padding-bottom:var(--espaco-xl);">
+    <div style="position:absolute; inset:0; background: linear-gradient(to top, var(--fundo-base) 0%, rgba(10,17,13,0.2) 60%, rgba(10,17,13,0.7) 100%); z-index:1;"></div>
+    <div class="container" style="position:relative; z-index:2;">
+        <span style="display:inline-block; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--cor-secundaria); font-weight:700; margin-bottom:var(--espaco-sm);">🎫 Checkout Seguro</span>
+        <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); text-shadow: 0 4px 15px rgba(0,0,0,0.8); margin-bottom: 0; line-height: 1;">
+            <?php echo esc_html(get_the_title($atividade_id)); ?>
+        </h1>
+        <div style="display:flex; gap:16px; margin-top:12px; color:#ddd; font-size:0.9rem;">
+            <?php if ($data_atv): ?><span>📅 <?php echo date_i18n('d/m/Y', strtotime($data_atv)); ?></span><?php endif; ?>
+            <?php if ($hora_atv): ?><span>⏰ <?php echo esc_html($hora_atv); ?></span><?php endif; ?>
+        </div>
+    </div>
+</div>
 
 <!-- Spinner -->
 <div id="checkout-spinner" aria-live="polite" aria-label="Processando pagamento">
@@ -86,35 +111,17 @@ get_header();
             </div>
         </div>
 
-        <!-- SEÇÃO 2: INSCRITOS -->
+        <!-- SEÇÃO 2: DEMAIS INSCRITOS (OPCIONAL) -->
         <div class="checkout-section">
-            <h2 class="checkout-section__titulo">👥 Inscritos</h2>
-            <p class="checkout-section__desc">Cadastre todos os participantes da atividade.</p>
+            <h2 class="checkout-section__titulo">👥 Acompanhantes (Opcional)</h2>
+            <p class="checkout-section__desc">Você (Responsável) já conta como o 1º inscrito. Se for acompanhado, adicione as demais pessoas abaixo:</p>
 
             <div id="inscritos-wrap">
-                <div class="inscrito-item">
-                    <div class="inscrito-header">
-                        <h4>Inscrito 1 (Responsável)</h4>
-                    </div>
-                    <div class="grid grid--3">
-                        <div class="form-grupo">
-                            <label>Nome completo *</label>
-                            <input type="text" name="inscrito_nome[]" required placeholder="Nome completo">
-                        </div>
-                        <div class="form-grupo">
-                            <label>CPF *</label>
-                            <input type="text" name="inscrito_cpf[]" required placeholder="000.000.000-00" class="cpf-mask">
-                        </div>
-                        <div class="form-grupo">
-                            <label>Telefone *</label>
-                            <input type="text" name="inscrito_telefone[]" required placeholder="(11) 99999-9999" class="tel-mask">
-                        </div>
-                    </div>
-                </div>
+                <!-- Acompanhantes dinâmicos via JS -->
             </div>
 
-            <button type="button" id="add-inscrito" class="btn btn--ghost btn--pequeno">
-                + Adicionar inscrito
+            <button type="button" id="add-inscrito" class="btn btn--ghost btn--pequeno" style="margin-top:var(--espaco-md);">
+                + Adicionar Acompanhante
             </button>
         </div>
 
@@ -164,42 +171,44 @@ get_header();
                 <form id="form-cartao">
                     <div class="mp-card-form">
                         <div class="grid grid--2">
+                            <!-- Campos IFRAME (sensíveis – o SDK injeta iframes aqui) -->
                             <div class="form-grupo" style="grid-column:1/-1;">
                                 <label>Número do Cartão *</label>
                                 <div class="mp-field-wrapper" id="mp-cardNumber"></div>
                             </div>
-                            <div class="form-grupo" style="grid-column:1/-1;">
-                                <label>Nome no Cartão *</label>
-                                <div class="mp-field-wrapper" id="mp-cardholderName"></div>
-                            </div>
                             <div class="form-grupo">
                                 <label>Validade *</label>
-                                <div style="display:flex;gap:8px;">
-                                    <div class="mp-field-wrapper" id="mp-cardExpirationMonth" style="flex:1;"></div>
-                                    <div class="mp-field-wrapper" id="mp-cardExpirationYear" style="flex:1;"></div>
-                                </div>
+                                <div class="mp-field-wrapper" id="mp-expirationDate"></div>
                             </div>
                             <div class="form-grupo">
                                 <label>CVV *</label>
                                 <div class="mp-field-wrapper" id="mp-securityCode"></div>
                             </div>
+
+                            <!-- Campos NATIVOS (não-sensíveis – input/select normais) -->
+                            <div class="form-grupo" style="grid-column:1/-1;">
+                                <label>Nome no Cartão *</label>
+                                <input type="text" id="mp-cardholderName" placeholder="Nome como no cartão">
+                            </div>
                             <div class="form-grupo">
                                 <label>Tipo de Documento</label>
-                                <div class="mp-field-wrapper" id="mp-identificationType"></div>
+                                <select id="mp-identificationType"></select>
                             </div>
                             <div class="form-grupo">
                                 <label>CPF *</label>
-                                <div class="mp-field-wrapper" id="mp-identificationNumber"></div>
+                                <input type="text" id="mp-identificationNumber" placeholder="000.000.000-00">
                             </div>
-                            <div class="form-grupo">
+                            <div class="form-grupo" style="grid-column:1/-1;">
                                 <label>E-mail *</label>
-                                <div class="mp-field-wrapper" id="mp-email"></div>
+                                <input type="email" id="mp-email" placeholder="email@dominio.com">
                             </div>
                             <div class="form-grupo">
                                 <label>Parcelas</label>
-                                <div class="mp-field-wrapper" id="mp-installments"></div>
+                                <select id="mp-installments"></select>
                             </div>
-                            <div id="mp-issuer" style="display:none;"></div>
+                            <div class="form-grupo" style="display:none;">
+                                <select id="mp-issuer"></select>
+                            </div>
                         </div>
                         <div id="mp-progress" style="display:none;color:var(--texto-muted);font-size:var(--tamanho-pequeno);">⏳ Verificando cartão...</div>
                     </div>

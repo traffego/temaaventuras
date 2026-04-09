@@ -29,10 +29,19 @@ function ta_ajax_criar_reserva_checkout(): void {
     if ($valor_total <= 0)              wp_send_json_error(['message' => 'Valor inválido.']);
 
     // Inscritos
+    $inscritos = [];
+
+    // O responsável SEMPRE é o inscrito 1 automaticamente
+    $inscritos[] = [
+        'nome'     => $resp_nome,
+        'cpf'      => $resp_cpf,
+        'telefone' => $resp_tel,
+    ];
+
+    // Os demais (se clicou em "Adicionar acompanhante")
     $nomes     = $_POST['inscrito_nome']     ?? [];
     $cpfs      = $_POST['inscrito_cpf']      ?? [];
     $telefones = $_POST['inscrito_telefone'] ?? [];
-    $inscritos = [];
 
     foreach ($nomes as $i => $n) {
         if (empty($n)) continue;

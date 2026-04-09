@@ -38,19 +38,19 @@
   });
 
   // =========================================
-  // INSCRITOS DINÂMICOS
+  // ACOMPANHANTES DINÂMICOS
   // =========================================
   const addInscritoBtn = document.getElementById('add-inscrito');
   const inscritosWrap  = document.getElementById('inscritos-wrap');
-  let inscritoCount    = document.querySelectorAll('.inscrito-item').length || 1;
+  let adicCount        = 0;
 
   addInscritoBtn?.addEventListener('click', () => {
-    inscritoCount++;
+    adicCount++;
     const div = document.createElement('div');
     div.className = 'inscrito-item';
     div.innerHTML = `
       <div class="inscrito-header">
-        <h4>Inscrito ${inscritoCount}</h4>
+        <h4>Acompanhante ${adicCount}</h4>
         <button type="button" class="btn-remover-inscrito btn btn--ghost btn--pequeno">✕</button>
       </div>
       <div class="grid grid--3">
@@ -87,14 +87,20 @@
   // CALCULAR VALOR TOTAL
   // =========================================
   function atualizarValorTotal() {
-    const qtd   = document.querySelectorAll('.inscrito-item').length;
-    const total = qtd * pricePerPerson;
+    // 1 (Responsável) + qtd de acompanhantes
+    const qtdExtras = document.querySelectorAll('.inscrito-item').length;
+    const qtd       = 1 + qtdExtras;
+    const total     = qtd * pricePerPerson;
+    
     const el    = document.getElementById('valor-total-display');
     const sub   = document.getElementById('qtd-inscritos-display');
+    
     if (el) el.textContent = 'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
     if (sub) sub.textContent = qtd + ' inscrito(s)';
+    
     const campoTotal = document.getElementById('campo-valor-total');
     const campoQtd   = document.getElementById('campo-qtd-inscritos');
+    
     if (campoTotal) campoTotal.value = total.toFixed(2);
     if (campoQtd)   campoQtd.value = qtd;
   }
