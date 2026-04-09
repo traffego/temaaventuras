@@ -250,7 +250,7 @@ get_header();
 
 <!-- BOTÃO FLUTUANTE -->
 <div class="checkout-submit-wrapper" id="checkout-submit-wrapper"
-    style="position:fixed; bottom:10px; width:90%; left:5%;">
+    style="position:fixed; bottom:10px; width:90%; left:20px;">
     <button type="button" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit" disabled>
         🔒 Pagar <span id="btn-total-display">R$ 0,00</span>
     </button>
