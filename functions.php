@@ -15,6 +15,15 @@ define( 'TEMA_AVENTURAS_VERSION', '1.0.0' );
 define( 'TEMA_AVENTURAS_DIR', get_template_directory() );
 define( 'TEMA_AVENTURAS_URI', get_template_directory_uri() );
 
+// Flush rewrite rules quando CPTs novos são adicionados
+add_action( 'init', function() {
+    $ver_cpts = '1.5'; // incremente ao adicionar novos CPTs
+    if ( get_option( 'ta_cpts_version' ) !== $ver_cpts ) {
+        flush_rewrite_rules();
+        update_option( 'ta_cpts_version', $ver_cpts );
+    }
+}, 999 );
+
 // =========================================
 // INCLUDES
 // =========================================
