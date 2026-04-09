@@ -388,3 +388,142 @@ function tema_aventuras_salvar_metas( $post_id ) {
     }
 }
 add_action( 'save_post', 'tema_aventuras_salvar_metas' );
+
+// =========================================
+// CPT: GUIAS
+// =========================================
+function tema_aventuras_cpt_guias() {
+    $labels = [
+        'name'          => __( 'Guias', 'temaaventuras' ),
+        'singular_name' => __( 'Guia', 'temaaventuras' ),
+        'add_new'       => __( 'Adicionar Guia', 'temaaventuras' ),
+        'add_new_item'  => __( 'Novo Guia', 'temaaventuras' ),
+        'edit_item'     => __( 'Editar Guia', 'temaaventuras' ),
+        'all_items'     => __( 'Todos os Guias', 'temaaventuras' ),
+        'menu_name'     => __( 'Guias', 'temaaventuras' ),
+    ];
+
+    register_post_type( 'guia', [
+        'labels'        => $labels,
+        'public'        => true,
+        'show_ui'       => true,
+        'show_in_rest'  => true,
+        'supports'      => [ 'title', 'custom-fields' ],
+        'rewrite'       => [ 'slug' => 'guias' ],
+        'menu_icon'     => 'dashicons-id-alt',
+        'menu_position' => 8,
+        'has_archive'   => false,
+    ] );
+}
+add_action( 'init', 'tema_aventuras_cpt_guias' );
+
+// Meta Box: Guia
+function tema_aventuras_guia_meta_box_register() {
+    add_meta_box(
+        'guia_detalhes',
+        __( '🧭 Detalhes do Guia', 'temaaventuras' ),
+        'tema_aventuras_guia_meta_box',
+        'guia',
+        'normal',
+        'high'
+    );
+}
+add_action( 'add_meta_boxes', 'tema_aventuras_guia_meta_box_register' );
+
+function tema_aventuras_guia_meta_box( $post ) {
+    wp_nonce_field( 'salvar_guia_meta', 'guia_meta_nonce' );
+    wp_enqueue_media();
+
+    $subtitulo = get_post_meta( $post->ID, '_guia_subtitulo',  true );
+    $descricao = get_post_meta( $post->ID, '_guia_descricao',  true );
+    $img_id    = (int) get_post_meta( $post->ID, '_guia_foto', true );
+    $img_url   = $img_id ? wp_get_attachment_image_url( $img_id, 'medium' ) : '';
+    ?>
+    <style>
+        #guia-foto-preview { max-width:180px; max-height:180px; border-radius:50%; object-fit:cover; display:block; margin-bottom:8px; }
+        .ta-guia-img-wrap { display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+        .ta-guia-img-btns { display:flex; flex-direction:column; gap:4px; }
+    </style>
+    <table class="form-table">
+
+        <!-- FOTO -->
+        <tr>
+            <th><?php _e( '📷 Foto do Guia', 'temaaventuras' ); ?></th>
+            <td>
+                <div class="ta-guia-img-wrap">
+                    <?php if ( $img_url ) : ?>
+                        <img id="guia-foto-preview" src="<?php echo esc_url( $img_url ); ?>" alt="" />
+                    <?php else : ?>
+                        <img id="guia-foto-preview" src="" alt="" style="display:none;" />
+                    <?php endif; ?>
+                    <div class="ta-guia-img-btns">
+                        <button type="button" id="guia-foto-btn" class="button">
+                            📷 <?php _e( 'Selecionar Foto', 'temaaventuras' ); ?>
+                        </button>
+                        <button type="button" id="guia-foto-remover" class="button" style="color:red;<?php echo $img_id ? '' : 'display:none;'; ?>">
+                            ✕ <?php _e( 'Remover', 'temaaventuras' ); ?>
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" id="guia-foto-id" name="guia_foto" value="<?php echo esc_attr( $img_id ); ?>" />
+                <script>
+                (function(){
+                    var frame;
+                    document.getElementById('guia-foto-btn').addEventListener('click', function(e){
+                        e.preventDefault();
+                        if (frame) { frame.open(); return; }
+                        frame = wp.media({ title: 'Selecionar foto do guia', button: { text: 'Usar esta foto' }, multiple: false });
+                        frame.on('select', function(){
+                            var att = frame.state().get('selection').first().toJSON();
+                            document.getElementById('guia-foto-id').value = att.id;
+                            var prev = document.getElementById('guia-foto-preview');
+                            prev.src = att.sizes && att.sizes.medium ? att.sizes.medium.url : att.url;
+                            prev.style.display = 'block';
+                            document.getElementById('guia-foto-remover').style.display = 'inline-block';
+                        });
+                        frame.open();
+                    });
+                    document.getElementById('guia-foto-remover').addEventListener('click', function(e){
+                        e.preventDefault();
+                        document.getElementById('guia-foto-id').value = '';
+                        var prev = document.getElementById('guia-foto-preview');
+                        prev.src = ''; prev.style.display = 'none';
+                        this.style.display = 'none';
+                    });
+                })();
+                </script>
+            </td>
+        </tr>
+
+        <!-- SUBTÍTULO -->
+        <tr>
+            <th><?php _e( '🏷️ Subtítulo / Especialidade', 'temaaventuras' ); ?></th>
+            <td>
+                <input type="text" name="guia_subtitulo" value="<?php echo esc_attr( $subtitulo ); ?>" style="width:100%;" placeholder="Ex: Guia de Rafting e Trilhas" />
+                <p class="description"><?php _e( 'Aparece abaixo do nome na listagem.', 'temaaventuras' ); ?></p>
+            </td>
+        </tr>
+
+        <!-- DESCRIÇÃO -->
+        <tr>
+            <th><?php _e( '📝 Descrição', 'temaaventuras' ); ?></th>
+            <td>
+                <textarea name="guia_descricao" rows="5" style="width:100%;" placeholder="Breve bio do guia, experiências, certificações..."><?php echo esc_textarea( $descricao ); ?></textarea>
+            </td>
+        </tr>
+
+    </table>
+    <?php
+}
+
+// Salvar metas do Guia
+function tema_aventuras_salvar_guia_metas( $post_id ) {
+    if ( ! isset( $_POST['guia_meta_nonce'] ) || ! wp_verify_nonce( $_POST['guia_meta_nonce'], 'salvar_guia_meta' ) ) return;
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+    if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+
+    update_post_meta( $post_id, '_guia_subtitulo', sanitize_text_field( $_POST['guia_subtitulo'] ?? '' ) );
+    update_post_meta( $post_id, '_guia_descricao', sanitize_textarea_field( $_POST['guia_descricao'] ?? '' ) );
+    update_post_meta( $post_id, '_guia_foto',      absint( $_POST['guia_foto'] ?? 0 ) );
+}
+add_action( 'save_post_guia', 'tema_aventuras_salvar_guia_metas' );

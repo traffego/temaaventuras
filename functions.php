@@ -163,6 +163,16 @@ function tema_aventuras_scripts() {
         true
     );
 
+    // CSS dos guias (apenas na página de guias)
+    if ( is_page_template( 'page-templates/page-guias.php' ) ) {
+        wp_enqueue_style(
+            'tema-aventuras-guias',
+            TEMA_AVENTURAS_URI . '/assets/css/guias.css',
+            [ 'tema-aventuras-style' ],
+            $ver
+        );
+    }
+
     // Comentários com threads
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
         wp_enqueue_script( 'comment-reply' );
