@@ -26,6 +26,8 @@ function tema_aventuras_menu_gestao() {
     add_submenu_page( 'gestao-aventuras', __( 'Pacotes', 'temaaventuras' ),      __( 'Pacotes', 'temaaventuras' ),      'edit_posts', 'edit.php?post_type=pacote',     '' );
     add_submenu_page( 'gestao-aventuras', __( 'Depoimentos', 'temaaventuras' ),  __( 'Depoimentos', 'temaaventuras' ),  'edit_posts', 'edit.php?post_type=depoimento', '' );
     add_submenu_page( 'gestao-aventuras', __( 'Guias', 'temaaventuras' ),        __( 'Guias', 'temaaventuras' ),        'edit_posts', 'edit.php?post_type=guia',       '' );
+    add_submenu_page( 'gestao-aventuras', __( 'Vídeos', 'temaaventuras' ),       __( '▶️ Vídeos', 'temaaventuras' ),   'edit_posts', 'edit.php?post_type=video',      '' );
+    add_submenu_page( 'gestao-aventuras', __( 'Galeria', 'temaaventuras' ),      __( '📸 Galeria', 'temaaventuras' ),  'edit_posts', 'edit.php?post_type=galeria',    '' );
 
     // Remove o item duplicado que o WP cria automaticamente
     remove_submenu_page( 'gestao-aventuras', 'gestao-aventuras' );
@@ -412,7 +414,86 @@ function tema_aventuras_salvar_metas( $post_id ) {
 add_action( 'save_post', 'tema_aventuras_salvar_metas' );
 
 // =========================================
+// HELPER: extrair ID do YouTube de uma URL
+// =========================================
+function ta_youtube_id( string $url ): string {
+    if ( preg_match( '/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/', $url, $m ) ) {
+        return $m[1];
+    }
+    return '';
+}
+
+// =========================================
+// CPT: VÍDEOS
+// =========================================
+function tema_aventuras_cpt_videos() {
+    register_post_type( 'video', [
+        'labels'        => [
+            'name'          => __( 'Vídeos', 'temaaventuras' ),
+            'singular_name' => __( 'Vídeo', 'temaaventuras' ),
+            'add_new'       => __( 'Adicionar Vídeo', 'temaaventuras' ),
+            'add_new_item'  => __( 'Novo Vídeo', 'temaaventuras' ),
+            'edit_item'     => __( 'Editar Vídeo', 'temaaventuras' ),
+            'all_items'     => __( 'Todos os Vídeos', 'temaaventuras' ),
+            'menu_name'     => __( 'Vídeos', 'temaaventuras' ),
+        ],
+        'public'        => false,
+        'show_ui'       => true,
+        'show_in_rest'  => false,
+        'supports'      => [ 'title', 'page-attributes' ],
+        'show_in_menu'  => 'gestao-aventuras',
+        'has_archive'   => false,
+    ] );
+}
+add_action( 'init', 'tema_aventuras_cpt_videos' );
+
+add_action( 'add_meta_boxes', function() {
+    add_meta_box( 'video_detalhes', __( '▶️ Detalhes do Vídeo', 'temaaventuras' ), 'tema_aventuras_video_meta_box', 'video', 'normal', 'high' );
+} );
+
+function tema_aventuras_video_meta_box( $post ) {
+    wp_nonce_field( 'salvar_video_meta', 'video_meta_nonce' );
+    $url  = get_post_meta( $post->ID, '_video_url', true );
+    $desc = get_post_meta( $post->ID, '_video_descricao', true );
+    $vid  = $url ? ta_youtube_id( $url ) : '';
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><?php _e( '🔗 URL do YouTube', 'temaaventuras' ); ?></th>
+            <td>
+                <input type="url" name="video_url" value="<?php echo esc_attr( $url ); ?>" style="width:100%;"
+                       placeholder="https://www.youtube.com/watch?v=..." />
+                <p class="description"><?php _e( 'Cole a URL do vídeo no YouTube (watch, youtu.be ou shorts).', 'temaaventuras' ); ?></p>
+                <?php if ( $vid ) : ?>
+                    <div style="margin-top:10px;">
+                        <img src="https://img.youtube.com/vi/<?php echo esc_attr($vid); ?>/hqdefault.jpg"
+                             style="max-width:240px;border-radius:6px;" alt="Thumb" />
+                    </div>
+                <?php endif; ?>
+            </td>
+        </tr>
+        <tr>
+            <th><?php _e( '📝 Descrição curta', 'temaaventuras' ); ?></th>
+            <td>
+                <textarea name="video_descricao" rows="3" style="width:100%;"
+                          placeholder="Legenda ou descrição opcional do vídeo..."><?php echo esc_textarea( $desc ); ?></textarea>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+
+add_action( 'save_post_video', function( $post_id ) {
+    if ( ! isset( $_POST['video_meta_nonce'] ) || ! wp_verify_nonce( $_POST['video_meta_nonce'], 'salvar_video_meta' ) ) return;
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+    if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+    update_post_meta( $post_id, '_video_url',        esc_url_raw( $_POST['video_url']        ?? '' ) );
+    update_post_meta( $post_id, '_video_descricao',  sanitize_textarea_field( $_POST['video_descricao'] ?? '' ) );
+} );
+
+// =========================================
 // CPT: GALERIA
+
 // =========================================
 function tema_aventuras_cpt_galeria() {
     register_post_type( 'galeria', [

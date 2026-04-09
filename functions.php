@@ -163,14 +163,14 @@ function tema_aventuras_scripts() {
         true
     );
 
-    // CSS dos guias (apenas na página de guias)
+    // CSS dos guias
     if ( is_page_template( 'page-templates/page-guias.php' ) ) {
-        wp_enqueue_style(
-            'tema-aventuras-guias',
-            TEMA_AVENTURAS_URI . '/assets/css/guias.css',
-            [ 'tema-aventuras-style' ],
-            $ver
-        );
+        wp_enqueue_style( 'tema-aventuras-guias', TEMA_AVENTURAS_URI . '/assets/css/guias.css', [ 'tema-aventuras-style' ], $ver );
+    }
+
+    // CSS dos vídeos (home + página de vídeos)
+    if ( is_front_page() || is_page_template( 'page-templates/page-videos.php' ) ) {
+        wp_enqueue_style( 'tema-aventuras-videos', TEMA_AVENTURAS_URI . '/assets/css/videos.css', [ 'tema-aventuras-style' ], $ver );
     }
 
     // CSS do blog (template de blog, post singular e arquivos de categoria/tag)
