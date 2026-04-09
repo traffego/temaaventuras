@@ -158,33 +158,9 @@ get_header();
                                 </div>
                             </div>
 
-                            <!-- PIX info -->
+                            <!-- PIX (texto informativo) -->
                             <div data-metodo-form="pix" class="ativo">
-                                <div class="pix-container">
-                                    <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);">Após
-                                        confirmar, um QR Code PIX será gerado. Você terá <strong>30 minutos</strong>
-                                        para pagar.</p>
-                                    <div class="pix-display-wrap">
-                                        <div id="pix-display" style="display:none;">
-                                            <p style="color:var(--cor-primaria);font-weight:bold;">✅ QR Code gerado!
-                                                Escaneie para pagar:</p>
-                                            <div class="pix-qrcode-wrap">
-                                                <img id="pix-qrcode-img" src="" alt="QR Code PIX" style="display:none;">
-                                            </div>
-                                            <p>Expira em: <span class="pix-timer" id="pix-timer">30:00</span></p>
-                                            <div class="pix-copia-cola-wrap">
-                                                <input type="text" id="pix-copia-cola" readonly
-                                                    placeholder="Código PIX aparecerá aqui">
-                                                <button type="button" id="btn-copiar-pix"
-                                                    class="btn btn--secundario btn--pequeno">📋 Copiar</button>
-                                            </div>
-                                            <p
-                                                style="font-size:0.75rem;color:var(--texto-muted);text-align:center;margin-top:var(--espaco-sm);">
-                                                Aguardando confirmação automaticamente...
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                                <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);">Ao clicar em PIX, seu QR Code será gerado automaticamente.</p>
                             </div>
 
                             <!-- Cartão -->
@@ -272,10 +248,27 @@ get_header();
 
 <?php get_footer(); ?>
 
-<!-- BOTÃO FLUTUANTE (fora de main e footer para garantir position:fixed) -->
+<!-- BOTÃO FLUTUANTE -->
 <div class="checkout-submit-wrapper" id="checkout-submit-wrapper"
-    style=" position: fixed; bottom: 10px; width: 90%; left: 20px; ">
+    style="position:fixed; bottom:10px; width:90%; left:5%;">
     <button type="button" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit" disabled>
         🔒 Pagar <span id="btn-total-display">R$ 0,00</span>
     </button>
+</div>
+
+<!-- MODAL PIX -->
+<div id="pix-modal" style="display:none; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); align-items:center; justify-content:center;">
+    <div style="background:var(--fundo-card); border:1px solid var(--borda-glass); border-radius:var(--raio-xl); padding:var(--espaco-2xl); max-width:420px; width:90%; text-align:center; position:relative;">
+        <button type="button" id="pix-modal-fechar" style="position:absolute; top:12px; right:16px; background:none; border:none; color:var(--texto-muted); font-size:1.5rem; cursor:pointer;">✕</button>
+        <p style="color:var(--cor-primaria); font-weight:bold; font-size:1.1rem; margin-bottom:var(--espaco-md);">✅ QR Code PIX gerado!</p>
+        <div class="pix-qrcode-wrap" style="margin-bottom:var(--espaco-md);">
+            <img id="pix-qrcode-img" src="" alt="QR Code PIX" style="display:none;">
+        </div>
+        <p style="color:var(--texto-primario);">Expira em: <span class="pix-timer" id="pix-timer" style="font-family:var(--fonte-titulo); font-size:1.8rem; color:var(--cor-secundaria);">30:00</span></p>
+        <div style="display:flex; gap:var(--espaco-sm); margin:var(--espaco-md) auto; max-width:350px;">
+            <input type="text" id="pix-copia-cola" readonly placeholder="Código PIX" style="flex:1; background:var(--fundo-elevado); border:1px solid var(--borda-glass); border-radius:var(--raio-md); padding:8px 12px; color:var(--texto-secundario); font-size:0.75rem; font-family:monospace;">
+            <button type="button" id="btn-copiar-pix" class="btn btn--secundario btn--pequeno">📋 Copiar</button>
+        </div>
+        <p style="font-size:0.75rem; color:var(--texto-muted); margin-top:var(--espaco-sm);">Aguardando confirmação automaticamente...</p>
+    </div>
 </div>
