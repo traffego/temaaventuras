@@ -59,7 +59,7 @@ $cfg       = tema_aventuras_payment_config();
 $mp_pubkey = $cfg['sandbox'] ? $cfg['pubkey_sandbox'] : $cfg['pubkey_producao'];
 $parcelas  = $cfg['parcelas_max'];
 
-wp_enqueue_style('ta-checkout-css',  TEMA_AVENTURAS_URI . '/assets/css/checkout.css', [], TEMA_AVENTURAS_VERSION);
+wp_enqueue_style('ta-checkout-css',  TEMA_AVENTURAS_URI . '/assets/css/checkout.css', [], time());
 wp_enqueue_script('mercadopago-sdk', 'https://sdk.mercadopago.com/js/v2', [], null, true);
 wp_enqueue_script('ta-checkout-js',  TEMA_AVENTURAS_URI . '/assets/js/checkout.js', [], time(), true);
 wp_localize_script('ta-checkout-js', 'taCheckoutConfig', [
