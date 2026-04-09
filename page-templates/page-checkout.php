@@ -61,7 +61,7 @@ $parcelas  = $cfg['parcelas_max'];
 
 wp_enqueue_style('ta-checkout-css',  TEMA_AVENTURAS_URI . '/assets/css/checkout.css', [], TEMA_AVENTURAS_VERSION);
 wp_enqueue_script('mercadopago-sdk', 'https://sdk.mercadopago.com/js/v2', [], null, true);
-wp_enqueue_script('ta-checkout-js',  TEMA_AVENTURAS_URI . '/assets/js/checkout.js', [], TEMA_AVENTURAS_VERSION, true);
+wp_enqueue_script('ta-checkout-js',  TEMA_AVENTURAS_URI . '/assets/js/checkout.js', [], time(), true);
 wp_localize_script('ta-checkout-js', 'taCheckoutConfig', [
     'publicKey'     => $mp_pubkey,
     'ajaxUrl'       => admin_url('admin-ajax.php'),
@@ -74,6 +74,7 @@ get_header();
 ?>
 
 <main id="conteudo-principal" role="main">
+    <script>console.log('✅ PHP: page-checkout.php carregado com sucesso');</script>
 
     <!-- ===== HERO ===== -->
     <?php if ($img_url): ?>
