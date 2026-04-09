@@ -173,6 +173,16 @@ function tema_aventuras_scripts() {
         );
     }
 
+    // CSS do blog (template de blog, post singular e arquivos de categoria/tag)
+    if ( is_page_template( 'page-templates/page-blog.php' ) || is_single() || is_archive() || is_home() ) {
+        wp_enqueue_style(
+            'tema-aventuras-blog',
+            TEMA_AVENTURAS_URI . '/assets/css/blog.css',
+            [ 'tema-aventuras-style' ],
+            $ver
+        );
+    }
+
     // Comentários com threads
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
         wp_enqueue_script( 'comment-reply' );
