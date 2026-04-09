@@ -177,8 +177,12 @@ if (!$img_url) {
                                 <div class="mp-field-wrapper" id="mp-cardNumber"></div>
                             </div>
                             <div class="form-grupo">
-                                <label>Validade *</label>
-                                <div class="mp-field-wrapper" id="mp-expirationDate"></div>
+                                <label>Mês (MM) *</label>
+                                <div class="mp-field-wrapper" id="mp-cardExpirationMonth"></div>
+                            </div>
+                            <div class="form-grupo">
+                                <label>Ano (YY) *</label>
+                                <div class="mp-field-wrapper" id="mp-cardExpirationYear"></div>
                             </div>
                             <div class="form-grupo">
                                 <label>CVV *</label>
