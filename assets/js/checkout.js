@@ -137,30 +137,40 @@
     return valid;
   }
 
-  // Bind next and prev buttons safely
+  window.taNextStep = function(btn) {
+    const currentStep = btn.closest('.checkout-step').getAttribute('data-step');
+    const nextStep = btn.getAttribute('data-next');
+    
+    if (validateStep(currentStep)) {
+      showStep(nextStep);
+    }
+  };
+
+  window.taPrevStep = function(btn) {
+    esconderErro();
+    showStep(btn.getAttribute('data-prev'));
+  };
+
+  // Mantendo o initStepper apenas se houver algum fallback, mas usaremos inline também:
   function initStepper() {
     document.querySelectorAll('.btn-next').forEach(btn => {
-      btn.addEventListener('click', function(e) {
+      // Remove listeners antigos se rodar 2x
+      btn.onclick = function(e) {
         e.preventDefault();
-        const currentStep = this.closest('.checkout-step').getAttribute('data-step');
-        const nextStep = this.getAttribute('data-next');
-        
-        if (validateStep(currentStep)) {
-          showStep(nextStep);
-        }
-      });
+        window.taNextStep(this);
+      };
     });
 
     document.querySelectorAll('.btn-prev').forEach(btn => {
-      btn.addEventListener('click', function(e) {
+      btn.onclick = function(e) {
         e.preventDefault();
-        esconderErro();
-        showStep(this.getAttribute('data-prev'));
-      });
+        window.taPrevStep(this);
+      };
     });
   }
 
-  // Garante que eles sejam escutados quando o DOM terminar caso p script rode cedo
+  // Garante que eles sejam escutados
+  setTimeout(initStepper, 300);
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initStepper);
   } else {

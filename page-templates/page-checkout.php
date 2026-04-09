@@ -197,7 +197,7 @@ get_header();
                             </div>
                             <div class="step-nav">
                                 <div></div> <!-- Espaçador -->
-                                <button type="button" class="btn btn--primario btn-next" data-next="2">Próximo: Participantes →</button>
+                                <button type="button" class="btn btn--primario btn-next" data-next="2" onclick="if(window.taNextStep) window.taNextStep(this); return false;">Próximo: Participantes →</button>
                             </div>
                         </div>
 
@@ -212,8 +212,8 @@ get_header();
                                 </button>
                             </div>
                             <div class="step-nav">
-                                <button type="button" class="btn btn--secundario btn-prev" data-prev="1">← Voltar</button>
-                                <button type="button" class="btn btn--primario btn-next" data-next="3">Próximo: Termos →</button>
+                                <button type="button" class="btn btn--secundario btn-prev" data-prev="1" onclick="if(window.taPrevStep) window.taPrevStep(this); return false;">← Voltar</button>
+                                <button type="button" class="btn btn--primario btn-next" data-next="3" onclick="if(window.taNextStep) window.taNextStep(this); return false;">Próximo: Termos →</button>
                             </div>
                         </div>
 
@@ -230,8 +230,8 @@ get_header();
                                 </div>
                             </div>
                             <div class="step-nav">
-                                <button type="button" class="btn btn--secundario btn-prev" data-prev="2">← Voltar</button>
-                                <button type="button" class="btn btn--primario btn-next" data-next="4">Revisar e Pagar →</button>
+                                <button type="button" class="btn btn--secundario btn-prev" data-prev="2" onclick="if(window.taPrevStep) window.taPrevStep(this); return false;">← Voltar</button>
+                                <button type="button" class="btn btn--primario btn-next" data-next="4" onclick="if(window.taNextStep) window.taNextStep(this); return false;">Revisar e Pagar →</button>
                             </div>
                         </div>
 
@@ -348,7 +348,7 @@ get_header();
                                 </div>
                             </div>
                             <div class="step-nav">
-                                <button type="button" class="btn btn--secundario btn-prev" data-prev="3">← Voltar</button>
+                                <button type="button" class="btn btn--secundario btn-prev" data-prev="3" onclick="if(window.taPrevStep) window.taPrevStep(this); return false;">← Voltar</button>
                                 <div></div> <!-- Espaçador -->
                             </div>
                         </div>
