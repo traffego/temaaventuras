@@ -1,11 +1,36 @@
 <?php
 /**
- * Custom Post Types: Atividades, Pacotes, Depoimentos
+ * Custom Post Types: Atividades, Pacotes, Depoimentos, Guias
  *
  * @package TemaAventuras
  */
 
 defined( 'ABSPATH' ) || exit;
+
+// =========================================
+// MENU PRINCIPAL: GESTÃO
+// =========================================
+function tema_aventuras_menu_gestao() {
+    add_menu_page(
+        __( 'Gestão', 'temaaventuras' ),
+        __( 'GESTÃO', 'temaaventuras' ),
+        'edit_posts',
+        'gestao-aventuras',
+        '__return_null',
+        'dashicons-admin-tools',
+        4
+    );
+
+    // Submenus explícitos (os CPTs serão adicionados automaticamente via show_in_menu)
+    add_submenu_page( 'gestao-aventuras', __( 'Atividades', 'temaaventuras' ),   __( 'Atividades', 'temaaventuras' ),   'edit_posts', 'edit.php?post_type=atividade',  '' );
+    add_submenu_page( 'gestao-aventuras', __( 'Pacotes', 'temaaventuras' ),      __( 'Pacotes', 'temaaventuras' ),      'edit_posts', 'edit.php?post_type=pacote',     '' );
+    add_submenu_page( 'gestao-aventuras', __( 'Depoimentos', 'temaaventuras' ),  __( 'Depoimentos', 'temaaventuras' ),  'edit_posts', 'edit.php?post_type=depoimento', '' );
+    add_submenu_page( 'gestao-aventuras', __( 'Guias', 'temaaventuras' ),        __( 'Guias', 'temaaventuras' ),        'edit_posts', 'edit.php?post_type=guia',       '' );
+
+    // Remove o item duplicado que o WP cria automaticamente
+    remove_submenu_page( 'gestao-aventuras', 'gestao-aventuras' );
+}
+add_action( 'admin_menu', 'tema_aventuras_menu_gestao', 20 );
 
 // =========================================
 // CPT: ATIVIDADES
@@ -27,11 +52,10 @@ function tema_aventuras_cpt_atividades() {
         'labels'              => $labels,
         'public'              => true,
         'has_archive'         => true,
-        'show_in_rest'        => true, // Suporte ao Gutenberg/Elementor
+        'show_in_rest'        => true,
         'supports'            => [ 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ],
         'rewrite'             => [ 'slug' => 'atividades' ],
-        'menu_icon'           => 'dashicons-palmtree',
-        'menu_position'       => 5,
+        'show_in_menu'        => 'gestao-aventuras',
         'show_in_nav_menus'   => true,
         'taxonomies'          => [ 'categoria_atividade', 'nivel_dificuldade' ],
     ] );
@@ -59,8 +83,7 @@ function tema_aventuras_cpt_pacotes() {
         'show_in_rest'      => true,
         'supports'          => [ 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes' ],
         'rewrite'           => [ 'slug' => 'pacotes' ],
-        'menu_icon'         => 'dashicons-tickets-alt',
-        'menu_position'     => 6,
+        'show_in_menu'      => 'gestao-aventuras',
         'show_in_nav_menus' => true,
     ] );
 }
@@ -82,12 +105,11 @@ function tema_aventuras_cpt_depoimentos() {
 
     register_post_type( 'depoimento', [
         'labels'        => $labels,
-        'public'        => false, // Não tem arquivo, apenas usado internamente
+        'public'        => false,
         'show_ui'       => true,
         'show_in_rest'  => true,
         'supports'      => [ 'title', 'editor', 'thumbnail', 'custom-fields' ],
-        'menu_icon'     => 'dashicons-format-quote',
-        'menu_position' => 7,
+        'show_in_menu'  => 'gestao-aventuras',
     ] );
 }
 add_action( 'init', 'tema_aventuras_cpt_depoimentos' );
@@ -410,8 +432,7 @@ function tema_aventuras_cpt_guias() {
         'show_in_rest'  => true,
         'supports'      => [ 'title', 'custom-fields' ],
         'rewrite'       => [ 'slug' => 'guias' ],
-        'menu_icon'     => 'dashicons-id-alt',
-        'menu_position' => 8,
+        'show_in_menu'  => 'gestao-aventuras',
         'has_archive'   => false,
     ] );
 }

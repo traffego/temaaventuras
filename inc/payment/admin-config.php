@@ -8,15 +8,14 @@
 defined( 'ABSPATH' ) || exit;
 
 /* =========================================
-   REGISTRAR MENU
+   REGISTRAR SUBMENUS NO MENU GESTÃO
    ========================================= */
 function ta_payment_admin_menu() {
-    add_menu_page( 'Aventuras', 'Aventuras', 'manage_options', 'ta-aventuras', '__return_null', 'dashicons-palmtree', 4 );
-    add_submenu_page( 'ta-aventuras', 'Configurações de Pagamento', '💳 Pagamento', 'manage_options', 'ta-pagamento', 'ta_payment_config_page' );
-    add_submenu_page( 'ta-aventuras', 'Reservas', '📋 Reservas', 'manage_options', 'ta-reservas', 'ta_reservas_admin_page' );
-    add_submenu_page( 'ta-aventuras', 'Check-in', '✅ Check-in', 'manage_options', 'ta-checkin', 'ta_checkin_admin_page' );
+    add_submenu_page( 'gestao-aventuras', 'Configurações de Pagamento', '💳 Pagamento', 'manage_options', 'ta-pagamento', 'ta_payment_config_page' );
+    add_submenu_page( 'gestao-aventuras', 'Reservas', '📋 Reservas', 'manage_options', 'ta-reservas', 'ta_reservas_admin_page' );
+    add_submenu_page( 'gestao-aventuras', 'Check-in', '✅ Check-in', 'manage_options', 'ta-checkin', 'ta_checkin_admin_page' );
 }
-add_action( 'admin_menu', 'ta_payment_admin_menu' );
+add_action( 'admin_menu', 'ta_payment_admin_menu', 25 );
 
 /* =========================================
    HELPER: ler config de pagamento

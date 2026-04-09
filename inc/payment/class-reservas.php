@@ -17,9 +17,7 @@ function ta_cpt_reservas() {
         'show_ui'         => true,
         'show_in_rest'    => false,
         'supports'        => ['title', 'custom-fields'],
-        'menu_icon'       => 'dashicons-tickets-alt',
-        'menu_position'   => 9,
-        'show_in_menu'    => 'ta-aventuras',
+        'show_in_menu'    => 'gestao-aventuras',
         'capabilities'    => ['create_posts' => 'do_not_allow'],
         'map_meta_cap'    => true,
     ]);
