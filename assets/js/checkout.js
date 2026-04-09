@@ -100,52 +100,72 @@
     const step = document.querySelector(`.checkout-step[data-step="${stepIndex}"]`);
     if (!step) return true;
     
-    const requiredFields = step.querySelectorAll('input[required], select[required]');
+    // Capturamos todos os campos no step que possuam atributo required
+    const requiredFields = step.querySelectorAll('input[required], select[required], textarea[required]');
     let valid = true;
     
+    // Removemos os erros antigos
     step.querySelectorAll('.erro').forEach(el => el.classList.remove('erro'));
     
     requiredFields.forEach(f => {
-      if (f.type === 'checkbox') {
+      if (f.type === 'checkbox' || f.type === 'radio') {
         if (!f.checked) {
-          f.parentElement.style.color = '#f87171';
+          if (f.parentElement) f.parentElement.style.color = '#f87171';
           valid = false;
         } else {
-          f.parentElement.style.color = '';
+          if (f.parentElement) f.parentElement.style.color = '';
         }
       } else {
-        if (!f.value.trim()) {
+        if (!f.value || !f.value.trim()) {
           f.classList.add('erro');
           valid = false;
+          
+          // Remove a borda vermelha ao começar a digitar
+          f.addEventListener('input', function removerErro() {
+            f.classList.remove('erro');
+            f.removeEventListener('input', removerErro);
+          }, { once: true });
         }
       }
     });
     
     if (!valid) {
-      mostrarErro('Preencha ou assinale os campos obrigatórios antes de prosseguir.');
+      mostrarErro('Por favor, preencha os campos obrigatórios ou assinale os termos para prosseguir.');
     } else {
       esconderErro();
     }
     return valid;
   }
 
-  document.querySelectorAll('.btn-next').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const currentStep = e.target.closest('.checkout-step').dataset.step;
-      const nextStep = e.target.dataset.next;
-      
-      if (validateStep(currentStep)) {
-        showStep(nextStep);
-      }
+  // Bind next and prev buttons safely
+  function initStepper() {
+    document.querySelectorAll('.btn-next').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const currentStep = this.closest('.checkout-step').getAttribute('data-step');
+        const nextStep = this.getAttribute('data-next');
+        
+        if (validateStep(currentStep)) {
+          showStep(nextStep);
+        }
+      });
     });
-  });
 
-  document.querySelectorAll('.btn-prev').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      esconderErro();
-      showStep(e.target.dataset.prev);
+    document.querySelectorAll('.btn-prev').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        esconderErro();
+        showStep(this.getAttribute('data-prev'));
+      });
     });
-  });
+  }
+
+  // Garante que eles sejam escutados quando o DOM terminar caso p script rode cedo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStepper);
+  } else {
+    initStepper();
+  }
 
   // =========================================
   // SELEÇÃO DE MÉTODO DE PAGAMENTO
