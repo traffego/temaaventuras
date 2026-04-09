@@ -245,49 +245,49 @@ get_header();
                                 <div id="form-cartao">
                                     <div class="mp-card-form">
                                         <div class="grid grid--2">
-                                            <div class="form-grupo" style="grid-column:1/-1;">
-                                                <label>Número do Cartão *</label>
-                                                <div class="mp-field-wrapper" id="mp-cardNumber"></div>
+                                            <div class="form-grupo" style="grid-column:1/-1; margin-bottom:12px;">
+                                                <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">NÚMERO DO CARTÃO *</label>
+                                                <div class="mp-field-wrapper" id="mp-cardNumber" style="background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; height: 48px; display: flex; align-items: center; width: 100%; box-sizing: border-box;"></div>
                                             </div>
-                                            <div class="form-grupo">
-                                                <label>Validade *</label>
-                                                <div style="display:flex;gap:8px;">
-                                                    <div class="mp-field-wrapper" id="mp-cardExpirationMonth" style="flex:1;"></div>
-                                                    <span style="color:var(--texto-muted);display:flex;align-items:center;">/</span>
-                                                    <div class="mp-field-wrapper" id="mp-cardExpirationYear" style="flex:1;"></div>
+                                            <div class="form-grupo" style="margin-bottom:12px;">
+                                                <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">VALIDADE *</label>
+                                                <div style="display:flex;gap:8px;align-items:center;">
+                                                    <div class="mp-field-wrapper" id="mp-cardExpirationMonth" style="flex:1; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 12px; height: 48px; display: flex; align-items: center; box-sizing: border-box;"></div>
+                                                    <span style="color:var(--texto-muted); font-size:1.2rem; line-height:1;">/</span>
+                                                    <div class="mp-field-wrapper" id="mp-cardExpirationYear" style="flex:1; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 12px; height: 48px; display: flex; align-items: center; box-sizing: border-box;"></div>
                                                 </div>
                                             </div>
-                                            <div class="form-grupo">
-                                                <label>CVV *</label>
-                                                <div class="mp-field-wrapper" id="mp-securityCode"></div>
+                                            <div class="form-grupo" style="margin-bottom:12px;">
+                                                <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">CVV *</label>
+                                                <div class="mp-field-wrapper" id="mp-securityCode" style="background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; height: 48px; display: flex; align-items: center; width: 100%; box-sizing: border-box;"></div>
                                             </div>
-                                            <div class="form-grupo" style="grid-column:1/-1;">
-                                                <label>Parcelas</label>
-                                                <select id="mp-installments" style="height:44px;"></select>
+                                            <div class="form-grupo" style="grid-column:1/-1; margin-bottom:12px;">
+                                                <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">PARCELAS *</label>
+                                                <select id="mp-installments" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; color:var(--texto-primario); font-size: 15px; box-sizing: border-box;"></select>
                                             </div>
-                                            <div class="form-grupo" style="grid-column:1/-1;">
-                                                <label class="checkbox-inline" style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;">
-                                                    <input type="checkbox" id="usar-dados-resp" checked style="width:auto;min-height:auto;">
+                                            <div class="form-grupo" style="grid-column:1/-1; margin: 16px 0;">
+                                                <label class="checkbox-inline" style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0; font-size: 0.9rem; color:var(--texto-primario); background: var(--fundo-elevado); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--borda-glass);">
+                                                    <input type="checkbox" id="usar-dados-resp" checked style="width:20px;height:20px;accent-color:var(--cor-primaria);">
                                                     Usar dados do responsável para o pagamento
                                                 </label>
                                             </div>
-                                            <div id="campos-pagador" style="display:none;grid-column:1/-1;">
-                                                <div class="grid grid--2">
+                                            <div id="campos-pagador" style="display:none;grid-column:1/-1; background: var(--fundo-elevado); padding: 16px; border-radius: 12px; border: 1px dashed var(--borda-glass);">
+                                                <div class="grid grid--2" style="gap: 12px;">
                                                     <div class="form-grupo" style="grid-column:1/-1;">
-                                                        <label>Nome no Cartão *</label>
-                                                        <input type="text" id="mp-cardholderName" placeholder="Nome como no cartão">
+                                                        <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">NOME NO CARTÃO *</label>
+                                                        <input type="text" id="mp-cardholderName" placeholder="Nome como no cartão" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;">
                                                     </div>
                                                     <div class="form-grupo">
-                                                        <label>Tipo de Documento</label>
-                                                        <select id="mp-identificationType"></select>
+                                                        <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">DOCUMENTO</label>
+                                                        <select id="mp-identificationType" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;"></select>
                                                     </div>
                                                     <div class="form-grupo">
-                                                        <label>CPF *</label>
-                                                        <input type="text" id="mp-identificationNumber" placeholder="000.000.000-00">
+                                                        <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">CPF *</label>
+                                                        <input type="text" id="mp-identificationNumber" placeholder="000.000.000-00" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;">
                                                     </div>
                                                     <div class="form-grupo" style="grid-column:1/-1;">
-                                                        <label>E-mail *</label>
-                                                        <input type="email" id="mp-email" placeholder="email@dominio.com">
+                                                        <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">E-MAIL *</label>
+                                                        <input type="email" id="mp-email" placeholder="email@dominio.com" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;">
                                                     </div>
                                                 </div>
                                             </div>
