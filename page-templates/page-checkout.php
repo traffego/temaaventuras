@@ -74,7 +74,6 @@ get_header();
 ?>
 
 <main id="conteudo-principal" role="main">
-    <script>console.log('✅ PHP: page-checkout.php carregado com sucesso');</script>
 
     <!-- ===== HERO ===== -->
     <?php if ($img_url): ?>
@@ -203,7 +202,7 @@ get_header();
                         </div>
 
                         <!-- ── PASSO 2: ACOMPANHANTES ── -->
-                        <div class="checkout-step" data-step="2" style="display:none;">
+                        <div class="checkout-step" data-step="2">
                             <div class="checkout-section">
                                 <h2 class="checkout-section__titulo">👥 Acompanhantes <span style="font-size:.75rem;font-weight:400;color:var(--texto-muted);">(opcional)</span></h2>
                                 <p class="checkout-section__desc">Preencha apenas se houver mais pessoas além do responsável.</p>
@@ -219,7 +218,7 @@ get_header();
                         </div>
 
                         <!-- ── PASSO 3: TERMOS ── -->
-                        <div class="checkout-step" data-step="3" style="display:none;">
+                        <div class="checkout-step" data-step="3">
                             <div class="checkout-section">
                                 <h2 class="checkout-section__titulo">✅ Termos e Políticas</h2>
                                 <p class="checkout-section__desc">Por favor, confirme que está ciente das regras da atividade.</p>
@@ -237,7 +236,7 @@ get_header();
                         </div>
 
                         <!-- ── PASSO 4: PAGAMENTO ── -->
-                        <div class="checkout-step" data-step="4" style="display:none;">
+                        <div class="checkout-step" data-step="4">
                             <!-- Resumo Financeiro movido para o último passo -->
                             <div class="checkout-section co-resumo-financeiro">
                                 <h2 class="checkout-section__titulo">💰 Resumo Final</h2>

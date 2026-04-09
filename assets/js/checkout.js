@@ -12,33 +12,21 @@
   // FUNÇÕES GLOBAIS DE NAVEGAÇÃO (STEPPER)
   // Definido no início para ser acessível imediatamente via onclick
   // =========================================
-  window.taNextStep = function(btn) {
-    try {
-      console.log('TA Checkout: Próximo clicado', btn);
-      const stepDOM = btn.closest('[data-step]');
-      if (!stepDOM) throw new Error("Não foi possível encontrar a seção [data-step] pai.");
-      
-      const currentStep = stepDOM.getAttribute('data-step');
-      const nextStep = btn.getAttribute('data-next');
-      
-      if (validateStep(currentStep)) {
-        showStep(nextStep);
-      }
-    } catch (e) {
-      console.error('TA Checkout Erro (taNextStep):', e);
-      alert('Erro de Navegação: ' + e.message);
-    }
-  };
+  function showStep(stepIndex) {
+    const targetStep = document.querySelector(`.checkout-step[data-step="${stepIndex}"]`);
+    const targetInd = document.querySelector(`.step-indicator[data-target="${stepIndex}"]`);
+    
+    if (!targetStep || !targetInd) return;
 
-  window.taPrevStep = function(btn) {
-    try {
-      console.log('TA Checkout: Voltar clicado');
-      esconderErro();
-      showStep(btn.getAttribute('data-prev'));
-    } catch (e) {
-      console.error('TA Checkout Erro (taPrevStep):', e);
-    }
-  };
+    document.querySelectorAll('.checkout-step').forEach(s => s.classList.remove('ativo'));
+    document.querySelectorAll('.step-indicator').forEach(i => i.classList.remove('ativado'));
+    
+    targetStep.classList.add('ativo');
+    targetInd.classList.add('ativado');
+    
+    const stepper = document.querySelector('.checkout-stepper');
+    if (stepper) stepper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   const CFG            = window.taCheckoutConfig || {};
   const { publicKey, ajaxUrl, nonce, parcelas_max } = CFG;
@@ -116,49 +104,13 @@
   const steps = document.querySelectorAll('.checkout-step');
   const indicators = document.querySelectorAll('.step-indicator');
 
-  function showStep(stepIndex) {
-    try {
-      console.log('showStep() chamado com ->', stepIndex);
-      
-      const stps = document.querySelectorAll('.checkout-step');
-      if (!stps || stps.length === 0) throw new Error("A classe .checkout-step não foi encontrada na página.");
-      
-      stps.forEach(s => s.classList.remove('ativo'));
-      
-      const inds = document.querySelectorAll('.step-indicator');
-      inds.forEach(i => i.classList.remove('ativado'));
-      
-      const targetStep = document.querySelector(`.checkout-step[data-step="${stepIndex}"]`);
-      const targetInd = document.querySelector(`.step-indicator[data-target="${stepIndex}"]`);
-      
-      if (!targetStep) throw new Error(`.checkout-step com data-step="${stepIndex}" não encontrado.`);
-      if (!targetInd) throw new Error(`.step-indicator com data-target="${stepIndex}" não encontrado.`);
-      
-      targetStep.classList.add('ativo');
-      targetInd.classList.add('ativado');
-      
-      const stepper = document.querySelector('.checkout-stepper');
-      if (stepper) stepper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch (e) {
-      console.error('ERRO EM showStep:', e);
-      alert('ERRO JS (showStep): ' + e.message);
-    }
-  }
-
-  // Validação restrita ao Step atual
   function validateStep(stepIndex) {
-    try {
     const step = document.querySelector(`.checkout-step[data-step="${stepIndex}"]`);
-    if (!step) {
-      console.warn('Step não encontrado:', stepIndex);
-      return true;
-    }
+    if (!step) return true;
     
-    // Capturamos todos os campos no step que possuam atributo required
     const requiredFields = step.querySelectorAll('input[required], select[required], textarea[required]');
     let valid = true;
     
-    // Removemos os erros antigos
     step.querySelectorAll('.erro').forEach(el => el.classList.remove('erro'));
     
     requiredFields.forEach(f => {
@@ -173,28 +125,34 @@
         if (!f.value || !f.value.trim()) {
           f.classList.add('erro');
           valid = false;
-          
-          // Remove a borda vermelha ao começar a digitar
-          f.addEventListener('input', function removerErro() {
+          f.addEventListener('input', function remover() {
             f.classList.remove('erro');
-            f.removeEventListener('input', removerErro);
+            f.removeEventListener('input', remover);
           }, { once: true });
         }
       }
     });
     
     if (!valid) {
-      mostrarErro('Por favor, preencha os campos obrigatórios ou assinale os termos para prosseguir.');
+      mostrarErro('Por favor, preencha os campos obrigatórios para prosseguir.');
     } else {
       esconderErro();
     }
     return valid;
-    } catch (e) {
-      console.error('ERRO EM validateStep:', e);
-      alert('ERRO JS (validateStep): ' + e.message);
-      return false;
-    }
   }
+
+  window.taNextStep = function(btn) {
+    const stepDOM = btn.closest('[data-step]');
+    if (!stepDOM) return;
+    const currentStep = stepDOM.getAttribute('data-step');
+    const nextStep = btn.getAttribute('data-next');
+    if (validateStep(currentStep)) showStep(nextStep);
+  };
+
+  window.taPrevStep = function(btn) {
+    esconderErro();
+    showStep(btn.getAttribute('data-prev'));
+  };
 
   function initStepper() {
     console.log('TA Checkout: Iniciando listeners do Stepper...');
