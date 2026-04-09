@@ -181,6 +181,16 @@ function tema_aventuras_customizer( $wp_customize ) {
         'section' => 'tema_aventuras_modulos',
         'type'    => 'checkbox',
     ] );
+
+    $wp_customize->add_setting( 'mostrar_depoimentos', [
+        'default'           => true,
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ] );
+    $wp_customize->add_control( 'mostrar_depoimentos', [
+        'label'   => __( 'Ativar seção de Depoimentos', 'temaaventuras' ),
+        'section' => 'tema_aventuras_modulos',
+        'type'    => 'checkbox',
+    ] );
     // SEÇÃO: HERO (PÁGINA INICIAL)
     // =========================================
     $wp_customize->add_section( 'tema_aventuras_hero', [
