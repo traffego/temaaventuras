@@ -160,7 +160,7 @@ get_header();
 
                             <!-- PIX (texto informativo) -->
                             <div data-metodo-form="pix" class="ativo">
-                                <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);">Ao clicar em PIX, seu QR Code será gerado automaticamente.</p>
+                                <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);">Preencha seus dados e clique em <strong>PIX</strong> acima para gerar o QR Code instantaneamente.</p>
                             </div>
 
                             <!-- Cartão -->
@@ -250,7 +250,7 @@ get_header();
 
 <!-- BOTÃO FLUTUANTE -->
 <div class="checkout-submit-wrapper" id="checkout-submit-wrapper"
-    style="position:fixed; bottom:10px; width:90%; left:5%;">
+    style="position:fixed; bottom:10px; width:90%; left:5%; display:none;">
     <button type="button" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit" disabled>
         🔒 Pagar <span id="btn-total-display">R$ 0,00</span>
     </button>

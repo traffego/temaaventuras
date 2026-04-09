@@ -31,14 +31,27 @@
       });
       document.getElementById('campo-metodo').value = metodo;
 
-      if (metodo === 'credit_card' && !mpInstance) {
-        setTimeout(initCardForm, 300);
+      const wrapper = document.getElementById('checkout-submit-wrapper');
+
+      if (metodo === 'pix') {
+        if (wrapper) wrapper.style.display = 'none';
+        // Valida e submete direto ao clicar em PIX
+        setTimeout(() => {
+          if (validarTudo()) {
+            const form = document.getElementById('form-checkout');
+            if (form) form.requestSubmit();
+          }
+        }, 150);
+      } else {
+        if (wrapper) wrapper.style.display = '';
+        document.getElementById('btn-finalizar').disabled = false;
+        if (!mpInstance) setTimeout(initCardForm, 300);
       }
     });
   });
-  
-  // Como PIX já está carregado de cara, liberamos o botão se for PIX
-  document.getElementById('btn-finalizar').disabled = false;
+
+  // PIX pré-selecionado: esconder botão Pagar (clicar no card PIX já dispara)
+  document.getElementById('checkout-submit-wrapper').style.display = 'none';
 
   // =========================================
   // ACOMPANHANTES DINÂMICOS
@@ -263,8 +276,8 @@
 
         if (metodo === 'pix') {
           renderizarPix(json.data.pix);
-          document.getElementById('pix-display').style.display = 'block';
-          document.getElementById('btn-finalizar').style.display = 'none';
+          const pixModal = document.getElementById('pix-modal');
+          if (pixModal) pixModal.style.display = 'flex';
           iniciarPollingPix(json.data.reserva_id);
         } else {
           // Cartão: já foi processado pelo CardForm
@@ -319,6 +332,14 @@
       btn.textContent = '✅ Copiado!';
       setTimeout(() => btn.textContent = '📋 Copiar', 2000);
     });
+  });
+
+  // =========================================
+  // FECHAR MODAL PIX
+  // =========================================
+  document.getElementById('pix-modal-fechar')?.addEventListener('click', () => {
+    const modal = document.getElementById('pix-modal');
+    if (modal) modal.style.display = 'none';
   });
 
   // =========================================
