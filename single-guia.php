@@ -1,6 +1,6 @@
 <?php
 /**
- * single-guia.php – Página de detalhes do guia
+ * single-guia.php – Perfil do guia
  *
  * @package TemaAventuras
  */
@@ -10,84 +10,72 @@ get_header();
 while ( have_posts() ) : the_post();
     $foto_id   = (int) get_post_meta( get_the_ID(), '_guia_foto', true );
     $foto_url  = $foto_id ? wp_get_attachment_image_url( $foto_id, 'large' ) : '';
+    $foto_full = $foto_id ? wp_get_attachment_image_url( $foto_id, 'full' ) : '';
     $subtitulo = get_post_meta( get_the_ID(), '_guia_subtitulo', true );
     $descricao = get_post_meta( get_the_ID(), '_guia_descricao', true );
-    $wa_link   = ta_whatsapp_link( sprintf( __( 'Olá! Gostaria de saber mais sobre as atividades com o guia %s.', 'temaaventuras' ), get_the_title() ) );
+
+    $p_guias = get_pages( [
+        'meta_key'   => '_wp_page_template',
+        'meta_value' => 'page-templates/page-guias.php',
+    ] )[0] ?? null;
 ?>
 
 <main id="conteudo-principal" role="main">
 
-    <!-- Banner compacto -->
-    <div class="page-banner" style="min-height:220px;">
-        <div class="page-banner__overlay" aria-hidden="true"></div>
-        <div class="container page-banner__conteudo" style="padding-block:var(--espaco-2xl);">
-            <nav class="breadcrumb" aria-label="Navegação">
-                <a href="<?php echo home_url('/'); ?>"><?php _e('Início','temaaventuras'); ?></a> /
-                <?php
-                $p_guias = get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-guias.php'])[0] ?? null;
-                if ($p_guias): ?>
-                    <a href="<?php echo get_permalink($p_guias); ?>"><?php _e('Guias','temaaventuras'); ?></a> /
+    <!-- ── HERO DO GUIA ── -->
+    <div class="guia-hero">
+        <!-- Fundo desfocado com a foto -->
+        <?php if ( $foto_url ) : ?>
+        <div class="guia-hero__bg" style="background-image:url('<?php echo esc_url( $foto_full ?: $foto_url ); ?>')" aria-hidden="true"></div>
+        <?php endif; ?>
+        <div class="guia-hero__overlay" aria-hidden="true"></div>
+
+        <div class="container guia-hero__inner">
+
+            <!-- Foto -->
+            <div class="guia-hero__foto-col">
+                <div class="guia-perfil__foto-wrap">
+                    <?php if ( $foto_url ) : ?>
+                        <img src="<?php echo esc_url( $foto_url ); ?>"
+                             alt="<?php the_title_attribute(); ?>"
+                             class="guia-perfil__foto" />
+                    <?php else : ?>
+                        <div class="guia-perfil__foto guia-perfil__foto--placeholder">🧭</div>
+                    <?php endif; ?>
+                    <div class="guia-perfil__foto-ring" aria-hidden="true"></div>
+                </div>
+            </div>
+
+            <!-- Identidade -->
+            <div class="guia-hero__id-col">
+                <?php if ( $subtitulo ) : ?>
+                    <span class="guia-hero__esp"><?php echo esc_html( $subtitulo ); ?></span>
                 <?php endif; ?>
-                <span><?php the_title(); ?></span>
-            </nav>
+                <h1 class="guia-hero__nome"><?php the_title(); ?></h1>
+
+                <?php if ( $p_guias ) : ?>
+                <a href="<?php echo get_permalink( $p_guias ); ?>" class="guia-hero__voltar" aria-label="Voltar para lista de guias">
+                    ← <?php _e( 'Ver todos os guias', 'temaaventuras' ); ?>
+                </a>
+                <?php endif; ?>
+            </div>
+
         </div>
     </div>
 
-    <!-- Perfil -->
-    <section class="section">
+    <!-- ── BIO ── -->
+    <?php if ( $descricao ) : ?>
+    <section class="section section--pequena">
         <div class="container--estreito">
-            <div class="guia-perfil">
-
-                <!-- Foto -->
-                <div class="guia-perfil__foto-col">
-                    <?php if ( $foto_url ) : ?>
-                        <div class="guia-perfil__foto-wrap">
-                            <img src="<?php echo esc_url( $foto_url ); ?>"
-                                 alt="<?php the_title_attribute(); ?>"
-                                 class="guia-perfil__foto" />
-                            <div class="guia-perfil__foto-ring" aria-hidden="true"></div>
-                        </div>
-                    <?php else : ?>
-                        <div class="guia-perfil__foto-wrap">
-                            <div class="guia-perfil__foto guia-perfil__foto--placeholder">🧭</div>
-                        </div>
-                    <?php endif; ?>
-
-                    <!-- CTA -->
-                    <div class="guia-perfil__ctas">
-                        <a href="<?php echo esc_url( $wa_link ); ?>"
-                           class="btn btn--primario"
-                           target="_blank" rel="noopener noreferrer">
-                            📲 <?php _e('Falar no WhatsApp','temaaventuras'); ?>
-                        </a>
-                        <?php
-                        $p_guias = get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-guias.php'])[0] ?? null;
-                        if ($p_guias): ?>
-                        <a href="<?php echo get_permalink($p_guias); ?>" class="btn btn--ghost">
-                            ← <?php _e('Ver todos os guias','temaaventuras'); ?>
-                        </a>
-                        <?php endif; ?>
-                    </div>
+            <div class="guia-bio">
+                <span class="guia-bio__label"><?php _e( 'Sobre', 'temaaventuras' ); ?></span>
+                <div class="guia-bio__texto">
+                    <?php echo wpautop( esc_html( $descricao ) ); ?>
                 </div>
-
-                <!-- Infos -->
-                <div class="guia-perfil__info-col">
-                    <?php if ( $subtitulo ) : ?>
-                        <span class="guia-perfil__especialidade"><?php echo esc_html( $subtitulo ); ?></span>
-                    <?php endif; ?>
-
-                    <h1 class="guia-perfil__nome"><?php the_title(); ?></h1>
-
-                    <?php if ( $descricao ) : ?>
-                    <div class="guia-perfil__bio">
-                        <?php echo wpautop( esc_html( $descricao ) ); ?>
-                    </div>
-                    <?php endif; ?>
-                </div>
-
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
 </main>
 

@@ -162,110 +162,168 @@
 .guia-card__cta:hover { color: var(--cor-secundaria); gap: 8px; }
 
 /* ============================================================
-   GUIA – página de perfil (single-guia.php)
+   GUIA – perfil single (single-guia.php)
    ============================================================ */
 
-.guia-perfil {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: var(--espaco-4xl);
-    align-items: flex-start;
-    padding: var(--espaco-3xl) 0;
+/* Hero */
+.guia-hero {
+    position: relative;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
 }
 
-/* Coluna da foto */
-.guia-perfil__foto-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--espaco-xl);
-    position: sticky;
-    top: calc(var(--altura-nav) + var(--espaco-xl));
+.guia-hero__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center top;
+    filter: blur(22px) brightness(.35) saturate(1.4);
+    transform: scale(1.08); /* evita borda branca do blur */
 }
+
+.guia-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.2) 0%,
+        rgba(10,17,13,.85) 100%
+    );
+}
+
+.guia-hero__inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--espaco-3xl);
+    padding-block: var(--espaco-4xl);
+}
+
+/* Foto */
+.guia-hero__foto-col { flex-shrink: 0; }
 
 .guia-perfil__foto-wrap {
     position: relative;
-    width: 220px;
-    height: 220px;
-    flex-shrink: 0;
+    width: 200px;
+    height: 200px;
 }
 
 .guia-perfil__foto {
-    width: 220px;
-    height: 220px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     object-fit: cover;
+    object-position: center top;
     border: 4px solid var(--cor-primaria);
     display: block;
+    box-shadow: 0 0 40px rgba(0,156,59,.4);
 }
 
 .guia-perfil__foto--placeholder {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--gradiente-hero);
     font-size: 5rem;
-    border-radius: 50%;
-    width: 220px;
-    height: 220px;
+    border: 4px solid var(--cor-primaria);
 }
 
 .guia-perfil__foto-ring {
     position: absolute;
-    inset: -10px;
+    inset: -12px;
     border-radius: 50%;
-    border: 2px dashed var(--cor-primaria);
-    opacity: .4;
-    animation: girar 12s linear infinite;
+    border: 2px dashed rgba(0,156,59,.5);
+    animation: girar 14s linear infinite;
+    pointer-events: none;
 }
 
 @keyframes girar { to { transform: rotate(360deg); } }
 
-.guia-perfil__ctas {
-    display: flex;
-    flex-direction: column;
-    gap: var(--espaco-md);
-    width: 100%;
-}
+/* Identidade */
+.guia-hero__id-col { display: flex; flex-direction: column; gap: var(--espaco-md); }
 
-.guia-perfil__ctas .btn { justify-content: center; }
-
-/* Coluna de informações */
-.guia-perfil__especialidade {
-    display: inline-block;
-    font-size: .8rem;
-    font-weight: 700;
-    color: var(--cor-primaria);
+.guia-hero__esp {
+    font-size: .78rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: .1em;
-    margin-bottom: var(--espaco-sm);
+    letter-spacing: .14em;
+    color: var(--cor-primaria);
+    background: rgba(0,156,59,.12);
+    border: 1px solid rgba(0,156,59,.3);
+    border-radius: 999px;
+    padding: 4px 14px;
+    display: inline-block;
+    width: fit-content;
 }
 
-.guia-perfil__nome {
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.2;
-    margin: 0 0 var(--espaco-xl);
+.guia-hero__nome {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    line-height: 1.1;
+    margin: 0;
+    color: #fff;
 }
 
-.guia-perfil__bio {
-    font-size: 1.05rem;
-    line-height: 1.85;
+.guia-hero__voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: rgba(255,255,255,.5);
+    text-decoration: none;
+    margin-top: var(--espaco-md);
+    transition: color .2s;
+    width: fit-content;
+}
+
+.guia-hero__voltar:hover { color: var(--cor-primaria); }
+
+/* Bio */
+.guia-bio {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: var(--espaco-2xl) 0 var(--espaco-4xl);
+}
+
+.guia-bio__label {
+    display: block;
+    font-size: .75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--cor-primaria);
+    margin-bottom: var(--espaco-lg);
+    padding-bottom: var(--espaco-md);
+    border-bottom: 1px solid var(--borda-glass);
+}
+
+.guia-bio__texto {
+    font-size: 1.08rem;
+    line-height: 1.9;
     color: var(--texto-secundario);
 }
 
-.guia-perfil__bio p { margin-bottom: var(--espaco-lg); }
+.guia-bio__texto p { margin-bottom: var(--espaco-lg); }
 
 /* Responsivo */
-@media (max-width: 768px) {
-    .guia-perfil {
-        grid-template-columns: 1fr;
-        gap: var(--espaco-2xl);
+@media (max-width: 640px) {
+    .guia-hero__inner {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--espaco-xl);
     }
 
-    .guia-perfil__foto-col {
-        position: static;
-        align-items: center;
-    }
+    .guia-hero__esp { margin: 0 auto; }
+    .guia-hero__voltar { margin: var(--espaco-sm) auto 0; }
 
-    .guia-perfil__ctas { flex-direction: row; flex-wrap: wrap; }
+    .guia-perfil__foto-wrap,
+    .guia-perfil__foto,
+    .guia-perfil__foto--placeholder { width: 160px; height: 160px; }
 }
+
+
