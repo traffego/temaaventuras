@@ -26,24 +26,25 @@
       const metodo = card.dataset.metodo;
       document.querySelectorAll('[data-metodo-form]').forEach(f => {
         const show = f.dataset.metodoForm === metodo;
-        f.classList.toggle('ativo', show);
         f.style.display = show ? '' : 'none';
       });
       document.getElementById('campo-metodo').value = metodo;
 
-      const wrapper = document.getElementById('checkout-submit-wrapper');
+      const btnPagar    = document.getElementById('btn-finalizar');
+      const btnCartao   = document.getElementById('btn-confirmar-cartao');
+
       if (metodo === 'pix') {
-        if (wrapper) wrapper.style.display = 'none';
+        if (btnPagar)  btnPagar.style.display  = 'none';
+        if (btnCartao) btnCartao.style.display = 'none';
         const form = document.getElementById('form-checkout');
         if (form) form.requestSubmit();
       } else {
-        if (wrapper) wrapper.style.display = '';
-        document.getElementById('btn-finalizar').disabled = false;
+        if (btnPagar)  btnPagar.style.display  = 'none';
+        if (btnCartao) btnCartao.style.display = '';
         if (!mpInstance) setTimeout(initCardForm, 300);
       }
     });
   });
-
 
   // =========================================
   // ACOMPANHANTES DINÂMICOS
@@ -102,7 +103,7 @@
     
     const btnTotal = document.getElementById('btn-total-display');
     if (btnTotal) {
-      btnTotal.textContent = '- R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      btnTotal.textContent = 'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
     }
     
     // Como apagamos o aside, não atualizar mais #valor-total-display ou #qtd-inscritos-display
@@ -193,7 +194,8 @@
       callbacks: {
         onFormMounted: err => { 
           if (err) return console.error('CardForm error:', err); 
-          document.getElementById('btn-finalizar').disabled = false;
+          const btnCartao = document.getElementById('btn-confirmar-cartao');
+          if (btnCartao) btnCartao.disabled = false;
         },
         onSubmit: async e => {
           e.preventDefault();
@@ -243,8 +245,18 @@
   // =========================================
   // SUBMIT PRINCIPAL
   // =========================================
-  // Botão está fora do form, então dispara submit via JS
+  // btn-finalizar → valida + revela seção de pagamento
   document.getElementById('btn-finalizar')?.addEventListener('click', () => {
+    if (!validarTudo()) return;
+    const secao = document.getElementById('secao-pagamento');
+    if (secao) {
+      secao.style.display = '';
+      secao.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  // btn-confirmar-cartao → dispara submit do CardForm
+  document.getElementById('btn-confirmar-cartao')?.addEventListener('click', () => {
     const form = document.getElementById('form-checkout');
     if (form) form.requestSubmit();
   });

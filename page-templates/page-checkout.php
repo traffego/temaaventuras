@@ -139,7 +139,7 @@ get_header();
                         </div>
 
                         <!-- SEÇÃO 3: PAGAMENTO -->
-                        <div class="checkout-section">
+                        <div class="checkout-section" id="secao-pagamento" style="display:none;">
                             <h2 class="checkout-section__titulo">💳 Forma de Pagamento</h2>
 
                             <!-- Seletor de método -->
@@ -159,8 +159,8 @@ get_header();
                             </div>
 
                             <!-- PIX (texto informativo) -->
-                            <div data-metodo-form="pix" class="ativo">
-                                <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);">Ao clicar em PIX, seu QR Code será gerado automaticamente.</p>
+                            <div data-metodo-form="pix" style="display:none;">
+                                <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);">Clique em PIX acima para gerar o QR Code.</p>
                             </div>
 
                             <!-- Cartão -->
@@ -250,9 +250,12 @@ get_header();
 
 <!-- BOTÃO FLUTUANTE -->
 <div class="checkout-submit-wrapper" id="checkout-submit-wrapper"
-    style="position:fixed; bottom:10px; width:90%; left:20px; display:none;">
-    <button type="button" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit" disabled>
+    style="position:fixed; bottom:10px; width:90%; left:20px;">
+    <button type="button" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit">
         🔒 Pagar <span id="btn-total-display">R$ 0,00</span>
+    </button>
+    <button type="button" id="btn-confirmar-cartao" class="btn btn--primario btn--grande checkout-submit" style="display:none;">
+        💳 Confirmar Pagamento
     </button>
 </div>
 
