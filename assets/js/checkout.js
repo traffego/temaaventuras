@@ -189,6 +189,12 @@
   // =========================================
   // SUBMIT PRINCIPAL
   // =========================================
+  // Botão está fora do form, então dispara submit via JS
+  document.getElementById('btn-finalizar')?.addEventListener('click', () => {
+    const form = document.getElementById('form-checkout');
+    if (form) form.requestSubmit();
+  });
+
   document.getElementById('form-checkout')?.addEventListener('submit', async function(e) {
     e.preventDefault();
     if (!validarTudo()) return;

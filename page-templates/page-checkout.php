@@ -216,19 +216,19 @@ if (!$img_url) {
             </div>
         </div>
 
-        <!-- BOTÃO FINAL WRAPPER -->
-        <div class="checkout-submit-wrapper">
-            <button type="submit" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit" disabled>
-                🔒 Pagar <span id="btn-total-display">R$ 0,00</span>
-            </button>
-            <p class="checkout-seguranca">🔒 Segurança via Mercado Pago</p>
-        </div>
-
     </form>
     </div>
 </div>
 </div>
 </section>
+
+<!-- BOTÃO FLUTUANTE (fora de qualquer container para position:fixed funcionar) -->
+<div class="checkout-submit-wrapper" id="checkout-submit-wrapper">
+    <button type="button" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit" disabled>
+        🔒 Pagar <span id="btn-total-display">R$ 0,00</span>
+    </button>
+    <p class="checkout-seguranca">🔒 Segurança via Mercado Pago</p>
+</div>
 
 </main>
 
