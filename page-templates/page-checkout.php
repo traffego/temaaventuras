@@ -38,7 +38,7 @@ wp_localize_script('ta-checkout-js', 'taCheckoutConfig', [
 get_header();
 ?>
 
-<main id="conteudo-principal" role="main">
+<main id="conteudo-principal" role="main" style="padding-top:var(--altura-nav);">
 
 <!-- Spinner -->
 <div id="checkout-spinner" aria-live="polite" aria-label="Processando pagamento">
