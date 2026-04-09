@@ -80,10 +80,10 @@ $fallback = [
                             <?php echo ta_preco( $preco ); ?> <?php _e( '/pessoa', 'temaaventuras' ); ?>
                         </span>
                         <?php endif; ?>
-                        <a href="<?php the_permalink(); ?>"
-                           class="btn btn--secundario btn--pequeno"
-                           aria-label="<?php printf( __( 'Ver detalhes: %s', 'temaaventuras' ), get_the_title() ); ?>">
-                            <?php _e( 'Ver Detalhes', 'temaaventuras' ); ?>
+                        <a href="<?php echo esc_url( ta_checkout_url( get_the_ID() ) ); ?>"
+                           class="btn btn--primario btn--pequeno"
+                           aria-label="<?php printf( __( 'Reservar Agora: %s', 'temaaventuras' ), get_the_title() ); ?>">
+                            <?php _e( 'Reservar Agora', 'temaaventuras' ); ?>
                         </a>
                     </div>
                 </div>

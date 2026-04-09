@@ -106,7 +106,7 @@ get_header();
                             <?php if($duracao): ?><span class="card-atividade__detalhe">⏱ <?php echo esc_html($duracao); ?></span><?php endif; ?>
                             <?php if($preco): ?><span class="card-atividade__detalhe" style="color:var(--cor-secundaria);font-weight:700;"><?php echo ta_preco($preco); ?>/pessoa</span><?php endif; ?>
                             <?php if($pessoas): ?><span class="card-atividade__detalhe">👥 Min <?php echo esc_html($pessoas); ?> pessoas</span><?php endif; ?>
-                            <a href="<?php the_permalink(); ?>" class="btn btn--secundario btn--pequeno"><?php _e('Ver Detalhes','temaaventuras'); ?></a>
+                            <a href="<?php echo esc_url(ta_checkout_url(get_the_ID())); ?>" class="btn btn--primario btn--pequeno"><?php _e('Reservar Agora','temaaventuras'); ?></a>
                         </div>
                     </div>
                 </article>
