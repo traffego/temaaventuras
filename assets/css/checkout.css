@@ -4,7 +4,7 @@
 
 /* PAGE */
 .checkout-page {
-  padding: var(--espaco-lg) 0 var(--espaco-3xl);
+  padding: var(--espaco-lg) 0 140px 0; /* Padding inferior grande para o botão flutuante não tampar o form no mobile */
 }
 
 /* GRID: centralizado (sem sidebar) */
@@ -216,18 +216,18 @@
 
 @media (max-width: 768px) {
   .checkout-submit-wrapper {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    background: rgba(10, 17, 13, 0.95);
-    backdrop-filter: blur(10px);
-    padding: var(--espaco-md) var(--espaco-lg);
-    border-top: 1px solid var(--borda-glass);
-    z-index: 1000;
-    box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-    margin: 0;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    background: rgba(10, 17, 13, 0.98) !important;
+    backdrop-filter: blur(15px) !important;
+    padding: var(--espaco-md) var(--espaco-lg) calc(var(--espaco-md) + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid var(--borda-glass) !important;
+    z-index: 99999 !important;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.8) !important;
+    margin: 0 !important;
   }
   
   .checkout-submit-wrapper p.checkout-seguranca {
