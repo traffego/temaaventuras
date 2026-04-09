@@ -32,7 +32,7 @@
       document.getElementById('campo-metodo').value = metodo;
 
       if (metodo === 'credit_card' && !mpInstance) {
-        initCardForm();
+        setTimeout(initCardForm, 300);
       }
     });
   });

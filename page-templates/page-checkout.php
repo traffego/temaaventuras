@@ -189,7 +189,7 @@ get_header();
 
                             <!-- Cartão -->
                             <div data-metodo-form="credit_card" style="display:none;">
-                                <form id="form-cartao">
+                                <div id="form-cartao">
                                     <div class="mp-card-form">
                                         <div class="grid grid--2">
                                             <!-- Campos IFRAME (sensíveis – o SDK injeta iframes aqui) -->
@@ -256,7 +256,7 @@ get_header();
                                             style="display:none;color:var(--texto-muted);font-size:var(--tamanho-pequeno);">
                                             ⏳ Verificando cartão...</div>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
 
