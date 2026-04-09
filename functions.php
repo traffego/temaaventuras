@@ -164,7 +164,7 @@ function tema_aventuras_scripts() {
     );
 
     // CSS dos guias
-    if ( is_page_template( 'page-templates/page-guias.php' ) ) {
+    if ( is_page_template( 'page-templates/page-guias.php' ) || ( is_singular() && get_post_type() === 'guia' ) ) {
         wp_enqueue_style( 'tema-aventuras-guias', TEMA_AVENTURAS_URI . '/assets/css/guias.css', [ 'tema-aventuras-style' ], $ver );
     }
 

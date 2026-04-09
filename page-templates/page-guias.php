@@ -46,6 +46,7 @@ get_header();
                     $foto_url  = $foto_id ? wp_get_attachment_image_url($foto_id, 'medium') : '';
                 ?>
                 <article class="guia-card animar-entrada" aria-label="<?php the_title_attribute(); ?>">
+                    <a href="<?php the_permalink(); ?>" class="guia-card__link" aria-hidden="true" tabindex="-1"></a>
                     <div class="guia-card__foto-wrap">
                         <?php if ($foto_url) : ?>
                             <img src="<?php echo esc_url($foto_url); ?>" alt="<?php the_title_attribute(); ?>" class="guia-card__foto" loading="lazy" />
@@ -62,6 +63,9 @@ get_header();
                         <?php if ($descricao) : ?>
                             <p class="guia-card__descricao"><?php echo esc_html($descricao); ?></p>
                         <?php endif; ?>
+                        <a href="<?php the_permalink(); ?>" class="guia-card__cta">
+                            <?php _e('Ver perfil', 'temaaventuras'); ?> →
+                        </a>
                     </div>
                 </article>
                 <?php endwhile; wp_reset_postdata(); ?>
