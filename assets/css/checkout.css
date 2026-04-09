@@ -315,88 +315,205 @@ input.erro, select.erro, textarea.erro {
 }
 
 /* ===========================
-   RESPONSIVO – MOBILE FIRST
+   RESPONSIVO – MOBILE CONDENSADO
 =========================== */
 @media (max-width: 768px) {
   .checkout-page {
-    padding: var(--espaco-sm) 0 var(--espaco-xl);
+    padding: 0 0 4.5rem;
   }
 
   .checkout-grid {
     grid-template-columns: 1fr;
     display: flex;
     flex-direction: column-reverse;
-    gap: var(--espaco-md);
+    gap: 6px;
   }
 
-  /* Resumo no topo, compacto */
+  /* Resumo: barra compacta horizontal */
   .resumo-box {
     position: relative;
     top: 0;
-    padding: var(--espaco-md);
-    border-radius: var(--raio-lg);
+    padding: 10px 12px;
+    border-radius: var(--raio-md);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
   }
 
   .resumo-box__header {
-    margin-bottom: var(--espaco-sm);
-    padding-bottom: var(--espaco-sm);
+    display: contents;
+    margin: 0;
+    padding: 0;
+    border: none;
   }
 
-  .resumo-box__titulo { font-size: 1.1rem; }
-  .resumo-box__total span:last-child { font-size: 1.6rem; }
+  .resumo-box__titulo {
+    font-size: 1rem;
+    margin: 0;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .resumo-box__badges { display: none; }
+  .resumo-box__data {
+    font-size: 0.75rem;
+    width: 100%;
+    order: 3;
+  }
+  .resumo-box__linha { display: none; }
   .resumo-box__trust { display: none; }
 
-  /* Seções compactas */
-  .checkout-section {
-    padding: var(--espaco-md);
-    margin-bottom: var(--espaco-sm);
-    border-radius: var(--raio-lg);
+  .resumo-box__total {
+    padding: 0;
+    margin: 0;
+    border: none;
+    gap: 6px;
   }
 
-  .checkout-section__titulo { font-size: 1rem; }
+  .resumo-box__total span:first-child { display: none; }
+  .resumo-box__total span:last-child {
+    font-size: 1.4rem;
+  }
+
+  /* Seções ultra compactas */
+  .checkout-section {
+    padding: 10px;
+    margin-bottom: 4px;
+    border-radius: var(--raio-md);
+  }
+
+  .checkout-section__titulo {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+
+  .checkout-section__desc {
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+  }
 
   /* Grids empilhados */
   .checkout-section .grid--2,
   .checkout-section .grid--3 {
     grid-template-columns: 1fr;
+    gap: 4px;
   }
 
-  .metodo-grid { gap: var(--espaco-sm); }
+  /* Campos compactos */
+  .form-grupo {
+    margin-bottom: 2px;
+    gap: 2px;
+  }
+
+  .form-grupo label {
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+  }
+
+  .form-grupo input,
+  .form-grupo select,
+  .form-grupo textarea {
+    padding: 8px 10px;
+    font-size: 16px;
+    border-radius: var(--raio-sm);
+  }
+
+  /* Inscritos */
+  .inscrito-item {
+    padding: 8px;
+    margin-bottom: 4px;
+    border-radius: var(--raio-md);
+  }
+
+  .inscrito-header {
+    margin-bottom: 4px;
+  }
+
+  .inscrito-header h4 {
+    font-size: 0.7rem;
+  }
+
+  #add-inscrito {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  /* Métodos lado a lado, compactos */
+  .metodo-grid {
+    gap: 6px;
+  }
 
   .metodo-card {
-    padding: var(--espaco-sm);
+    padding: 8px 4px;
+    border-radius: var(--raio-md);
   }
 
-  .metodo-card__icon { font-size: 1.4rem; }
-  .metodo-card__nome { font-size: 1rem; }
+  .metodo-card__icon { font-size: 1.2rem; margin-bottom: 2px; }
+  .metodo-card__nome { font-size: 0.9rem; }
+  .metodo-card__desc { font-size: 0.65rem; }
 
-  .inscrito-item { padding: var(--espaco-md); }
-
-  .pix-copia-cola-wrap { flex-direction: column; }
-
-  .checkout-submit {
-    min-height: 52px;
-    font-size: 1rem;
-    position: sticky;
-    bottom: var(--espaco-md);
-    z-index: 10;
-  }
-
-  input, select, .mp-field-wrapper {
-    font-size: 16px;
-  }
-
+  /* Cartão MP */
   .mp-card-form {
-    padding: var(--espaco-md);
+    padding: 8px;
+    border-radius: var(--raio-md);
   }
 
   .mp-card-form .grid--2 {
     grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .mp-field-wrapper {
+    padding: 6px 8px;
+    min-height: 40px;
+    font-size: 16px;
+  }
+
+  /* PIX compacto */
+  .pix-display-wrap {
+    padding: 10px;
+  }
+
+  .pix-qrcode-wrap {
+    padding: 8px;
+    margin: 8px 0;
+  }
+
+  #pix-qrcode-img {
+    width: 160px;
+    height: 160px;
+  }
+
+  .pix-timer { font-size: 1.6rem; }
+  .pix-copia-cola-wrap { flex-direction: column; }
+
+  /* Botão fixo no bottom */
+  .checkout-submit {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 52px;
+    font-size: 1rem;
+    z-index: var(--z-elevado);
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .checkout-seguranca { display: none; }
+
+  input, select, .mp-field-wrapper {
+    font-size: 16px;
   }
 }
 
 @media (max-width: 380px) {
-  .checkout-section { padding: var(--espaco-sm); }
-  .inscrito-item { padding: var(--espaco-sm); }
-  .resumo-box { padding: var(--espaco-sm); }
+  .checkout-section { padding: 8px; }
+  .inscrito-item { padding: 6px; }
+  .resumo-box { padding: 8px; }
+  .metodo-card { padding: 6px 2px; }
+  .metodo-card__icon { font-size: 1rem; }
+  .metodo-card__nome { font-size: 0.8rem; }
 }
+
