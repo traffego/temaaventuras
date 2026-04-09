@@ -4,7 +4,8 @@
 
 /* PAGE */
 .checkout-page {
-  padding: var(--espaco-lg) 0 140px 0; /* Padding inferior grande para o botão flutuante não tampar o form no mobile */
+  padding: var(--espaco-lg) 0 140px 0;
+  /* Padding inferior grande para o botão flutuante não tampar o form no mobile */
 }
 
 /* GRID: centralizado (sem sidebar) */
@@ -133,7 +134,7 @@
 
 .mp-field-wrapper:focus-within {
   border-color: var(--cor-primaria);
-  box-shadow: 0 0 0 3px rgba(0,156,59,0.15);
+  box-shadow: 0 0 0 3px rgba(0, 156, 59, 0.15);
 }
 
 /* PIX */
@@ -192,16 +193,15 @@
 /* BOTÃO SUBMIT FLUTUANTE */
 .checkout-submit-wrapper {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
+  bottom: 10px;
+  width: 90%;
+  left: 20px;
   background: rgba(10, 17, 13, 0.98);
   backdrop-filter: blur(15px);
   padding: var(--espaco-md) var(--espaco-lg) calc(var(--espaco-md) + env(safe-area-inset-bottom));
   border-top: 1px solid var(--borda-glass);
   z-index: 99999;
-  box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8);
   text-align: center;
 }
 
@@ -296,8 +296,8 @@
 
 /* ERRO */
 .checkout-erro {
-  background: rgba(220,38,38,0.15);
-  border: 1px solid rgba(220,38,38,0.4);
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.4);
   border-radius: var(--raio-md);
   padding: var(--espaco-sm) var(--espaco-md);
   color: #f87171;
@@ -311,7 +311,7 @@
 #checkout-spinner {
   position: fixed;
   inset: 0;
-  background: rgba(10,17,13,0.85);
+  background: rgba(10, 17, 13, 0.85);
   display: none;
   align-items: center;
   justify-content: center;
@@ -330,9 +330,11 @@
 }
 
 /* CAMPO ERRO */
-input.erro, select.erro, textarea.erro {
+input.erro,
+select.erro,
+textarea.erro {
   border-color: #f87171 !important;
-  box-shadow: 0 0 0 3px rgba(248,113,113,0.2) !important;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2) !important;
 }
 
 /* ===========================
@@ -376,14 +378,23 @@ input.erro, select.erro, textarea.erro {
     min-width: 120px;
   }
 
-  .resumo-box__badges { display: none; }
+  .resumo-box__badges {
+    display: none;
+  }
+
   .resumo-box__data {
     font-size: 0.75rem;
     width: 100%;
     order: 3;
   }
-  .resumo-box__linha { display: none; }
-  .resumo-box__trust { display: none; }
+
+  .resumo-box__linha {
+    display: none;
+  }
+
+  .resumo-box__trust {
+    display: none;
+  }
 
   .resumo-box__total {
     padding: 0;
@@ -392,7 +403,10 @@ input.erro, select.erro, textarea.erro {
     gap: 6px;
   }
 
-  .resumo-box__total span:first-child { display: none; }
+  .resumo-box__total span:first-child {
+    display: none;
+  }
+
   .resumo-box__total span:last-child {
     font-size: 1.4rem;
   }
@@ -470,9 +484,18 @@ input.erro, select.erro, textarea.erro {
     border-radius: var(--raio-md);
   }
 
-  .metodo-card__icon { font-size: 1.2rem; margin-bottom: 2px; }
-  .metodo-card__nome { font-size: 0.9rem; }
-  .metodo-card__desc { font-size: 0.65rem; }
+  .metodo-card__icon {
+    font-size: 1.2rem;
+    margin-bottom: 2px;
+  }
+
+  .metodo-card__nome {
+    font-size: 0.9rem;
+  }
+
+  .metodo-card__desc {
+    font-size: 0.65rem;
+  }
 
   /* Cartão MP */
   .mp-card-form {
@@ -506,8 +529,13 @@ input.erro, select.erro, textarea.erro {
     height: 160px;
   }
 
-  .pix-timer { font-size: 1.6rem; }
-  .pix-copia-cola-wrap { flex-direction: column; }
+  .pix-timer {
+    font-size: 1.6rem;
+  }
+
+  .pix-copia-cola-wrap {
+    flex-direction: column;
+  }
 
   /* Botão fixo no bottom */
   .checkout-submit {
@@ -522,19 +550,39 @@ input.erro, select.erro, textarea.erro {
     margin: 0;
   }
 
-  .checkout-seguranca { display: none; }
+  .checkout-seguranca {
+    display: none;
+  }
 
-  input, select, .mp-field-wrapper {
+  input,
+  select,
+  .mp-field-wrapper {
     font-size: 16px;
   }
 }
 
 @media (max-width: 380px) {
-  .checkout-section { padding: 8px; }
-  .inscrito-item { padding: 6px; }
-  .resumo-box { padding: 8px; }
-  .metodo-card { padding: 6px 2px; }
-  .metodo-card__icon { font-size: 1rem; }
-  .metodo-card__nome { font-size: 0.8rem; }
-}
+  .checkout-section {
+    padding: 8px;
+  }
 
+  .inscrito-item {
+    padding: 6px;
+  }
+
+  .resumo-box {
+    padding: 8px;
+  }
+
+  .metodo-card {
+    padding: 6px 2px;
+  }
+
+  .metodo-card__icon {
+    font-size: 1rem;
+  }
+
+  .metodo-card__nome {
+    font-size: 0.8rem;
+  }
+}
