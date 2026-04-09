@@ -129,12 +129,15 @@
   }
 
   chkUsarResp?.addEventListener('change', () => {
+    const wrap = document.getElementById('campos-pagador');
     if (chkUsarResp.checked) {
       preencherDadosCartao();
+      if (wrap) wrap.style.display = 'none';
     } else {
       if (mpName)  mpName.value = '';
       if (mpCpf)   mpCpf.value = '';
       if (mpEmail) mpEmail.value = '';
+      if (wrap) wrap.style.display = '';
     }
   });
 

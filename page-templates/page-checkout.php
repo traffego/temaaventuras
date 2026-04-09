@@ -197,22 +197,26 @@ if (!$img_url) {
                                 </label>
                             </div>
 
-                            <!-- Campos NATIVOS (não-sensíveis) -->
-                            <div class="form-grupo" style="grid-column:1/-1;">
-                                <label>Nome no Cartão *</label>
-                                <input type="text" id="mp-cardholderName" placeholder="Nome como no cartão">
-                            </div>
-                            <div class="form-grupo">
-                                <label>Tipo de Documento</label>
-                                <select id="mp-identificationType"></select>
-                            </div>
-                            <div class="form-grupo">
-                                <label>CPF *</label>
-                                <input type="text" id="mp-identificationNumber" placeholder="000.000.000-00">
-                            </div>
-                            <div class="form-grupo" style="grid-column:1/-1;">
-                                <label>E-mail *</label>
-                                <input type="email" id="mp-email" placeholder="email@dominio.com">
+                            <!-- Campos NATIVOS (ocultos quando usar dados do responsável) -->
+                            <div id="campos-pagador" style="display:none; grid-column:1/-1;">
+                                <div class="grid grid--2">
+                                    <div class="form-grupo" style="grid-column:1/-1;">
+                                        <label>Nome no Cartão *</label>
+                                        <input type="text" id="mp-cardholderName" placeholder="Nome como no cartão">
+                                    </div>
+                                    <div class="form-grupo">
+                                        <label>Tipo de Documento</label>
+                                        <select id="mp-identificationType"></select>
+                                    </div>
+                                    <div class="form-grupo">
+                                        <label>CPF *</label>
+                                        <input type="text" id="mp-identificationNumber" placeholder="000.000.000-00">
+                                    </div>
+                                    <div class="form-grupo" style="grid-column:1/-1;">
+                                        <label>E-mail *</label>
+                                        <input type="email" id="mp-email" placeholder="email@dominio.com">
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-grupo">
                                 <label>Parcelas</label>
