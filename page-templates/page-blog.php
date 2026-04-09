@@ -44,7 +44,11 @@ $post_destaque = $destaque_query->have_posts() ? $destaque_query->posts[0] : nul
     <!-- Banner -->
     <div class="page-banner">
         <div class="page-banner__overlay" aria-hidden="true"></div>
-        <?php if (has_post_thumbnail()) the_post_thumbnail('aventura-banner', ['class' => 'page-banner__img', 'loading' => 'eager', 'alt' => '']); ?>
+        <?php 
+        $banner_img = get_the_post_thumbnail_url(get_the_ID(), 'aventura-banner') ?: wp_get_attachment_image_url( 78, 'aventura-banner' );
+        if ($banner_img) : ?>
+            <img src="<?php echo esc_url($banner_img); ?>" class="page-banner__img" loading="eager" alt="" />
+        <?php endif; ?>
         <div class="container page-banner__conteudo">
             <span class="section-header__eyebrow" style="margin-bottom:var(--espaco-md);">📝 <?php _e('Aventuras & Dicas', 'temaaventuras'); ?></span>
             <h1 class="page-banner__titulo"><?php the_title(); ?></h1>
@@ -57,7 +61,7 @@ $post_destaque = $destaque_query->have_posts() ? $destaque_query->posts[0] : nul
     <?php if ($post_destaque && !$cat_slug && $paged === 1) :
         $d_id       = $post_destaque->ID;
         $d_cat      = get_the_category($d_id);
-        $d_img      = get_the_post_thumbnail_url($d_id, 'aventura-banner') ?: '';
+        $d_img      = get_the_post_thumbnail_url($d_id, 'aventura-banner') ?: wp_get_attachment_image_url( 78, 'aventura-banner' );
         $d_data     = get_the_date('d \d\e F \d\e Y', $d_id);
         $d_excerpt  = wp_trim_words(get_the_excerpt($d_id), 25);
         $d_palavras = str_word_count(strip_tags(get_post_field('post_content', $d_id)));
@@ -127,7 +131,7 @@ $post_destaque = $destaque_query->have_posts() ? $destaque_query->posts[0] : nul
             <div class="blog-grid">
                 <?php while ($posts_query->have_posts()) : $posts_query->the_post();
                     $b_cats    = get_the_category();
-                    $b_img     = get_the_post_thumbnail_url(get_the_ID(), 'aventura-thumb');
+                    $b_img     = get_the_post_thumbnail_url(get_the_ID(), 'aventura-thumb') ?: wp_get_attachment_image_url( 78, 'aventura-thumb' );
                     $b_palavras = str_word_count(strip_tags(get_the_content()));
                     $b_min      = max(1, round($b_palavras / 200));
                 ?>

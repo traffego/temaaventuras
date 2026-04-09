@@ -33,7 +33,7 @@ if ( ta_get('mostrar_pacotes', true) ) {
 <?php if ( ta_get('mostrar_depoimentos', true) ) : ?>
 <?php get_template_part( 'template-parts/testimonials' ); ?>
 <?php endif; ?>
-<?php get_template_part( 'template-parts/blog-preview' ); ?>
+
 
 </main>
 

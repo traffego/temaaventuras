@@ -68,10 +68,12 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
                     if ( ta_get('mostrar_pacotes', true) ) {
                         echo '<li class="navbar__item"><a href="' . esc_url( home_url( '/#pacotes' ) ) . '">Pacotes</a></li>';
                     }
-                    $p_guias = get_page_by_path('guias') ?: get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-guias.php'])[0] ?? null;
-                    $p_blog  = get_page_by_path('blog')  ?: get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-blog.php'])[0]  ?? null;
-                    if ( $p_guias ) echo '<li class="navbar__item"><a href="' . esc_url( get_permalink($p_guias) ) . '">Guias</a></li>';
-                    if ( $p_blog )  echo '<li class="navbar__item"><a href="' . esc_url( get_permalink($p_blog) ) . '">Blog</a></li>';
+                    $p_guias  = get_page_by_path('guias')  ?: get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-guias.php'])[0]  ?? null;
+                    $p_videos = get_page_by_path('videos') ?: get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-videos.php'])[0] ?? null;
+                    $p_blog   = get_page_by_path('blog')   ?: get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-blog.php'])[0]   ?? null;
+                    if ( $p_guias )  echo '<li class="navbar__item"><a href="' . esc_url( get_permalink($p_guias) )  . '">Guias</a></li>';
+                    if ( $p_videos ) echo '<li class="navbar__item"><a href="' . esc_url( get_permalink($p_videos) ) . '">Vídeos</a></li>';
+                    if ( $p_blog )   echo '<li class="navbar__item"><a href="' . esc_url( get_permalink($p_blog) )   . '">Blog</a></li>';
                     echo '<li class="navbar__item"><a href="' . esc_url( home_url( '/#contato' ) ) . '">Contato</a></li>';
                 },
             ] );
@@ -117,14 +119,16 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
         'items_wrap'     => '%3$s',
         'item_spacing'   => 'preserve',
         'fallback_cb'    => function() {
-            $links = [ 'Início' => '/', 'Atividades' => '/#atividades', 'Galeria' => '/#galeria', 'Contato' => '/#contato' ];
+            $links = [ 'Início' => '/', 'Atividades' => '/#atividades', 'Contato' => '/#contato' ];
             if ( ta_get('mostrar_pacotes', true) ) {
-                $links = [ 'Início' => '/', 'Atividades' => '/#atividades', 'Pacotes' => '/#pacotes', 'Galeria' => '/#galeria', 'Contato' => '/#contato' ];
+                $links = [ 'Início' => '/', 'Atividades' => '/#atividades', 'Pacotes' => '/#pacotes', 'Contato' => '/#contato' ];
             }
-            $p_guias = get_page_by_path('guias') ?: (get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-guias.php'])[0] ?? null);
-            $p_blog  = get_page_by_path('blog')  ?: (get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-blog.php'])[0]  ?? null);
-            if ( $p_guias ) $links['Guias'] = get_permalink($p_guias);
-            if ( $p_blog )  $links['Blog']  = get_permalink($p_blog);
+            $p_guias  = get_page_by_path('guias')  ?: (get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-guias.php'])[0]  ?? null);
+            $p_videos = get_page_by_path('videos') ?: (get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-videos.php'])[0] ?? null);
+            $p_blog   = get_page_by_path('blog')   ?: (get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-blog.php'])[0]   ?? null);
+            if ( $p_guias )  $links['Guias']  = get_permalink($p_guias);
+            if ( $p_videos ) $links['Vídeos'] = get_permalink($p_videos);
+            if ( $p_blog )   $links['Blog']   = get_permalink($p_blog);
             foreach ( $links as $label => $href ) {
                 $url = str_starts_with($href, 'http') ? $href : home_url($href);
                 echo '<li class="navbar__item"><a href="' . esc_url($url) . '">' . esc_html($label) . '</a></li>';
