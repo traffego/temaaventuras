@@ -163,141 +163,193 @@ get_header();
                             </div>
                         </div>
 
-                        <!-- ── PARTICIPANTES ── -->
-                        <div class="checkout-section">
-                            <h2 class="checkout-section__titulo">👤 Dados do Responsável</h2>
-                            <p class="checkout-section__desc">Responsável pela reserva — já conta como 1º participante.</p>
-                            <div class="grid grid--2">
-                                <div class="form-grupo" style="grid-column:1/-1;">
-                                    <label for="resp-nome">Nome completo *</label>
-                                    <input type="text" id="resp-nome" name="resp_nome" required placeholder="Seu nome completo">
-                                </div>
-                                <div class="form-grupo">
-                                    <label for="resp-email">E-mail *</label>
-                                    <input type="email" id="resp-email" name="resp_email" required placeholder="seu@email.com">
-                                </div>
-                                <div class="form-grupo">
-                                    <label for="resp-tel">WhatsApp *</label>
-                                    <input type="text" id="resp-tel" name="resp_telefone" required placeholder="(11) 99999-9999" class="tel-mask">
-                                </div>
-                                <div class="form-grupo">
-                                    <label for="resp-cpf">CPF *</label>
-                                    <input type="text" id="resp-cpf" name="resp_cpf" required placeholder="000.000.000-00" class="cpf-mask">
-                                </div>
-                            </div>
+                        <!-- STEPPER HEADER -->
+                        <div class="checkout-stepper">
+                            <div class="step-indicator ativado" data-target="1"><span>1</span> <span class="step-label">Responsável</span></div>
+                            <div class="step-indicator" data-target="2"><span>2</span> <span class="step-label">Participantes</span></div>
+                            <div class="step-indicator" data-target="3"><span>3</span> <span class="step-label">Termos</span></div>
+                            <div class="step-indicator" data-target="4"><span>4</span> <span class="step-label">Pagamento</span></div>
                         </div>
 
-                        <!-- ── ACOMPANHANTES ── -->
-                        <div class="checkout-section">
-                            <h2 class="checkout-section__titulo">👥 Acompanhantes <span style="font-size:.75rem;font-weight:400;color:var(--texto-muted);">(opcional)</span></h2>
-                            <div id="inscritos-wrap"></div>
-                            <button type="button" id="add-inscrito" class="btn btn--ghost btn--pequeno" style="margin-top:var(--espaco-md);">
-                                + Adicionar Acompanhante
-                            </button>
-                        </div>
-
-                        <!-- ── RESUMO FINANCEIRO ── -->
-                        <div class="checkout-section co-resumo-financeiro">
-                            <h2 class="checkout-section__titulo">💰 Resumo</h2>
-                            <div style="display:flex;flex-direction:column;gap:var(--espaco-xs);">
-                                <div class="resumo-linha" style="display:flex;justify-content:space-between;font-size:.9rem;color:var(--texto-secundario);">
-                                    <span>Preço por pessoa</span>
-                                    <span><?php echo ta_preco($preco_base); ?></span>
-                                </div>
-                                <div class="resumo-linha" style="display:flex;justify-content:space-between;font-size:.9rem;color:var(--texto-secundario);">
-                                    <span>Participantes</span>
-                                    <span id="resumo-qtd">1</span>
-                                </div>
-                                <div style="height:1px;background:var(--borda-glass);margin:var(--espaco-xs) 0;"></div>
-                                <div style="display:flex;justify-content:space-between;align-items:center;">
-                                    <span style="font-size:1rem;font-weight:600;color:var(--texto-primario);">Total</span>
-                                    <span id="resumo-total" style="font-family:var(--fonte-titulo);font-size:1.8rem;color:var(--cor-secundaria);"><?php echo ta_preco($preco_base); ?></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ── MÉTODO DE PAGAMENTO (oculto até clicar Pagar) ── -->
-                        <div class="checkout-section" id="secao-pagamento">
-                            <h2 class="checkout-section__titulo">💳 Como quer pagar?</h2>
-
-                            <div class="metodo-grid" role="radiogroup" aria-label="Método de pagamento">
-                                <div class="metodo-card" data-metodo="pix" role="radio" aria-checked="false" tabindex="0">
-                                    <span class="metodo-card__icon">🏦</span>
-                                    <div class="metodo-card__nome">PIX</div>
-                                    <div class="metodo-card__desc">Aprovação imediata</div>
-                                </div>
-                                <div class="metodo-card" data-metodo="credit_card" role="radio" aria-checked="false" tabindex="0">
-                                    <span class="metodo-card__icon">💳</span>
-                                    <div class="metodo-card__nome">Cartão</div>
-                                    <div class="metodo-card__desc">Até <?php echo $parcelas; ?>x</div>
-                                </div>
-                            </div>
-
-                            <!-- PIX: info -->
-                            <div data-metodo-form="pix" style="display:none;">
-                                <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);text-align:center;margin-top:calc(-1 * var(--espaco-sm));">
-                                    QR Code gerado na hora — escaneie e confirme.
-                                </p>
-                            </div>
-
-                            <!-- Cartão -->
-                            <div data-metodo-form="credit_card" style="display:none;">
-                                <div id="form-cartao">
-                                    <div class="mp-card-form">
-                                        <div class="grid grid--2">
-                                            <div class="form-grupo" style="grid-column:1/-1; margin-bottom:12px;">
-                                                <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">NÚMERO DO CARTÃO *</label>
-                                                <div class="mp-field-wrapper" id="mp-cardNumber" style="background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; height: 48px; display: flex; align-items: center; width: 100%; box-sizing: border-box;"></div>
-                                            </div>
-                                            <div class="form-grupo" style="margin-bottom:12px;">
-                                                <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">VALIDADE *</label>
-                                                <div style="display:flex;gap:8px;align-items:center;">
-                                                    <div class="mp-field-wrapper" id="mp-cardExpirationMonth" style="flex:1; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 12px; height: 48px; display: flex; align-items: center; box-sizing: border-box;"></div>
-                                                    <span style="color:var(--texto-muted); font-size:1.2rem; line-height:1;">/</span>
-                                                    <div class="mp-field-wrapper" id="mp-cardExpirationYear" style="flex:1; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 12px; height: 48px; display: flex; align-items: center; box-sizing: border-box;"></div>
-                                                </div>
-                                            </div>
-                                            <div class="form-grupo" style="margin-bottom:12px;">
-                                                <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">CVV *</label>
-                                                <div class="mp-field-wrapper" id="mp-securityCode" style="background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; height: 48px; display: flex; align-items: center; width: 100%; box-sizing: border-box;"></div>
-                                            </div>
-                                            <div class="form-grupo" style="grid-column:1/-1; margin-bottom:12px;">
-                                                <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">PARCELAS *</label>
-                                                <select id="mp-installments" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; color:var(--texto-primario); font-size: 15px; box-sizing: border-box;"></select>
-                                            </div>
-                                            <div class="form-grupo" style="grid-column:1/-1; margin: 16px 0;">
-                                                <label class="checkbox-inline" style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0; font-size: 0.9rem; color:var(--texto-primario); background: var(--fundo-elevado); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--borda-glass);">
-                                                    <input type="checkbox" id="usar-dados-resp" checked style="width:20px;height:20px;accent-color:var(--cor-primaria);">
-                                                    Usar dados do responsável para o pagamento
-                                                </label>
-                                            </div>
-                                            <div id="campos-pagador" style="display:none;grid-column:1/-1; background: var(--fundo-elevado); padding: 16px; border-radius: 12px; border: 1px dashed var(--borda-glass);">
-                                                <div class="grid grid--2" style="gap: 12px;">
-                                                    <div class="form-grupo" style="grid-column:1/-1;">
-                                                        <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">NOME NO CARTÃO *</label>
-                                                        <input type="text" id="mp-cardholderName" placeholder="Nome como no cartão" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;">
-                                                    </div>
-                                                    <div class="form-grupo">
-                                                        <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">DOCUMENTO</label>
-                                                        <select id="mp-identificationType" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;"></select>
-                                                    </div>
-                                                    <div class="form-grupo">
-                                                        <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">CPF *</label>
-                                                        <input type="text" id="mp-identificationNumber" placeholder="000.000.000-00" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;">
-                                                    </div>
-                                                    <div class="form-grupo" style="grid-column:1/-1;">
-                                                        <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">E-MAIL *</label>
-                                                        <input type="email" id="mp-email" placeholder="email@dominio.com" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-grupo" style="display:none;">
-                                                <select id="mp-issuer"></select>
-                                            </div>
-                                        </div>
-                                        <div id="mp-progress" style="display:none;color:var(--texto-muted);font-size:var(--tamanho-pequeno);">⏳ Verificando cartão...</div>
+                        <!-- ── PASSO 1: RESPONSÁVEL ── -->
+                        <div class="checkout-step ativo" data-step="1">
+                            <div class="checkout-section">
+                                <h2 class="checkout-section__titulo">👤 Dados do Responsável</h2>
+                                <p class="checkout-section__desc">Responsável pela reserva — já conta como 1º participante.</p>
+                                <div class="grid grid--2">
+                                    <div class="form-grupo" style="grid-column:1/-1;">
+                                        <label for="resp-nome">Nome completo *</label>
+                                        <input type="text" id="resp-nome" name="resp_nome" required placeholder="Seu nome completo">
+                                    </div>
+                                    <div class="form-grupo">
+                                        <label for="resp-email">E-mail *</label>
+                                        <input type="email" id="resp-email" name="resp_email" required placeholder="seu@email.com">
+                                    </div>
+                                    <div class="form-grupo">
+                                        <label for="resp-tel">WhatsApp *</label>
+                                        <input type="text" id="resp-tel" name="resp_telefone" required placeholder="(11) 99999-9999" class="tel-mask">
+                                    </div>
+                                    <div class="form-grupo">
+                                        <label for="resp-cpf">CPF *</label>
+                                        <input type="text" id="resp-cpf" name="resp_cpf" required placeholder="000.000.000-00" class="cpf-mask">
                                     </div>
                                 </div>
+                            </div>
+                            <div class="step-nav">
+                                <div></div> <!-- Espaçador -->
+                                <button type="button" class="btn btn--primario btn-next" data-next="2">Próximo: Participantes →</button>
+                            </div>
+                        </div>
+
+                        <!-- ── PASSO 2: ACOMPANHANTES ── -->
+                        <div class="checkout-step" data-step="2" style="display:none;">
+                            <div class="checkout-section">
+                                <h2 class="checkout-section__titulo">👥 Acompanhantes <span style="font-size:.75rem;font-weight:400;color:var(--texto-muted);">(opcional)</span></h2>
+                                <p class="checkout-section__desc">Preencha apenas se houver mais pessoas além do responsável.</p>
+                                <div id="inscritos-wrap"></div>
+                                <button type="button" id="add-inscrito" class="btn btn--ghost btn--pequeno" style="margin-top:var(--espaco-md);">
+                                    + Adicionar Acompanhante
+                                </button>
+                            </div>
+                            <div class="step-nav">
+                                <button type="button" class="btn btn--secundario btn-prev" data-prev="1">← Voltar</button>
+                                <button type="button" class="btn btn--primario btn-next" data-next="3">Próximo: Termos →</button>
+                            </div>
+                        </div>
+
+                        <!-- ── PASSO 3: TERMOS ── -->
+                        <div class="checkout-step" data-step="3" style="display:none;">
+                            <div class="checkout-section">
+                                <h2 class="checkout-section__titulo">✅ Termos e Políticas</h2>
+                                <p class="checkout-section__desc">Por favor, confirme que está ciente das regras da atividade.</p>
+                                <div style="background:var(--fundo-base); padding:var(--espaco-md); border-radius:var(--raio-md); border:1px solid var(--borda-glass); margin-bottom:var(--espaco-md);">
+                                    <label class="checkbox-inline" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;color:var(--texto-primario);">
+                                        <input type="checkbox" id="aceite-termos" required style="width:24px;height:24px;margin-top:2px;accent-color:var(--cor-primaria);">
+                                        <span>Confirmo que li e aceito as condições de reserva, regras de segurança e a política de cancelamento para esta atividade.</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="step-nav">
+                                <button type="button" class="btn btn--secundario btn-prev" data-prev="2">← Voltar</button>
+                                <button type="button" class="btn btn--primario btn-next" data-next="4">Revisar e Pagar →</button>
+                            </div>
+                        </div>
+
+                        <!-- ── PASSO 4: PAGAMENTO ── -->
+                        <div class="checkout-step" data-step="4" style="display:none;">
+                            <!-- Resumo Financeiro movido para o último passo -->
+                            <div class="checkout-section co-resumo-financeiro">
+                                <h2 class="checkout-section__titulo">💰 Resumo Final</h2>
+                                <div style="display:flex;flex-direction:column;gap:var(--espaco-xs);">
+                                    <div class="resumo-linha" style="display:flex;justify-content:space-between;font-size:.9rem;color:var(--texto-secundario);">
+                                        <span>Preço por pessoa</span>
+                                        <span><?php echo ta_preco($preco_base); ?></span>
+                                    </div>
+                                    <div class="resumo-linha" style="display:flex;justify-content:space-between;font-size:.9rem;color:var(--texto-secundario);">
+                                        <span>Participantes</span>
+                                        <span id="resumo-qtd">1</span>
+                                    </div>
+                                    <div style="height:1px;background:var(--borda-glass);margin:var(--espaco-xs) 0;"></div>
+                                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                                        <span style="font-size:1rem;font-weight:600;color:var(--texto-primario);">Total</span>
+                                        <span id="resumo-total" style="font-family:var(--fonte-titulo);font-size:1.8rem;color:var(--cor-secundaria);"><?php echo ta_preco($preco_base); ?></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seleção de Pagamento -->
+                            <div class="checkout-section" id="secao-pagamento">
+                                <h2 class="checkout-section__titulo">💳 Como quer pagar?</h2>
+
+                                <div class="metodo-grid" role="radiogroup" aria-label="Método de pagamento">
+                                    <div class="metodo-card" data-metodo="pix" role="radio" aria-checked="false" tabindex="0">
+                                        <span class="metodo-card__icon">🏦</span>
+                                        <div class="metodo-card__nome">PIX</div>
+                                        <div class="metodo-card__desc">Aprovação imediata</div>
+                                    </div>
+                                    <div class="metodo-card" data-metodo="credit_card" role="radio" aria-checked="false" tabindex="0">
+                                        <span class="metodo-card__icon">💳</span>
+                                        <div class="metodo-card__nome">Cartão</div>
+                                        <div class="metodo-card__desc">Até <?php echo $parcelas; ?>x</div>
+                                    </div>
+                                </div>
+
+                                <!-- PIX: info -->
+                                <div data-metodo-form="pix" style="display:none; text-align:center;">
+                                    <p style="color:var(--texto-secundario);font-size:var(--tamanho-pequeno);margin-top:calc(-1 * var(--espaco-sm));">
+                                        Ao confirmar, o QR Code será gerado para o pagamento.
+                                    </p>
+                                    <button type="button" id="btn-gerar-pix" class="btn btn--primario btn--grande checkout-submit" style="margin-top:var(--espaco-md); width:100%;">
+                                        🏦 Pagar com PIX
+                                    </button>
+                                </div>
+
+                                <!-- Cartão -->
+                                <div data-metodo-form="credit_card" style="display:none;">
+                                    <div id="form-cartao">
+                                        <div class="mp-card-form">
+                                            <div class="grid grid--2">
+                                                <div class="form-grupo" style="grid-column:1/-1; margin-bottom:12px;">
+                                                    <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">NÚMERO DO CARTÃO *</label>
+                                                    <div class="mp-field-wrapper" id="mp-cardNumber" style="background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; height: 48px; display: flex; align-items: center; width: 100%; box-sizing: border-box;"></div>
+                                                </div>
+                                                <div class="form-grupo" style="margin-bottom:12px;">
+                                                    <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">VALIDADE *</label>
+                                                    <div style="display:flex;gap:8px;align-items:center;">
+                                                        <div class="mp-field-wrapper" id="mp-cardExpirationMonth" style="flex:1; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 12px; height: 48px; display: flex; align-items: center; box-sizing: border-box;"></div>
+                                                        <span style="color:var(--texto-muted); font-size:1.2rem; line-height:1;">/</span>
+                                                        <div class="mp-field-wrapper" id="mp-cardExpirationYear" style="flex:1; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 12px; height: 48px; display: flex; align-items: center; box-sizing: border-box;"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-grupo" style="margin-bottom:12px;">
+                                                    <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">CVV *</label>
+                                                    <div class="mp-field-wrapper" id="mp-securityCode" style="background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; height: 48px; display: flex; align-items: center; width: 100%; box-sizing: border-box;"></div>
+                                                </div>
+                                                <div class="form-grupo" style="grid-column:1/-1; margin-bottom:12px;">
+                                                    <label style="font-size:0.8rem; font-weight:600; margin-bottom:6px; display:block; color:var(--texto-secundario); letter-spacing:0.5px;">PARCELAS *</label>
+                                                    <select id="mp-installments" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; color:var(--texto-primario); font-size: 15px; box-sizing: border-box;"></select>
+                                                </div>
+                                                <div class="form-grupo" style="grid-column:1/-1; margin: 16px 0;">
+                                                    <label class="checkbox-inline" style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0; font-size: 0.9rem; color:var(--texto-primario); background: var(--fundo-elevado); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--borda-glass);">
+                                                        <input type="checkbox" id="usar-dados-resp" checked style="width:20px;height:20px;accent-color:var(--cor-primaria);">
+                                                        Usar dados do responsável para o pagamento
+                                                    </label>
+                                                </div>
+                                                <div id="campos-pagador" style="display:none;grid-column:1/-1; background: var(--fundo-elevado); padding: 16px; border-radius: 12px; border: 1px dashed var(--borda-glass);">
+                                                    <div class="grid grid--2" style="gap: 12px;">
+                                                        <div class="form-grupo" style="grid-column:1/-1;">
+                                                            <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">NOME NO CARTÃO *</label>
+                                                            <input type="text" id="mp-cardholderName" placeholder="Nome como no cartão" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;">
+                                                        </div>
+                                                        <div class="form-grupo">
+                                                            <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">DOCUMENTO</label>
+                                                            <select id="mp-identificationType" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;"></select>
+                                                        </div>
+                                                        <div class="form-grupo">
+                                                            <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">CPF *</label>
+                                                            <input type="text" id="mp-identificationNumber" placeholder="000.000.000-00" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;">
+                                                        </div>
+                                                        <div class="form-grupo" style="grid-column:1/-1;">
+                                                            <label style="font-size:0.75rem; font-weight:600; margin-bottom:4px; display:block; color:var(--texto-secundario);">E-MAIL *</label>
+                                                            <input type="email" id="mp-email" placeholder="email@dominio.com" style="height:48px; background:var(--fundo-base); border: 1px solid var(--borda-glass); border-radius: 8px; padding: 0 16px; width: 100%; box-sizing: border-box;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-grupo" style="display:none;">
+                                                    <select id="mp-issuer"></select>
+                                                </div>
+                                            </div>
+                                            <div id="mp-progress" style="display:none;color:var(--texto-muted);font-size:var(--tamanho-pequeno);">⏳ Verificando cartão...</div>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="btn-confirmar-cartao" class="btn btn--primario btn--grande checkout-submit" style="margin-top:var(--espaco-md); width:100%; display:none;">
+                                        💳 Confirmar Pagamento
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="step-nav">
+                                <button type="button" class="btn btn--secundario btn-prev" data-prev="3">← Voltar</button>
+                                <div></div> <!-- Espaçador -->
                             </div>
                         </div>
 
@@ -311,16 +363,7 @@ get_header();
 
 <?php get_footer(); ?>
 
-<!-- BOTÃO FLUTUANTE -->
-<div class="checkout-submit-wrapper" id="checkout-submit-wrapper"
-    style="position:fixed; bottom:10px; width:90%; left:20px;">
-    <button type="button" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit">
-        🔒 Pagar <span id="btn-total-display">R$ 0,00</span>
-    </button>
-    <button type="button" id="btn-confirmar-cartao" class="btn btn--primario btn--grande checkout-submit" style="display:none;">
-        💳 Confirmar Pagamento
-    </button>
-</div>
+<!-- BOTÃO FLUTUANTE REMOVIDO -->
 
 <!-- MODAL PIX -->
 <div id="pix-modal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);align-items:center;justify-content:center;">

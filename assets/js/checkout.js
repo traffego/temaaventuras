@@ -77,12 +77,74 @@
   });
 
   // =========================================
-  // BOTÃO PAGAR → valida + revela pagamento
+  // STEPPER (TABS) LOGIC
   // =========================================
-  document.getElementById('btn-finalizar')?.addEventListener('click', () => {
-    if (!validarTudo()) return;
-    const secao = document.getElementById('secao-pagamento');
-    if (secao) secao.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const steps = document.querySelectorAll('.checkout-step');
+  const indicators = document.querySelectorAll('.step-indicator');
+
+  function showStep(stepIndex) {
+    steps.forEach(s => s.classList.remove('ativo'));
+    indicators.forEach(i => i.classList.remove('ativado'));
+    
+    const targetStep = document.querySelector(`.checkout-step[data-step="${stepIndex}"]`);
+    const targetInd = document.querySelector(`.step-indicator[data-target="${stepIndex}"]`);
+    
+    if (targetStep) targetStep.classList.add('ativo');
+    if (targetInd) targetInd.classList.add('ativado');
+    
+    document.querySelector('.checkout-stepper')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Validação restrita ao Step atual
+  function validateStep(stepIndex) {
+    const step = document.querySelector(`.checkout-step[data-step="${stepIndex}"]`);
+    if (!step) return true;
+    
+    const requiredFields = step.querySelectorAll('input[required], select[required]');
+    let valid = true;
+    
+    step.querySelectorAll('.erro').forEach(el => el.classList.remove('erro'));
+    
+    requiredFields.forEach(f => {
+      if (f.type === 'checkbox') {
+        if (!f.checked) {
+          f.parentElement.style.color = '#f87171';
+          valid = false;
+        } else {
+          f.parentElement.style.color = '';
+        }
+      } else {
+        if (!f.value.trim()) {
+          f.classList.add('erro');
+          valid = false;
+        }
+      }
+    });
+    
+    if (!valid) {
+      mostrarErro('Preencha ou assinale os campos obrigatórios antes de prosseguir.');
+    } else {
+      esconderErro();
+    }
+    return valid;
+  }
+
+  document.querySelectorAll('.btn-next').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const currentStep = e.target.closest('.checkout-step').dataset.step;
+      const nextStep = e.target.dataset.next;
+      
+      if (validateStep(currentStep)) {
+        showStep(nextStep);
+      }
+    });
+  });
+
+  document.querySelectorAll('.btn-prev').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      esconderErro();
+      showStep(e.target.dataset.prev);
+    });
   });
 
   // =========================================
@@ -104,15 +166,15 @@
       });
       document.getElementById('campo-metodo').value = metodo;
 
-      const btnConfirmar = document.getElementById('btn-confirmar-cartao');
+      const btnConfirmarCartao = document.getElementById('btn-confirmar-cartao');
+      const btnConfirmarPix = document.getElementById('btn-gerar-pix');
 
       if (metodo === 'pix') {
-        if (btnConfirmar) btnConfirmar.style.display = 'none';
-        // Submete o form direto — gera PIX via AJAX
-        const form = document.getElementById('form-checkout');
-        if (form) form.requestSubmit();
+        if (btnConfirmarCartao) btnConfirmarCartao.style.display = 'none';
+        if (btnConfirmarPix) btnConfirmarPix.style.display = '';
       } else {
-        if (btnConfirmar) btnConfirmar.style.display = '';
+        if (btnConfirmarPix) btnConfirmarPix.style.display = 'none';
+        if (btnConfirmarCartao) btnConfirmarCartao.style.display = '';
         if (!mpInstance) setTimeout(initCardForm, 300);
         setTimeout(preencherDadosCartao, 100);
       }
@@ -120,9 +182,16 @@
   });
 
   // =========================================
-  // BOTÃO CONFIRMAR CARTÃO
+  // BOTÕES DE PAGAMENTO FINAIS
   // =========================================
   document.getElementById('btn-confirmar-cartao')?.addEventListener('click', () => {
+    if (!validateStep('4')) return;
+    const form = document.getElementById('form-checkout');
+    if (form) form.requestSubmit();
+  });
+
+  document.getElementById('btn-gerar-pix')?.addEventListener('click', () => {
+    if (!validateStep('4')) return;
     const form = document.getElementById('form-checkout');
     if (form) form.requestSubmit();
   });
@@ -241,7 +310,7 @@
   // =========================================
   document.getElementById('form-checkout')?.addEventListener('submit', async function(e) {
     e.preventDefault();
-    if (!validarTudo()) return;
+    if (!validateStep('4')) return;
 
     setLoading(true);
     const fd = new FormData(this);
@@ -264,9 +333,6 @@
         }
       } else {
         mostrarErro(json.data?.message || 'Erro ao processar. Tente novamente.');
-        // Reexibir botão Pagar se der erro
-        const btn = document.getElementById('btn-finalizar');
-        if (btn) btn.style.display = '';
       }
     } catch { mostrarErro('Erro de conexão. Verifique sua internet.'); }
     finally  { setLoading(false); }
@@ -364,28 +430,7 @@
 
   aplicarMascaras();
 
-  // =========================================
-  // VALIDAÇÃO
-  // =========================================
-  function validarTudo() {
-    const form = document.getElementById('form-checkout');
-    if (!form) return true;
-    // Valida apenas os campos dentro das seções visíveis (exclui seção de pagamento ao validar campos pessoais)
-    const inputs = form.querySelectorAll('[required]:not(#secao-pagamento *)');
-    let valid = true;
-    inputs.forEach(inp => {
-      if (!inp.value.trim()) {
-        inp.classList.add('erro');
-        inp.addEventListener('input', () => inp.classList.remove('erro'), { once: true });
-        valid = false;
-      }
-    });
-    if (!valid) {
-      mostrarErro('Preencha todos os campos obrigatórios.');
-      form.querySelector('.erro')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    return valid;
-  }
+
 
   // =========================================
   // UTILITÁRIOS
@@ -394,9 +439,9 @@
     const spin = document.getElementById('checkout-spinner');
     if (spin) spin.style.display = on ? 'flex' : 'none';
 
-    const btnF = document.getElementById('btn-finalizar');
+    const btnPix = document.getElementById('btn-gerar-pix');
     const btnC = document.getElementById('btn-confirmar-cartao');
-    if (btnF && btnF.style.display !== 'none') btnF.disabled = on;
+    if (btnPix && btnPix.style.display !== 'none') btnPix.disabled = on;
     if (btnC && btnC.style.display !== 'none') btnC.disabled = on;
   }
 
@@ -406,7 +451,11 @@
     el.textContent = msg;
     el.style.display = 'block';
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(() => el.style.display = 'none', 6000);
+  }
+
+  function esconderErro() {
+    const el = document.getElementById('checkout-erro');
+    if (el) el.style.display = 'none';
   }
 
 })();
