@@ -63,7 +63,22 @@ if ( empty( $videos ) ) return; // Sem vídeos = sem seção
                 </div>
             </article>
             <?php endforeach; ?>
+        </div><!-- /.videos-grid -->
+
+        <?php
+        $p_videos = get_pages( [
+            'meta_key'   => '_wp_page_template',
+            'meta_value' => 'page-templates/page-videos.php',
+        ] )[0] ?? null;
+
+        if ( $p_videos ) : ?>
+        <div style="text-align:center;margin-top:var(--espaco-3xl);">
+            <a href="<?php echo esc_url( get_permalink( $p_videos ) ); ?>"
+               class="btn btn--ghost btn--grande">
+                ▶️ <?php _e( 'Ver todos os vídeos', 'temaaventuras' ); ?>
+            </a>
         </div>
+        <?php endif; ?>
 
     </div>
 </section>
