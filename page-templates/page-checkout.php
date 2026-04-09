@@ -189,7 +189,15 @@ if (!$img_url) {
                                 <div class="mp-field-wrapper" id="mp-securityCode"></div>
                             </div>
 
-                            <!-- Campos NATIVOS (não-sensíveis – input/select normais) -->
+                            <!-- Usar dados do responsável -->
+                            <div class="form-grupo" style="grid-column:1/-1;">
+                                <label class="checkbox-inline" style="display:flex; align-items:center; gap:8px; cursor:pointer; text-transform:none; letter-spacing:0;">
+                                    <input type="checkbox" id="usar-dados-resp" checked style="width:auto; min-height:auto;">
+                                    Usar dados do responsável para o pagamento
+                                </label>
+                            </div>
+
+                            <!-- Campos NATIVOS (não-sensíveis) -->
                             <div class="form-grupo" style="grid-column:1/-1;">
                                 <label>Nome no Cartão *</label>
                                 <input type="text" id="mp-cardholderName" placeholder="Nome como no cartão">

@@ -111,6 +111,43 @@
   atualizarValorTotal();
 
   // =========================================
+  // COPIAR DADOS DO RESPONSÁVEL PRO CARTÃO
+  // =========================================
+  const chkUsarResp = document.getElementById('usar-dados-resp');
+  const mpName  = document.getElementById('mp-cardholderName');
+  const mpCpf   = document.getElementById('mp-identificationNumber');
+  const mpEmail = document.getElementById('mp-email');
+
+  function preencherDadosCartao() {
+    if (!chkUsarResp?.checked) return;
+    const nome  = document.getElementById('resp-nome')?.value || '';
+    const cpf   = document.getElementById('resp-cpf')?.value || '';
+    const email = document.getElementById('resp-email')?.value || '';
+    if (mpName)  mpName.value = nome;
+    if (mpCpf)   mpCpf.value = cpf;
+    if (mpEmail) mpEmail.value = email;
+  }
+
+  chkUsarResp?.addEventListener('change', () => {
+    if (chkUsarResp.checked) {
+      preencherDadosCartao();
+    } else {
+      if (mpName)  mpName.value = '';
+      if (mpCpf)   mpCpf.value = '';
+      if (mpEmail) mpEmail.value = '';
+    }
+  });
+
+  // Preenche ao selecionar cartão como método
+  document.querySelectorAll('.metodo-card').forEach(card => {
+    card.addEventListener('click', () => {
+      if (card.dataset.metodo === 'credit_card') {
+        setTimeout(preencherDadosCartao, 100);
+      }
+    });
+  });
+
+  // =========================================
   // MERCADO PAGO – CARDFORM
   // =========================================
   let mpInstance = null;
