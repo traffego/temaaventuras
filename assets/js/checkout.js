@@ -179,12 +179,15 @@
         issuer:             { id: 'mp-issuer' },
       },
       style: {
+        theme: 'default',
         customVariables: {
-          textPrimaryColor:   '#e8e8e8',
-          textSecondaryColor: '#b0b0b0',
+          textPrimaryColor:   '#ffffff',    /* Cor branca para texto digitado */
+          textSecondaryColor: '#cccccc',    /* Placeholder */
           inputBackgroundColor: 'transparent',
           formBackgroundColor:  'transparent',
-          baseColor: '#00c853',
+          baseColor: '#00c853',             /* Cor de sucesso/foco do MP */
+          fontSize: '15px',                 /* Reduzindo tamanho da fonte */
+          fontFamily: 'system-ui, -apple-system, sans-serif'
         },
       },
       callbacks: {

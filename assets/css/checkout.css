@@ -127,9 +127,16 @@
   background: var(--fundo-base);
   border: 1px solid var(--borda-glass);
   border-radius: var(--raio-md);
-  padding: var(--espaco-sm) var(--espaco-md);
-  min-height: 44px;
+  padding: 8px 12px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
   transition: border-color var(--transicao-rapida);
+}
+.mp-field-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .mp-field-wrapper:focus-within {
