@@ -198,16 +198,22 @@ get_header();
                                                 <div class="mp-field-wrapper" id="mp-cardNumber"></div>
                                             </div>
                                             <div class="form-grupo">
-                                                <label>Mês (MM) *</label>
-                                                <div class="mp-field-wrapper" id="mp-cardExpirationMonth"></div>
-                                            </div>
-                                            <div class="form-grupo">
-                                                <label>Ano (YY) *</label>
-                                                <div class="mp-field-wrapper" id="mp-cardExpirationYear"></div>
+                                                <label>Validade *</label>
+                                                <div style="display:flex; gap:8px;">
+                                                    <div class="mp-field-wrapper" id="mp-cardExpirationMonth" style="flex:1;"></div>
+                                                    <span style="color:var(--texto-muted); display:flex; align-items:center; font-size:1.2rem;">/</span>
+                                                    <div class="mp-field-wrapper" id="mp-cardExpirationYear" style="flex:1;"></div>
+                                                </div>
                                             </div>
                                             <div class="form-grupo">
                                                 <label>CVV *</label>
                                                 <div class="mp-field-wrapper" id="mp-securityCode"></div>
+                                            </div>
+
+                                            <!-- Parcelas -->
+                                            <div class="form-grupo" style="grid-column:1/-1;">
+                                                <label>Parcelas</label>
+                                                <select id="mp-installments" style="height:44px;"></select>
                                             </div>
 
                                             <!-- Usar dados do responsável -->
@@ -243,10 +249,6 @@ get_header();
                                                             placeholder="email@dominio.com">
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-grupo">
-                                                <label>Parcelas</label>
-                                                <select id="mp-installments"></select>
                                             </div>
                                             <div class="form-grupo" style="display:none;">
                                                 <select id="mp-issuer"></select>
