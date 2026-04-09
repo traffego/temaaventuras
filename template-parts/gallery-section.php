@@ -5,14 +5,25 @@
  * @package TemaAventuras
  */
 
-// Busca imagens da galeria (post_type attachment tagged 'galeria')
-$galeria = get_posts( [
-    'post_type'      => 'attachment',
-    'post_mime_type' => 'image',
+// Busca fotos cadastradas no CPT 'galeria'
+$galeria_posts = get_posts( [
+    'post_type'      => 'galeria',
     'posts_per_page' => 9,
-    'post_status'    => 'inherit',
-    'orderby'        => 'rand',
+    'post_status'    => 'publish',
+    'orderby'        => 'menu_order date',
+    'order'          => 'ASC',
 ] );
+
+// Monta array de imagens a partir do CPT
+$galeria = [];
+foreach ( $galeria_posts as $gp ) {
+    $img_id = (int) get_post_meta( $gp->ID, '_galeria_foto', true );
+    if ( ! $img_id ) continue;
+    $galeria[] = [
+        'id'    => $img_id,
+        'legenda' => $gp->post_title,
+    ];
+}
 
 // Fallback: emojis representando fotos
 $fallback_imgs = [
@@ -51,10 +62,11 @@ $fallback_imgs = [
         <div class="masonry galeria-grid" role="list" id="galeria-container">
 
         <?php if ( ! empty( $galeria ) ) :
-            foreach ( $galeria as $i => $img ) :
-                $src_full  = wp_get_attachment_image_url( $img->ID, 'full' );
-                $src_thumb = wp_get_attachment_image_url( $img->ID, 'aventura-galeria' );
-                $alt       = get_post_meta( $img->ID, '_wp_attachment_image_alt', true ) ?: $img->post_title;
+            foreach ( $galeria as $i => $item ) :
+                $src_full  = wp_get_attachment_image_url( $item['id'], 'full' );
+                $src_thumb = wp_get_attachment_image_url( $item['id'], 'aventura-galeria' )
+                          ?: wp_get_attachment_image_url( $item['id'], 'large' );
+                $alt       = $item['legenda'];
         ?>
 
             <div class="masonry__item galeria-item animar-entrada delay-<?php echo min( $i % 6 + 1, 6 ); ?>"

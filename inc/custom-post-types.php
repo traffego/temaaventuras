@@ -412,6 +412,93 @@ function tema_aventuras_salvar_metas( $post_id ) {
 add_action( 'save_post', 'tema_aventuras_salvar_metas' );
 
 // =========================================
+// CPT: GALERIA
+// =========================================
+function tema_aventuras_cpt_galeria() {
+    register_post_type( 'galeria', [
+        'labels'        => [
+            'name'          => __( 'Galeria', 'temaaventuras' ),
+            'singular_name' => __( 'Foto', 'temaaventuras' ),
+            'add_new'       => __( 'Adicionar Foto', 'temaaventuras' ),
+            'add_new_item'  => __( 'Nova Foto', 'temaaventuras' ),
+            'edit_item'     => __( 'Editar Foto', 'temaaventuras' ),
+            'all_items'     => __( 'Todas as Fotos', 'temaaventuras' ),
+            'menu_name'     => __( 'Galeria', 'temaaventuras' ),
+        ],
+        'public'        => false,
+        'show_ui'       => true,
+        'show_in_rest'  => false,
+        'supports'      => [ 'title' ],
+        'show_in_menu'  => 'gestao-aventuras',
+        'has_archive'   => false,
+    ] );
+}
+add_action( 'init', 'tema_aventuras_cpt_galeria' );
+
+add_action( 'add_meta_boxes', function() {
+    add_meta_box( 'galeria_foto', __( '🖼️ Foto da Galeria', 'temaaventuras' ), 'tema_aventuras_galeria_meta_box', 'galeria', 'normal', 'high' );
+} );
+
+function tema_aventuras_galeria_meta_box( $post ) {
+    wp_nonce_field( 'salvar_galeria_meta', 'galeria_meta_nonce' );
+    wp_enqueue_media();
+
+    $img_id  = (int) get_post_meta( $post->ID, '_galeria_foto', true );
+    $img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'medium' ) : '';
+    ?>
+    <style>
+        #galeria-foto-preview { max-width:100%; max-height:220px; border-radius:8px; display:block; margin-bottom:8px; object-fit:cover; }
+    </style>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+        <?php if ( $img_url ) : ?>
+            <img id="galeria-foto-preview" src="<?php echo esc_url( $img_url ); ?>" alt="" />
+        <?php else : ?>
+            <img id="galeria-foto-preview" src="" alt="" style="display:none;" />
+        <?php endif; ?>
+        <div style="display:flex;gap:8px;">
+            <button type="button" id="galeria-foto-btn" class="button">📷 <?php _e( 'Selecionar Foto', 'temaaventuras' ); ?></button>
+            <button type="button" id="galeria-foto-remover" class="button" style="color:red;<?php echo $img_id ? '' : 'display:none;'; ?>">✕ <?php _e( 'Remover', 'temaaventuras' ); ?></button>
+        </div>
+        <input type="hidden" id="galeria-foto-id" name="galeria_foto" value="<?php echo esc_attr( $img_id ); ?>" />
+        <p class="description"><?php _e( 'O título do post será a legenda exibida na galeria.', 'temaaventuras' ); ?></p>
+    </div>
+    <script>
+    (function(){
+        var frame;
+        document.getElementById('galeria-foto-btn').addEventListener('click', function(e){
+            e.preventDefault();
+            if (frame) { frame.open(); return; }
+            frame = wp.media({ title: 'Selecionar foto para a galeria', button: { text: 'Usar esta foto' }, multiple: false });
+            frame.on('select', function(){
+                var att = frame.state().get('selection').first().toJSON();
+                document.getElementById('galeria-foto-id').value = att.id;
+                var prev = document.getElementById('galeria-foto-preview');
+                prev.src = att.sizes && att.sizes.medium ? att.sizes.medium.url : att.url;
+                prev.style.display = 'block';
+                document.getElementById('galeria-foto-remover').style.display = 'inline-block';
+            });
+            frame.open();
+        });
+        document.getElementById('galeria-foto-remover').addEventListener('click', function(e){
+            e.preventDefault();
+            document.getElementById('galeria-foto-id').value = '';
+            var prev = document.getElementById('galeria-foto-preview');
+            prev.src = ''; prev.style.display = 'none';
+            this.style.display = 'none';
+        });
+    })();
+    </script>
+    <?php
+}
+
+add_action( 'save_post_galeria', function( $post_id ) {
+    if ( ! isset( $_POST['galeria_meta_nonce'] ) || ! wp_verify_nonce( $_POST['galeria_meta_nonce'], 'salvar_galeria_meta' ) ) return;
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+    if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+    update_post_meta( $post_id, '_galeria_foto', absint( $_POST['galeria_foto'] ?? 0 ) );
+} );
+
+// =========================================
 // CPT: GUIAS
 // =========================================
 function tema_aventuras_cpt_guias() {
