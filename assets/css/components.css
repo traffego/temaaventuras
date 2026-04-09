@@ -619,7 +619,8 @@ img.custom-logo,
 
 .form-grupo input,
 .form-grupo select,
-.form-grupo textarea {
+.form-grupo textarea,
+.mp-field-wrapper {
   background: var(--fundo-elevado);
   border: 1px solid var(--borda-glass);
   border-radius: var(--raio-md);
@@ -628,6 +629,22 @@ img.custom-logo,
   font-size: var(--tamanho-corpo);
   transition: border-color var(--transicao-rapida), box-shadow var(--transicao-rapida);
   width: 100%;
+  min-height: 52px; /* Garante área de clique antes do iframe carregar */
+}
+
+/* Corrige o iframe injetado pelo Mercado Pago */
+.mp-field-wrapper {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mp-field-wrapper iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .form-grupo input:focus,

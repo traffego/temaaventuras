@@ -7,12 +7,11 @@
   padding: var(--espaco-lg) 0 var(--espaco-3xl);
 }
 
-/* GRID: sidebar + main */
+/* GRID: centralizado (sem sidebar) */
 .checkout-grid {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: var(--espaco-2xl);
-  align-items: start;
+  display: block;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 /* MAIN COLUMN */
@@ -190,22 +189,53 @@
   font-family: monospace;
 }
 
-/* BOTÃO SUBMIT */
+/* BOTÃO SUBMIT (NOVA ESTRUTURA FLUTUANTE NO MOBILE) */
+.checkout-submit-wrapper {
+  margin-top: var(--espaco-2xl);
+  padding: var(--espaco-md) 0;
+  text-align: center;
+}
+
 .checkout-submit {
   width: 100%;
-  margin-top: var(--espaco-md);
   min-height: 56px;
   font-size: 1.1rem;
 }
 
+.checkout-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
 .checkout-seguranca {
-  text-align: center;
   font-size: 0.7rem;
   color: var(--texto-muted);
   margin-top: var(--espaco-sm);
 }
 
-/* SIDEBAR RESUMO */
+@media (max-width: 768px) {
+  .checkout-submit-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: rgba(10, 17, 13, 0.95);
+    backdrop-filter: blur(10px);
+    padding: var(--espaco-md) var(--espaco-lg);
+    border-top: 1px solid var(--borda-glass);
+    z-index: 1000;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+    margin: 0;
+  }
+  
+  .checkout-submit-wrapper p.checkout-seguranca {
+    display: none; /* Esconde texto segurança para economizar espaço no mobile */
+  }
+}
+
+/* SIDEBAR RESUMO (REMOVIDO, MANTENHA APENAS POR COMPATIBILIDADE SE NECESSÁRIO) */
 .resumo-box {
   background: var(--fundo-card);
   border: 1px solid var(--borda-glass);

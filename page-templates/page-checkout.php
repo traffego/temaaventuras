@@ -216,50 +216,16 @@ if (!$img_url) {
             </div>
         </div>
 
-        <!-- BOTÃO FINAL -->
-        <button type="submit" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit">
-            🔒 Finalizar e Pagar
-        </button>
-        <p class="checkout-seguranca">🔒 Pagamento processado com segurança pelo Mercado Pago</p>
+        <!-- BOTÃO FINAL WRAPPER -->
+        <div class="checkout-submit-wrapper">
+            <button type="submit" id="btn-finalizar" class="btn btn--primario btn--grande checkout-submit" disabled>
+                🔒 Pagar <span id="btn-total-display">R$ 0,00</span>
+            </button>
+            <p class="checkout-seguranca">🔒 Segurança via Mercado Pago</p>
+        </div>
 
     </form>
     </div>
-
-    <!-- ==================== SIDEBAR: RESUMO ==================== -->
-    <aside class="checkout-aside">
-        <div class="resumo-box">
-            <div class="resumo-box__header">
-                <h3 class="resumo-box__titulo"><?php echo esc_html($atividade->post_title); ?></h3>
-                <div class="resumo-box__badges">
-                    <?php echo ta_nivel_badge($nivel); ?>
-                    <?php if($duracao): ?><span class="badge badge--azul">⏱ <?php echo esc_html($duracao); ?></span><?php endif; ?>
-                </div>
-                <?php if ($data_atv): ?>
-                <div class="resumo-box__data">
-                    📅 <?php echo esc_html($data_atv); ?><?php if($hora_atv) echo ' às ' . esc_html($hora_atv); ?>
-                </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="resumo-box__linha">
-                <span id="qtd-inscritos-display">1 inscrito(s)</span>
-                <span>× <?php echo ta_preco($preco_base); ?></span>
-            </div>
-
-            <div class="resumo-box__total">
-                <span>Total</span>
-                <span id="valor-total-display">R$ 0,00</span>
-            </div>
-
-            <div class="resumo-box__trust">
-                <span>✅ Pagamento seguro</span>
-                <span>🔒 Dados criptografados</span>
-                <span>📧 Confirmação por e-mail</span>
-                <span>📱 Suporte via WhatsApp</span>
-            </div>
-        </div>
-    </aside>
-
 </div>
 </div>
 </section>

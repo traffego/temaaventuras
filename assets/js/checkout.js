@@ -36,6 +36,9 @@
       }
     });
   });
+  
+  // Como PIX já está carregado de cara, liberamos o botão se for PIX
+  document.getElementById('btn-finalizar').disabled = false;
 
   // =========================================
   // ACOMPANHANTES DINÂMICOS
@@ -84,7 +87,7 @@
   });
 
   // =========================================
-  // CALCULAR VALOR TOTAL
+  // CALCULAR VALOR TOTAL E ATUALIZAR BOTÃO
   // =========================================
   function atualizarValorTotal() {
     // 1 (Responsável) + qtd de acompanhantes
@@ -92,12 +95,12 @@
     const qtd       = 1 + qtdExtras;
     const total     = qtd * pricePerPerson;
     
-    const el    = document.getElementById('valor-total-display');
-    const sub   = document.getElementById('qtd-inscritos-display');
+    const btnTotal = document.getElementById('btn-total-display');
+    if (btnTotal) {
+      btnTotal.textContent = '- R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    }
     
-    if (el) el.textContent = 'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-    if (sub) sub.textContent = qtd + ' inscrito(s)';
-    
+    // Como apagamos o aside, não atualizar mais #valor-total-display ou #qtd-inscritos-display
     const campoTotal = document.getElementById('campo-valor-total');
     const campoQtd   = document.getElementById('campo-qtd-inscritos');
     
@@ -134,7 +137,10 @@
         issuer: { id: 'mp-issuer' },
       },
       callbacks: {
-        onFormMounted: err => { if (err) console.error('CardForm error:', err); },
+        onFormMounted: err => { 
+          if (err) return console.error('CardForm error:', err); 
+          document.getElementById('btn-finalizar').disabled = false;
+        },
         onSubmit: async e => {
           e.preventDefault();
           const {
