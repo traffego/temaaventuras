@@ -98,6 +98,7 @@
   right: 0;
   z-index: var(--z-nav);
   height: var(--altura-nav);
+  min-height: var(--altura-nav);
   display: flex;
   align-items: center;
   overflow: visible;
@@ -112,6 +113,7 @@
   justify-content: space-between;
   width: 100%;
   height: 100%;
+  min-height: var(--altura-nav);
 }
 
 .navbar--scrolled {
@@ -155,7 +157,7 @@ img.custom-logo,
   padding: 0 !important;
 }
 
-/* Texto da logo (oculto por padrão no menu transparente do topo) */
+/* Texto da logo – visível por padrão quando não há logo customizada */
 .navbar__logo-texto {
   font-family: var(--fonte-titulo);
   font-size: clamp(1.2rem, 4vw, 1.6rem);
@@ -163,6 +165,13 @@ img.custom-logo,
   color: var(--texto-primario);
   line-height: 1;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  align-self: center;
+}
+
+/* Quando há logo customizada, esconde o texto (exceto no scroll) */
+.navbar__logo-wrapper ~ .navbar__logo-texto {
   display: none;
 }
 
@@ -172,7 +181,8 @@ img.custom-logo,
 }
 
 .navbar--scrolled .navbar__logo-texto {
-  display: block !important; /* Mostra o nome em texto */
+  display: flex !important;
+  align-items: center;
 }
 
 .navbar__logo-texto span {
