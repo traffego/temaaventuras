@@ -206,10 +206,6 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
         <div class="footer__bottom">
             <p class="footer__copy"><?php echo wp_kses_post( $copy ); ?></p>
             <p class="footer__copy" style="font-size:0.75rem;">
-                <?php _e( 'Desenvolvido com', 'temaaventuras' ); ?> ❤️
-                <?php _e( 'por', 'temaaventuras' ); ?>
-                <a href="https://traffego.com.br" target="_blank" rel="noopener noreferrer">Traffego</a>
-                &nbsp;|&nbsp;
                 <a href="<?php echo esc_url( home_url( '/politica-de-privacidade' ) ); ?>">
                     <?php _e( 'Política de Privacidade', 'temaaventuras' ); ?>
                 </a>
