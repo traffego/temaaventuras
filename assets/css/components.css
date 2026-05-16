@@ -133,8 +133,7 @@
   margin-right: 16px;
 }
 
-/* Wrapper e link da logo */
-.navbar__logo a,
+/* Wrapper e link da logo (apenas o custom-logo) */
 .navbar__logo-wrapper,
 .custom-logo-link {
   display: block !important;
@@ -163,11 +162,11 @@ img.custom-logo,
   font-size: clamp(1.2rem, 4vw, 1.6rem);
   letter-spacing: 0.05em;
   color: var(--texto-primario);
-  line-height: 1;
+  line-height: var(--altura-nav);
   white-space: nowrap;
-  display: flex;
-  align-items: center;
+  display: block;
   align-self: center;
+  text-decoration: none;
 }
 
 /* Quando há logo customizada, esconde o texto (exceto no scroll) */
