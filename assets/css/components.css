@@ -917,8 +917,8 @@ img.custom-logo,
 }
 
 @media (max-width: 768px) {
-  .navbar__menu,
-  .navbar__cta { display: none; }
+  .navbar__menu { display: none; }
+  .navbar__cta #navbar-whatsapp-btn { display: none; }
   .navbar__hamburger { display: flex; }
 
   .footer__grid {
