@@ -249,6 +249,23 @@ function tema_aventuras_elementor_preview_css() {
 add_action( 'elementor/preview/enqueue_styles', 'tema_aventuras_elementor_preview_css' );
 
 // =========================================
+// ELEMENTOR: WIDGETS DO TEMA
+// =========================================
+add_action( 'elementor/elements/categories_registered', function( $manager ) {
+    $manager->add_category( 'tema-aventuras', [
+        'title' => __( '🌿 Tema Aventuras', 'temaaventuras' ),
+        'icon'  => 'eicon-mountain',
+    ] );
+} );
+
+add_action( 'elementor/widgets/register', function( $manager ) {
+    if ( ! defined( 'ELEMENTOR_VERSION' ) ) return;
+    require_once TEMA_AVENTURAS_DIR . '/inc/elementor/widget-guias.php';
+    $manager->register( new TA_Widget_Guias() );
+} );
+
+
+// =========================================
 // BODY CLASSES EXTRAS
 // =========================================
 function tema_aventuras_body_classes( $classes ) {
