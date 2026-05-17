@@ -164,9 +164,6 @@ img.custom-logo,
   color: var(--texto-primario);
   line-height: 1;
   white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  height: 100%;
   text-decoration: none;
 }
 
@@ -181,8 +178,7 @@ img.custom-logo,
 }
 
 .navbar--scrolled .navbar__logo-texto {
-  display: inline-flex !important;
-  align-items: center !important;
+  display: block !important;
 }
 
 .navbar__logo-texto span {
