@@ -129,7 +129,7 @@
 .navbar__logo {
   display: flex;
   align-items: center;
-  height: calc(var(--altura-nav) - 20px) !important;
+  /* height: calc(var(--altura-nav) - 20px) !important; */
   gap: var(--espaco-sm);
   text-decoration: none;
   margin-right: 16px;
@@ -139,7 +139,7 @@
 .navbar__logo-wrapper,
 .custom-logo-link {
   display: block !important;
-  height: auto;
+  /* height: auto; */
   max-height: calc(var(--altura-nav) - 20px) !important;
   line-height: 0 !important;
 }
