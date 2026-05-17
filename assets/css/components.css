@@ -139,7 +139,7 @@
 .navbar__logo-wrapper,
 .custom-logo-link {
   display: block !important;
-  height: auto !important;
+  height: auto;
   max-height: calc(var(--altura-nav) - 20px) !important;
   line-height: 0 !important;
 }
@@ -149,7 +149,7 @@
 img.custom-logo,
 .custom-logo-link img {
   display: block !important;
-  height: calc(var(--altura-nav) - 20px) !important;
+  height: auto !important;
   max-height: calc(var(--altura-nav) - 20px) !important;
   width: auto !important;
   max-width: 220px !important;
