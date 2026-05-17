@@ -71,9 +71,11 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
                     $p_guias  = get_page_by_path('guias')  ?: get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-guias.php'])[0]  ?? null;
                     $p_videos = get_page_by_path('videos') ?: get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-videos.php'])[0] ?? null;
                     $p_blog   = get_page_by_path('blog')   ?: get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-blog.php'])[0]   ?? null;
+                    $p_sobre  = get_page_by_path('sobre')  ?: get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-sobre.php'])[0]  ?? null;
                     if ( $p_guias )  echo '<li class="navbar__item"><a href="' . esc_url( get_permalink($p_guias) )  . '">Guias</a></li>';
                     if ( $p_videos ) echo '<li class="navbar__item"><a href="' . esc_url( get_permalink($p_videos) ) . '">Vídeos</a></li>';
                     if ( $p_blog )   echo '<li class="navbar__item"><a href="' . esc_url( get_permalink($p_blog) )   . '">Blog</a></li>';
+                    if ( $p_sobre )  echo '<li class="navbar__item"><a href="' . esc_url( get_permalink($p_sobre) )  . '">Sobre</a></li>';
                     echo '<li class="navbar__item"><a href="' . esc_url( home_url( '/#contato' ) ) . '">Contato</a></li>';
                 },
             ] );
@@ -126,9 +128,11 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
             $p_guias  = get_page_by_path('guias')  ?: (get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-guias.php'])[0]  ?? null);
             $p_videos = get_page_by_path('videos') ?: (get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-videos.php'])[0] ?? null);
             $p_blog   = get_page_by_path('blog')   ?: (get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-blog.php'])[0]   ?? null);
+            $p_sobre  = get_page_by_path('sobre')  ?: (get_pages(['meta_key'=>'_wp_page_template','meta_value'=>'page-templates/page-sobre.php'])[0]  ?? null);
             if ( $p_guias )  $links['Guias']  = get_permalink($p_guias);
             if ( $p_videos ) $links['Vídeos'] = get_permalink($p_videos);
             if ( $p_blog )   $links['Blog']   = get_permalink($p_blog);
+            if ( $p_sobre )  $links['Sobre']  = get_permalink($p_sobre);
             foreach ( $links as $label => $href ) {
                 $url = str_starts_with($href, 'http') ? $href : home_url($href);
                 echo '<li class="navbar__item"><a href="' . esc_url($url) . '">' . esc_html($label) . '</a></li>';
