@@ -70,7 +70,7 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
                 <?php if ( has_custom_logo() ) : ?>
                     <?php the_custom_logo(); ?>
                 <?php else : ?>
-                    <div class="navbar__logo-texto" style="font-size: 2rem;">
+                    <div class="footer__logo-texto" style="font-size: 2rem;">
                         <?php echo esc_html( $empresa_nome ); ?>
                     </div>
                 <?php endif; ?>

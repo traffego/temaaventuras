@@ -164,9 +164,9 @@ img.custom-logo,
   color: var(--texto-primario);
   line-height: 1;
   white-space: nowrap;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  align-self: stretch;
+  height: 100%;
   text-decoration: none;
 }
 
@@ -177,11 +177,11 @@ img.custom-logo,
 
 /* No estado Sticky (quando rolar a página) */
 .navbar--scrolled .navbar__logo-wrapper {
-  display: none !important; /* Oculta a imagem da logo */
+  display: none !important;
 }
 
 .navbar--scrolled .navbar__logo-texto {
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center !important;
 }
 
@@ -705,6 +705,13 @@ img.custom-logo,
   color: var(--texto-muted);
   margin-top: var(--espaco-md);
   line-height: 1.8;
+}
+
+.footer__logo-texto {
+  font-family: var(--fonte-titulo);
+  color: var(--texto-primario);
+  letter-spacing: 0.05em;
+  margin-bottom: var(--espaco-sm);
 }
 
 .footer__titulo {
