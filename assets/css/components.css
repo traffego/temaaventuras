@@ -162,10 +162,11 @@ img.custom-logo,
   font-size: clamp(1.2rem, 4vw, 1.6rem);
   letter-spacing: 0.05em;
   color: var(--texto-primario);
-  line-height: var(--altura-nav);
+  line-height: 1;
   white-space: nowrap;
-  display: block;
-  align-self: center;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
   text-decoration: none;
 }
 
@@ -181,7 +182,7 @@ img.custom-logo,
 
 .navbar--scrolled .navbar__logo-texto {
   display: flex !important;
-  align-items: center;
+  align-items: center !important;
 }
 
 .navbar__logo-texto span {
