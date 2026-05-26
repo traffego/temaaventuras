@@ -1,0 +1,397 @@
+{
+  "version": "0.4",
+  "title": "História – Sobre Nós",
+  "type": "page",
+  "content": [
+    {
+      "id": "a1b2c3d",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "stretch_section": "section-stretched",
+        "height": "vh",
+        "custom_height": {
+          "unit": "vh",
+          "size": 70
+        },
+        "background_background": "classic",
+        "background_image": {
+          "url": ""
+        },
+        "background_size": "cover",
+        "background_position": "center center",
+        "background_overlay_background": "classic",
+        "background_overlay_color": "rgba(0,0,0,0.4)"
+      },
+      "elements": [
+        {
+          "id": "b2c3d4e",
+          "elType": "column",
+          "isInner": false,
+          "settings": {
+            "_column_size": 100,
+            "content_position": "middle"
+          },
+          "elements": [
+            {
+              "id": "c3d4e5f",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "heading",
+              "settings": {
+                "title": "Nossa História",
+                "header_size": "h1",
+                "align": "center",
+                "title_color": "#ffffff",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "vw",
+                  "size": 5
+                },
+                "typography_font_weight": "700"
+              },
+              "elements": []
+            },
+            {
+              "id": "d4e5f6a",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "heading",
+              "settings": {
+                "title": "22 anos transformando aventura em memória",
+                "header_size": "h3",
+                "align": "center",
+                "title_color": "rgba(255,223,0,0.9)",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 22
+                },
+                "typography_font_style": "italic"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "e5f6a7b",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "padding": {
+          "unit": "px",
+          "top": "80",
+          "right": "0",
+          "bottom": "20",
+          "left": "0",
+          "isLinked": false
+        }
+      },
+      "elements": [
+        {
+          "id": "f6a7b8c",
+          "elType": "column",
+          "isInner": false,
+          "settings": {
+            "_column_size": 100
+          },
+          "elements": [
+            {
+              "id": "a7b8c9d",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"text-align:center;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:#009C3B;\">🌿 Nossa Trajetória</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "b8c9d0e",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "heading",
+              "settings": {
+                "title": "Como Tudo Começou: 22 Anos de Aventura e Paixão pela Natureza",
+                "header_size": "h2",
+                "align": "center",
+                "title_color": "#F4F9F5",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 40
+                },
+                "typography_font_weight": "700"
+              },
+              "elements": []
+            },
+            {
+              "id": "c9d0e1f",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "divider",
+              "settings": {
+                "style": "solid",
+                "weight": {
+                  "unit": "px",
+                  "size": 3
+                },
+                "color": "#009C3B",
+                "width": {
+                  "unit": "%",
+                  "size": 8
+                },
+                "align": "center",
+                "gap": {
+                  "unit": "px",
+                  "size": 24
+                }
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d0e1f2a",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "padding": {
+          "unit": "px",
+          "top": "40",
+          "right": "0",
+          "bottom": "60",
+          "left": "0",
+          "isLinked": false
+        }
+      },
+      "elements": [
+        {
+          "id": "e1f2a3b",
+          "elType": "column",
+          "isInner": false,
+          "settings": {
+            "_column_size": 100
+          },
+          "elements": [
+            {
+              "id": "f2a3b4c",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p>[PRIMEIRA PARTE DA HISTÓRIA — origens, motivação dos fundadores, primeiros anos de operação e conquistas iniciais.]</p>"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a3b4c5d",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "stretch_section": "section-stretched",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      },
+      "elements": [
+        {
+          "id": "b4c5d6e",
+          "elType": "column",
+          "isInner": false,
+          "settings": {
+            "_column_size": 100,
+            "padding": {
+              "unit": "px",
+              "top": "0",
+              "right": "0",
+              "bottom": "0",
+              "left": "0",
+              "isLinked": true
+            }
+          },
+          "elements": [
+            {
+              "id": "c5d6e7f",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "image-carousel",
+              "settings": {
+                "carousel": [
+                  {
+                    "id": "img001",
+                    "url": "",
+                    "caption": "Foto 1"
+                  },
+                  {
+                    "id": "img002",
+                    "url": "",
+                    "caption": "Foto 2"
+                  },
+                  {
+                    "id": "img003",
+                    "url": "",
+                    "caption": "Foto 3"
+                  },
+                  {
+                    "id": "img004",
+                    "url": "",
+                    "caption": "Foto 4"
+                  },
+                  {
+                    "id": "img005",
+                    "url": "",
+                    "caption": "Foto 5"
+                  }
+                ],
+                "slides_to_show": "1",
+                "autoplay": "yes",
+                "autoplay_speed": 4000,
+                "infinite": "yes",
+                "effect": "fade",
+                "speed": 800,
+                "image_size": "full",
+                "navigation": "both"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d6e7f8a",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "padding": {
+          "unit": "px",
+          "top": "80",
+          "right": "0",
+          "bottom": "60",
+          "left": "0",
+          "isLinked": false
+        }
+      },
+      "elements": [
+        {
+          "id": "e7f8a9b",
+          "elType": "column",
+          "isInner": false,
+          "settings": {
+            "_column_size": 100
+          },
+          "elements": [
+            {
+              "id": "f8a9b0c",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p>[SEGUNDA PARTE DA HISTÓRIA — crescimento, conquistas dos 22 anos, equipe, missão atual e visão de futuro.]</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "a9b0c1d",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<blockquote style=\"border-left:4px solid #009C3B;padding-left:2rem;margin:2.5rem 0;font-style:italic;font-size:1.3rem;color:#FFDF00;\">\u201c22 anos transformando o medo em coragem, e a natureza em mem\u00f3ria.\u201d</blockquote>"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b0c1d2e",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "stretch_section": "section-stretched",
+        "background_background": "classic",
+        "background_color": "#0A110D",
+        "padding": {
+          "unit": "px",
+          "top": "80",
+          "right": "0",
+          "bottom": "80",
+          "left": "0",
+          "isLinked": false
+        }
+      },
+      "elements": [
+        {
+          "id": "c1d2e3f",
+          "elType": "column",
+          "isInner": false,
+          "settings": {
+            "_column_size": 100
+          },
+          "elements": [
+            {
+              "id": "d2e3f4a",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "heading",
+              "settings": {
+                "title": "Nossa História em Vídeo",
+                "header_size": "h2",
+                "align": "center",
+                "title_color": "#F4F9F5",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 34
+                },
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "40",
+                  "left": "0",
+                  "isLinked": false
+                }
+              },
+              "elements": []
+            },
+            {
+              "id": "e3f4a5b",
+              "elType": "widget",
+              "isInner": false,
+              "widgetType": "video",
+              "settings": {
+                "video_type": "youtube",
+                "youtube_url": "https://www.youtube.com/watch?v=SUBSTITUA_PELO_ID",
+                "show_controls": "yes",
+                "mute": "no",
+                "loop": "no",
+                "aspect_ratio": "169",
+                "show_image_overlay": "yes",
+                "play_icon": "yes"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "page_settings": {}
+}

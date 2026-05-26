@@ -1,0 +1,671 @@
+{
+  "version": "0.4",
+  "title": "História da Empresa – Completo",
+  "type": "page",
+  "content": [
+    {
+      "id": "hero001",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "stretch_section": "section-stretched",
+        "height": "vh",
+        "custom_height": { "unit": "vh", "size": 80 },
+        "background_background": "classic",
+        "background_color": "#050D07",
+        "background_image": {
+          "url": ""
+        },
+        "background_position": "center center",
+        "background_repeat": "no-repeat",
+        "background_size": "cover",
+        "background_overlay_background": "classic",
+        "background_overlay_color": "rgba(0,0,0,0.6)",
+        "content_position": "middle"
+      },
+      "elements": [
+        {
+          "id": "hero001col",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 100, "content_position": "middle" },
+          "elements": [
+            {
+              "id": "hero001tag",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"text-align:center;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:#FFDF00;margin-bottom:16px;\">🌊 Desde 2004</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "hero001h1",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Nossa História",
+                "header_size": "h1",
+                "align": "center",
+                "title_color": "#ffffff",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "vw", "size": 6 },
+                "typography_font_weight": "800",
+                "typography_letter_spacing": { "unit": "px", "size": 2 }
+              },
+              "elements": []
+            },
+            {
+              "id": "hero001sub",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "22 anos transformando aventura em memória",
+                "header_size": "h3",
+                "align": "center",
+                "title_color": "rgba(255,223,0,0.85)",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "px", "size": 22 },
+                "typography_font_style": "italic",
+                "margin": { "unit": "px", "top": "16", "right": "0", "bottom": "0", "left": "0", "isLinked": false }
+              },
+              "elements": []
+            },
+            {
+              "id": "hero001div",
+              "elType": "widget",
+              "widgetType": "divider",
+              "settings": {
+                "style": "solid",
+                "weight": { "unit": "px", "size": 2 },
+                "color": "#FFDF00",
+                "width": { "unit": "%", "size": 6 },
+                "align": "center",
+                "gap": { "unit": "px", "size": 24 }
+              },
+              "elements": []
+            },
+            {
+              "id": "hero001scroll",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"text-align:center;color:rgba(255,255,255,0.6);font-size:0.85rem;letter-spacing:0.1em;\">↓ Role para descobrir nossa trajetória</p>"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "numeros001",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "stretch_section": "section-stretched",
+        "background_background": "classic",
+        "background_color": "#009C3B",
+        "padding": { "unit": "px", "top": "50", "right": "0", "bottom": "50", "left": "0", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "numeros001col1",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 33 },
+          "elements": [
+            {
+              "id": "num001a",
+              "elType": "widget",
+              "widgetType": "counter",
+              "settings": {
+                "starting_number": 0,
+                "ending_number": 22,
+                "suffix": " Anos",
+                "title": "De Aventuras",
+                "number_color": "#FFDF00",
+                "title_color": "#ffffff",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "px", "size": 52 },
+                "typography_font_weight": "800",
+                "title_typography_typography": "custom",
+                "title_typography_font_size": { "unit": "px", "size": 14 },
+                "align": "center"
+              },
+              "elements": []
+            }
+          ]
+        },
+        {
+          "id": "numeros001col2",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 33 },
+          "elements": [
+            {
+              "id": "num001b",
+              "elType": "widget",
+              "widgetType": "counter",
+              "settings": {
+                "starting_number": 0,
+                "ending_number": 10000,
+                "suffix": "+",
+                "prefix": "",
+                "title": "Aventureiros no Rio",
+                "number_color": "#FFDF00",
+                "title_color": "#ffffff",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "px", "size": 52 },
+                "typography_font_weight": "800",
+                "title_typography_typography": "custom",
+                "title_typography_font_size": { "unit": "px", "size": 14 },
+                "align": "center"
+              },
+              "elements": []
+            }
+          ]
+        },
+        {
+          "id": "numeros001col3",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 33 },
+          "elements": [
+            {
+              "id": "num001c",
+              "elType": "widget",
+              "widgetType": "counter",
+              "settings": {
+                "starting_number": 0,
+                "ending_number": 1,
+                "suffix": "º",
+                "title": "Empresa de Rafting em Sapezal",
+                "number_color": "#FFDF00",
+                "title_color": "#ffffff",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "px", "size": 52 },
+                "typography_font_weight": "800",
+                "title_typography_typography": "custom",
+                "title_typography_font_size": { "unit": "px", "size": 14 },
+                "align": "center"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "era1header",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "padding": { "unit": "px", "top": "90", "right": "0", "bottom": "20", "left": "0", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "era1headercol",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 100 },
+          "elements": [
+            {
+              "id": "era1badge",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"text-align:center;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:#009C3B;margin-bottom:8px;\">CAPÍTULO 01 &nbsp;|&nbsp; 2004 – 2010</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "era1titulo",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "O Início de Tudo: O Sonho e o Desafio de Desbravar",
+                "header_size": "h2",
+                "align": "center",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "px", "size": 36 },
+                "typography_font_weight": "700"
+              },
+              "elements": []
+            },
+            {
+              "id": "era1divider",
+              "elType": "widget",
+              "widgetType": "divider",
+              "settings": {
+                "style": "solid",
+                "weight": { "unit": "px", "size": 3 },
+                "color": "#009C3B",
+                "width": { "unit": "%", "size": 6 },
+                "align": "center",
+                "gap": { "unit": "px", "size": 20 }
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "era1conteudo",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "padding": { "unit": "px", "top": "0", "right": "0", "bottom": "80", "left": "0", "isLinked": false },
+        "gap": "extended"
+      },
+      "elements": [
+        {
+          "id": "era1col1",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 50, "content_position": "middle" },
+          "elements": [
+            {
+              "id": "era1img",
+              "elType": "widget",
+              "widgetType": "image",
+              "settings": {
+                "image": { "url": "" },
+                "image_size": "full",
+                "caption_source": "custom",
+                "caption": "Rio Papagaio — os primeiros dias de exploração",
+                "css_classes": "img-historia-era1"
+              },
+              "elements": []
+            }
+          ]
+        },
+        {
+          "id": "era1col2",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 50, "content_position": "middle" },
+          "elements": [
+            {
+              "id": "era1texto",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"font-size:1.05rem;line-height:1.8;color:#2c2c2c;\">No início dos anos 2000, o ecoturismo em Sapezal era apenas uma ideia distante. O majestoso <strong>Rio Papagaio</strong> corria imponente, mas poucos tinham a coragem e a visão de enfrentar as suas corredeiras com técnica e profissionalismo. Foi aí que nasceu a <strong>Pubi H2O Aventuras</strong>.</p><p style=\"font-size:1.05rem;line-height:1.8;color:#2c2c2c;margin-top:1rem;\">Com apenas um bote, equipamentos básicos e uma paixão inabalável pelo Cerrado, o fundador começou a mapear o rio. Cada curva, cada queda de água e cada remanso foram estudados detalhadamente.</p><p style=\"font-size:1.05rem;line-height:1.8;color:#2c2c2c;margin-top:1rem;\">Naquela época, o maior desafio não era apenas domar as águas, mas sim <em>convencer as pessoas de que o Rio Papagaio era um lugar seguro para viver experiências inesquecíveis</em>. Foram anos de muito suor, transportando equipamentos em estradas de terra batida e construindo a base do que viria a ser o turismo de aventura na região.</p>"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "era2bg",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "stretch_section": "section-stretched",
+        "background_background": "classic",
+        "background_color": "#0A110D",
+        "padding": { "unit": "px", "top": "90", "right": "0", "bottom": "90", "left": "0", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "era2col1",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 50, "content_position": "middle" },
+          "elements": [
+            {
+              "id": "era2badge",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:#009C3B;margin-bottom:8px;\">CAPÍTULO 02 &nbsp;|&nbsp; 2011 – 2018</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "era2titulo",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "A Consolidação e a Evolução Técnica",
+                "header_size": "h2",
+                "align": "left",
+                "title_color": "#F4F9F5",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "px", "size": 34 },
+                "typography_font_weight": "700"
+              },
+              "elements": []
+            },
+            {
+              "id": "era2texto",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"font-size:1rem;line-height:1.8;color:#c8d8cc;\">A voz da aventura começou a espalhar-se por Mato Grosso. O rafting deixou de ser visto como um <em>\"desafio radical para poucos\"</em> e passou a ser reconhecido como uma experiência de superação para famílias, grupos de amigos e empresas.</p><p style=\"font-size:1rem;line-height:1.8;color:#c8d8cc;margin-top:1rem;\">Neste segundo capítulo, a H2O Aventuras deu um salto de qualidade. Investimos fortemente na profissionalização e na segurança.</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "era2lista",
+              "elType": "widget",
+              "widgetType": "icon-list",
+              "settings": {
+                "icon_list": [
+                  {
+                    "_id": "il001",
+                    "text": "Guias certificados com treino de salvamento em águas rápidas",
+                    "selected_icon": { "value": "fas fa-shield-alt", "library": "fa-solid" },
+                    "link": { "url": "" }
+                  },
+                  {
+                    "_id": "il002",
+                    "text": "Frota renovada com botes de padrão internacional",
+                    "selected_icon": { "value": "fas fa-water", "library": "fa-solid" },
+                    "link": { "url": "" }
+                  },
+                  {
+                    "_id": "il003",
+                    "text": "Roteiros estruturados para todas as idades e perfis",
+                    "selected_icon": { "value": "fas fa-route", "library": "fa-solid" },
+                    "link": { "url": "" }
+                  },
+                  {
+                    "_id": "il004",
+                    "text": "Pilar da preservação ambiental e da economia local",
+                    "selected_icon": { "value": "fas fa-leaf", "library": "fa-solid" },
+                    "link": { "url": "" }
+                  }
+                ],
+                "space_between": { "unit": "px", "size": 16 },
+                "icon_color": "#009C3B",
+                "icon_size": { "unit": "px", "size": 18 },
+                "text_color": "#F4F9F5",
+                "text_typography_typography": "custom",
+                "text_typography_font_size": { "unit": "px", "size": 15 }
+              },
+              "elements": []
+            }
+          ]
+        },
+        {
+          "id": "era2col2",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 50, "content_position": "middle" },
+          "elements": [
+            {
+              "id": "era2img",
+              "elType": "widget",
+              "widgetType": "image",
+              "settings": {
+                "image": { "url": "" },
+                "image_size": "full",
+                "caption_source": "custom",
+                "caption": "A evolução dos botes e da equipe profissional"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "era3section",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "padding": { "unit": "px", "top": "90", "right": "0", "bottom": "80", "left": "0", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "era3col1",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 50, "content_position": "middle" },
+          "elements": [
+            {
+              "id": "era3img",
+              "elType": "widget",
+              "widgetType": "image",
+              "settings": {
+                "image": { "url": "" },
+                "image_size": "full",
+                "caption_source": "custom",
+                "caption": "Hoje: integrando natureza, cultura e adrenalina"
+              },
+              "elements": []
+            }
+          ]
+        },
+        {
+          "id": "era3col2",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 50, "content_position": "middle" },
+          "elements": [
+            {
+              "id": "era3badge",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:#009C3B;margin-bottom:8px;\">CAPÍTULO 03 &nbsp;|&nbsp; 2019 – HOJE</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "era3titulo",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "A Nova Era: Reconhecimento e Integração Regional",
+                "header_size": "h2",
+                "align": "left",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "px", "size": 34 },
+                "typography_font_weight": "700"
+              },
+              "elements": []
+            },
+            {
+              "id": "era3texto",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"font-size:1.05rem;line-height:1.8;color:#2c2c2c;\">Ao completarmos 22 anos, a <strong>Pubi H2O Aventuras</strong> já não é apenas uma empresa de rafting — nós fazemos parte da <strong>identidade e da história de Sapezal</strong>.</p><p style=\"font-size:1.05rem;line-height:1.8;color:#2c2c2c;margin-top:1rem;\">Hoje, os nossos roteiros ligam os turistas à força das quedas de água, ao descanso nas praias de águas cristalinas do município e à riqueza cultural inestimável do <strong>etnoturismo com o povo Haliti-Pareci</strong>.</p><p style=\"font-size:1.05rem;line-height:1.8;color:#2c2c2c;margin-top:1rem;\">Olhamos para o passado com orgulho de quem foi pioneiro e para o futuro com a certeza de que cada gota de água do Rio Papagaio continua a carregar o nosso propósito.</p>"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "manifesto001",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "stretch_section": "section-stretched",
+        "background_background": "gradient",
+        "background_gradient_angle": { "unit": "deg", "size": 135 },
+        "background_gradient_stops": [
+          { "color": "#004D1C", "start_point": { "unit": "%", "size": 0 } },
+          { "color": "#002B10", "start_point": { "unit": "%", "size": 100 } }
+        ],
+        "padding": { "unit": "px", "top": "100", "right": "0", "bottom": "100", "left": "0", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "manifesto001col",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 100, "content_position": "middle" },
+          "elements": [
+            {
+              "id": "manifesto001icon",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"text-align:center;font-size:2.5rem;margin-bottom:8px;\">🌊</p><p style=\"text-align:center;font-size:0.7rem;letter-spacing:0.4em;text-transform:uppercase;color:#FFDF00;margin-bottom:32px;\">O Manifesto dos 22 Anos</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "manifesto001quote",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<blockquote style=\"max-width:820px;margin:0 auto;text-align:center;font-size:1.45rem;line-height:1.9;font-style:italic;color:#F4F9F5;border:none;padding:0;\">\"Há 22 anos, nós não mudamos o curso do rio. Nós mudámos a forma como as pessoas se ligam a ele. Vimos crianças crescerem e voltarem hoje como adultos para trazer os seus próprios filhos. Vimos pessoas superarem medos profundos com um remo nas mãos. O rio continua a correr da mesma forma, mas nós, e cada um dos milhares de aventureiros que passaram pelos nossos botes, nunca mais fomos os mesmos.\"</blockquote>"
+              },
+              "elements": []
+            },
+            {
+              "id": "manifesto001assin",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"text-align:center;margin-top:32px;color:#FFDF00;font-size:1rem;font-weight:600;letter-spacing:0.05em;\">A aventura passa, a experiência fica.</p><p style=\"text-align:center;margin-top:12px;font-size:0.8rem;color:rgba(255,255,255,0.45);letter-spacing:0.15em;text-transform:uppercase;\">— Pubi H2O Aventuras, 2004–2026</p>"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video001",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "stretch_section": "section-stretched",
+        "background_background": "classic",
+        "background_color": "#050D07",
+        "padding": { "unit": "px", "top": "90", "right": "0", "bottom": "90", "left": "0", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "video001col",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 100 },
+          "elements": [
+            {
+              "id": "video001tag",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"text-align:center;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:#009C3B;margin-bottom:12px;\">🎬 Veja com seus olhos</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "video001titulo",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Nossa História em Vídeo",
+                "header_size": "h2",
+                "align": "center",
+                "title_color": "#F4F9F5",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "px", "size": 36 },
+                "typography_font_weight": "700",
+                "margin": { "unit": "px", "top": "0", "right": "0", "bottom": "40", "left": "0", "isLinked": false }
+              },
+              "elements": []
+            },
+            {
+              "id": "video001player",
+              "elType": "widget",
+              "widgetType": "video",
+              "settings": {
+                "video_type": "youtube",
+                "youtube_url": "https://www.youtube.com/watch?v=CXgU98zIh2Q",
+                "show_controls": "yes",
+                "mute": "no",
+                "loop": "no",
+                "aspect_ratio": "169",
+                "show_image_overlay": "yes",
+                "play_icon": "yes",
+                "width": { "unit": "%", "size": 80 },
+                "_element_width": "initial",
+                "align": "center"
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cta001",
+      "elType": "section",
+      "isInner": false,
+      "settings": {
+        "stretch_section": "section-stretched",
+        "background_background": "classic",
+        "background_color": "#009C3B",
+        "padding": { "unit": "px", "top": "70", "right": "0", "bottom": "70", "left": "0", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "cta001col",
+          "elType": "column",
+          "isInner": false,
+          "settings": { "_column_size": 100, "content_position": "middle" },
+          "elements": [
+            {
+              "id": "cta001titulo",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Faça Parte Desta História",
+                "header_size": "h2",
+                "align": "center",
+                "title_color": "#ffffff",
+                "typography_typography": "custom",
+                "typography_font_size": { "unit": "px", "size": 38 },
+                "typography_font_weight": "800"
+              },
+              "elements": []
+            },
+            {
+              "id": "cta001sub",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style=\"text-align:center;font-size:1.1rem;color:rgba(255,255,255,0.85);margin-bottom:32px;\">22 anos de Rio Papagaio aguardam por você. Escolha seu roteiro.</p>"
+              },
+              "elements": []
+            },
+            {
+              "id": "cta001btn",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "Ver Roteiros de Aventura",
+                "link": { "url": "/atividades", "is_external": "false" },
+                "size": "lg",
+                "button_type": "info",
+                "align": "center",
+                "background_color": "#FFDF00",
+                "button_text_color": "#004D1C",
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "typography_font_size": { "unit": "px", "size": 16 },
+                "border_radius": { "unit": "px", "top": "4", "right": "4", "bottom": "4", "left": "4", "isLinked": true },
+                "padding": { "unit": "px", "top": "16", "right": "36", "bottom": "16", "left": "36", "isLinked": false }
+              },
+              "elements": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "page_settings": {}
+}

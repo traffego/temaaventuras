@@ -144,7 +144,7 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
                                 'Início'      => home_url( '/' ),
                                 'Atividades'  => home_url( '/atividades' ),
                                 'Blog'        => home_url( '/blog' ),
-                                'Sobre Nós'   => home_url( '/sobre' ),
+                                'Sobre'       => home_url( '/historia/' ),
                                 'Contato'     => home_url( '/contato' ),
                             ];
                             if ( ta_get('mostrar_pacotes', true) ) {
